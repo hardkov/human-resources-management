@@ -18,14 +18,18 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-devtools")
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile "org.springframework.boot:spring-boot-devtools"
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.projectlombok:lombok'
+    runtime group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
 
 bootJar {
     archivesBaseName = 'spring-react'
-    mainClassName = 'com.jaat.geeky.Application'
+    mainClassName = 'com.agh.hr.Application'
 
     from('../react-app/dist') {
         into 'static'

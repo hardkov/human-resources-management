@@ -1,4 +1,4 @@
-package com.jaat.geeky;
+package com.agh.hr;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,5 +1,5 @@
----
 spring:
+  profiles:
+    active: dev # todo creat production profile with mysql connection details
   application:
-    name: spring-react
-    version: 0.0.1
+    name: hr-management
