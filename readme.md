@@ -11,12 +11,12 @@
 - `./gradlew run` - builds both front and back-end components 
                         and starts the application
 
-### Front-end
+### Front-end devs
 
 - in one console run `./gradlew bootRun` (to run spring app)
 - and in another run `./gradlew startDev` 
 
-### Back-end
+### Back-end devs
 
 - run `./gradlew bootJar` to make sure that front-end components 
     are up-to-date 
