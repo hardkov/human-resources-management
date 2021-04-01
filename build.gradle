@@ -10,6 +10,5 @@ subprojects {
 }
 
 task 'run' (type: Exec) {
-    dependsOn ':spring-app:bootJar'
-    finalizedBy ':spring-app:bootRun'
+    dependsOn ':spring-app:bootJar', ':spring-app:bootRun'
 }

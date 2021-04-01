@@ -12,22 +12,26 @@ java {
 }
 
 dependencies {
-    compile         'org.springframework.boot:spring-boot-starter-web'
-    compile         'org.springframework.boot:spring-boot-devtools'
-    testCompile     'org.springframework.boot:spring-boot-starter-test'
-    implementation  'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation          'org.springframework.boot:spring-boot-starter-web'
+    implementation          'org.springframework.boot:spring-boot-devtools'
+    testImplementation      'org.springframework.boot:spring-boot-starter-test'
+    implementation          'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    compile         'org.projectlombok:lombok'
+    implementation          'org.projectlombok:lombok'
 
-    runtime         group: 'com.h2database', name: 'h2', version: '1.4.200'
+    runtimeOnly     group: 'com.h2database', name: 'h2', version: '1.4.200'
+}
+
+task copyBundledReactApp(type: Copy) {
+    dependsOn ':react-app:assemble'
+
+    from '../react-app/dist'
+    into 'src/main/resources/static'
 }
 
 bootJar {
-    dependsOn ':react-app:assemble'
+    dependsOn 'copyBundledReactApp'
     archivesBaseName = 'hrm'
-    from ('../react-app/dist') {
-        into 'static'
-    }
 }
 
 bootRun {

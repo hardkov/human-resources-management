@@ -45,6 +45,7 @@ react-app/package-lock.json
 spring-app/build
 node_modules/
 jscoverage_lib/
+spring-app/src/main/resources/static
 src/main/webapp/WEB-INF/ftl/rsrc/
 src/main/webapp/rsrc/dist/
 src/main/resources/application-local.properties
