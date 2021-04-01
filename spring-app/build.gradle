@@ -1,39 +1,35 @@
-buildscript {
-    ext {
-        springBootVersion = '2.0.4.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+plugins {
+    id 'java'
+    id 'org.springframework.boot'           version '2.4.3'
+    id 'io.spring.dependency-management'    version "1.0.11.RELEASE"
+    id "io.freefair.lombok"                 version "5.3.0"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile "org.springframework.boot:spring-boot-devtools"
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    compile         'org.springframework.boot:spring-boot-starter-web'
+    compile         'org.springframework.boot:spring-boot-devtools'
+    testCompile     'org.springframework.boot:spring-boot-starter-test'
+    implementation  'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'org.projectlombok:lombok'
-    runtime group: 'com.h2database', name: 'h2', version: '1.4.200'
+    compile         'org.projectlombok:lombok'
+
+    runtime         group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
 
 bootJar {
-    archivesBaseName = 'spring-react'
-    mainClassName = 'com.agh.hr.Application'
-
-    from('../react-app/dist') {
+    dependsOn ':react-app:assemble'
+    archivesBaseName = 'hrm'
+    from ('../react-app/dist') {
         into 'static'
     }
 }
 
-bootJar.dependsOn(':react-app:assemble')
+bootRun {
+    jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
+}

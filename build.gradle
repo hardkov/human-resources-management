@@ -2,9 +2,14 @@ subprojects {
     apply plugin: 'idea'
 
     group = 'com.agh.hr'
-    version = '0.0.1'
+    version = '1.0.0'
 
     repositories {
         mavenCentral()
     }
+}
+
+task 'run' (type: Exec) {
+    dependsOn ':spring-app:bootJar'
+    finalizedBy ':spring-app:bootRun'
 }
