@@ -41,6 +41,7 @@ thumbs.db
 .svn
 .CVS
 .gradle
+gradle/wrapper/gradle-wrapper.jar
 react-app/package-lock.json
 spring-app/build
 node_modules/
