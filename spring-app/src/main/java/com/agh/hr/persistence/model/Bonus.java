@@ -3,6 +3,7 @@ package com.agh.hr.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -21,8 +22,7 @@ public class Bonus {
     @Column(columnDefinition = "DATE")
     private LocalDate endDate;
 
-    // Todo figure out a nicer way
-    private int amount;
+    private BigDecimal amount;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn

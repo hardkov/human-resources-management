@@ -3,6 +3,7 @@ package com.agh.hr.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,7 +18,6 @@ public class BonusApplication extends Application {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    // todo figure out a nicer way
-    private int money;
+    private BigDecimal money;
 
 }

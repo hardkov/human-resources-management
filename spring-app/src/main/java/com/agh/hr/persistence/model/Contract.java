@@ -3,6 +3,7 @@ package com.agh.hr.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -24,7 +25,6 @@ public class Contract {
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
 
-    // Todo figure out a nicer way
-    private int baseSalary;
+    private BigDecimal baseSalary;
 
 }
