@@ -25,7 +25,7 @@ dependencies {
 task copyBundledReactApp(type: Copy) {
     dependsOn ':react-app:assemble'
 
-    from '../react-app/dist'
+    from '../react-app/build'
     into 'src/main/resources/static'
 }
 

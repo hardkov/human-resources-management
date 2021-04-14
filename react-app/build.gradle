@@ -3,25 +3,12 @@ plugins {
     id 'com.moowork.node' version "1.3.1"
 }
 
-task startDev(type: Exec) {
-    inputs.file("package-lock.json").withPathSensitivity(PathSensitivity.RELATIVE)
-    inputs.file("webpack.config.js").withPathSensitivity(PathSensitivity.RELATIVE)
-
-    commandLine([ "./node_modules/.bin/webpack-dev-server",
-                 '--mode', 'development',
-                 '--color', 'true',
-                 '--devtool', 'inline-source-map',
-                 '--hot' ])
+task startDev(type: NpmTask) {
+    args = ["start"]
 }
 
-task buildReactApp(type: NodeTask, dependsOn: 'npmInstall') {
-    script = project.file('node_modules/webpack/bin/webpack.js')
-    args = [
-            '--mode', 'production',
-            '--devtool', 'inline-source-map',
-            '--color', 'true',
-            '-o', './src/main/resources/static/dist',
-            '--hot' ]
+task buildReactApp(type: NpmTask, dependsOn: 'npmInstall') {
+    args = ["run", "build"]
 }
 
 assemble {
