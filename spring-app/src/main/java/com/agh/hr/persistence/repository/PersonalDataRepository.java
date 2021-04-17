@@ -5,18 +5,18 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface PersonalDataRepository extends JpaRepository<PersonalData, Long> {
 
-    Optional<List<PersonalData>> findByFirstname(String firstname);
-    Optional<List<PersonalData>> findByLastname(String lastname);
-    Optional<List<PersonalData>> findByAddress(String address);
-    Optional<List<PersonalData>> findByPhoneNumber(String phoneNumber);
-    Optional<List<PersonalData>> findByEmail(String email);
-    Optional<List<PersonalData>> findByBirthdateEquals(LocalDate birthdate);
-    Optional<List<PersonalData>> findByBirthdateBetween(LocalDate before,LocalDate after);
+    List<PersonalData> findByFirstname(String firstname);
+    List<PersonalData> findByLastname(String lastname);
+    List<PersonalData> findByFirstnameAndLastname(String firstname,String lastname);
+    List<PersonalData> findByAddress(String address);
+    List<PersonalData> findByPhoneNumber(String phoneNumber);
+    List<PersonalData> findByEmail(String email);
+    List<PersonalData> findByBirthdateEquals(LocalDate birthdate);
+    List<PersonalData> findByBirthdateBetween(LocalDate before,LocalDate after);
 
 
 

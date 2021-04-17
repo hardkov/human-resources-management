@@ -6,19 +6,18 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
-    Optional<List<Application>> findByDateEquals(LocalDateTime date);
-    Optional<List<Application>> findByDateBefore(LocalDateTime date);
-    Optional<List<Application>> findByDateAfter(LocalDateTime date);
+    List<Application> findByDateEquals(LocalDateTime date);
+    List<Application> findByDateBefore(LocalDateTime date);
+    List<Application> findByDateAfter(LocalDateTime date);
 
-    Optional<List<Application>> findByPlaceContaining(String place);
+    List<Application> findByPlaceContaining(String place);
 
-    Optional<List<Application>> findByStatusEquals(Status status);
+    List<Application> findByStatusEquals(Status status);
 
-    Optional<List<Application>> findByPersonalData_FirstnameAndLastname(String firstname,String lastname);
+    List<Application> findByPersonalData_FirstnameAndPersonalData_Lastname(String firstname,String lastname);
 
 }

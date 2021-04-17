@@ -6,20 +6,19 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface DelegationRepository extends JpaRepository<Delegation, Long> {
 
-    Optional<List<Delegation>> findByStartDateEquals(LocalDateTime startDate);
-    Optional<List<Delegation>> findByStartDateBefore(LocalDateTime startDate);
-    Optional<List<Delegation>> findByStartDateAfter(LocalDateTime startDate);
+    List<Delegation> findByStartDateEquals(LocalDateTime startDate);
+    List<Delegation> findByStartDateBefore(LocalDateTime startDate);
+    List<Delegation> findByStartDateAfter(LocalDateTime startDate);
 
-    Optional<List<Delegation>> findByEndDateEquals(LocalDateTime endDate);
-    Optional<List<Delegation>> findByEndDateBefore(LocalDateTime endDate);
-    Optional<List<Delegation>> findByEndDateAfter(LocalDateTime endDate);
+    List<Delegation> findByEndDateEquals(LocalDateTime endDate);
+    List<Delegation> findByEndDateBefore(LocalDateTime endDate);
+    List<Delegation> findByEndDateAfter(LocalDateTime endDate);
 
-    Optional<List<DelegationApplication>> findByDestinationContaining(String destination);
+    List<DelegationApplication> findByDestinationContaining(String destination);
 
 
 }

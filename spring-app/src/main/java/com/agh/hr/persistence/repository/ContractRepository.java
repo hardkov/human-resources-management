@@ -7,24 +7,23 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
-    Optional<List<Contract>> findByStartDateEquals(LocalDateTime startDate);
-    Optional<List<Contract>> findByStartDateBefore(LocalDateTime startDate);
-    Optional<List<Contract>> findByStartDateAfter(LocalDateTime startDate);
+    List<Contract> findByStartDateEquals(LocalDateTime startDate);
+    List<Contract> findByStartDateBefore(LocalDateTime startDate);
+    List<Contract> findByStartDateAfter(LocalDateTime startDate);
 
-    Optional<List<Contract>> findByEndDateEquals(LocalDateTime endDate);
-    Optional<List<Contract>> findByEndDateBefore(LocalDateTime endDate);
-    Optional<List<Contract>> findByEndDateAfter(LocalDateTime endDate);
+    List<Contract> findByEndDateEquals(LocalDateTime endDate);
+    List<Contract> findByEndDateBefore(LocalDateTime endDate);
+    List<Contract> findByEndDateAfter(LocalDateTime endDate);
 
-    Optional<List<Contract>> findByContractType(ContractType contractType);
+    List<Contract> findByContractType(ContractType contractType);
 
-    Optional<List<Contract>> findByBaseSaleryBetween(BigDecimal first,BigDecimal second);
-    Optional<List<Contract>> findByBaseSaleryLessThan(BigDecimal value);
-    Optional<List<Contract>> findByBaseSaleryGreaterThan(BigDecimal value);
+    List<Contract> findByBaseSalaryBetween(BigDecimal first,BigDecimal second);
+    List<Contract> findByBaseSalaryLessThan(BigDecimal value);
+    List<Contract> findByBaseSalaryGreaterThan(BigDecimal value);
 
 
 }

@@ -5,19 +5,18 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
-    Optional<List<Leave>> findByStartDateEquals(LocalDateTime startDate);
-    Optional<List<Leave>> findByStartDateBefore(LocalDateTime startDate);
-    Optional<List<Leave>> findByStartDateAfter(LocalDateTime startDate);
+    List<Leave> findByStartDateEquals(LocalDateTime startDate);
+    List<Leave> findByStartDateBefore(LocalDateTime startDate);
+    List<Leave> findByStartDateAfter(LocalDateTime startDate);
 
-    Optional<List<Leave>> findByEndDateEquals(LocalDateTime endDate);
-    Optional<List<Leave>> findByEndDateBefore(LocalDateTime endDate);
-    Optional<List<Leave>> findByEndDateAfter(LocalDateTime endDate);
+    List<Leave> findByEndDateEquals(LocalDateTime endDate);
+    List<Leave> findByEndDateBefore(LocalDateTime endDate);
+    List<Leave> findByEndDateAfter(LocalDateTime endDate);
 
-    Optional<List<Leave>> findByPaidEquals(Boolean paid);
+    List<Leave> findByPaidEquals(Boolean paid);
 
 }
