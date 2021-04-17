@@ -16,8 +16,11 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional
-    public void saveUser(User user) {
-        userRepository.save(user);
+    public boolean saveUser(User user) {
+        try {
+            userRepository.save(user);
+        }catch(Exception e){return false;}
+        return true;
     }
 
     @Transactional
