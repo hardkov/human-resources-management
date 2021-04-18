@@ -1,6 +1,5 @@
 package com.agh.hr.persistence.repository;
 import com.agh.hr.persistence.model.Delegation;
-import com.agh.hr.persistence.model.DelegationApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +17,7 @@ public interface DelegationRepository extends JpaRepository<Delegation, Long> {
     List<Delegation> findByEndDateBefore(LocalDateTime endDate);
     List<Delegation> findByEndDateAfter(LocalDateTime endDate);
 
-    List<DelegationApplication> findByDestinationContaining(String destination);
+    List<Delegation> findByDestinationContaining(String destination);
 
 
 }

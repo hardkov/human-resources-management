@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface BonusApplicationRepository extends JpaRepository<BonusApplication, Long> {
 
-    List<Contract> findByMoneyBetween(BigDecimal first, BigDecimal second);
-    List<Contract> findByMoneyLessThan(BigDecimal value);
-    List<Contract> findByMoneyGreaterThan(BigDecimal value);
+    List<BonusApplication> findByMoneyBetween(BigDecimal first, BigDecimal second);
+    List<BonusApplication> findByMoneyLessThan(BigDecimal value);
+    List<BonusApplication> findByMoneyGreaterThan(BigDecimal value);
 
 }
