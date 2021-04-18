@@ -2,6 +2,7 @@ package com.agh.hr.security;
 
 import com.agh.hr.persistence.service.FooUserService;
 import org.slf4j.Logger;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -94,8 +95,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
         http.authorizeRequests()
                 // Our public endpoints
-                .antMatchers("/api/public/**/*").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/*.ico").permitAll()
+                .antMatchers("/*.png").permitAll()
+                .antMatchers("/manifest.json").permitAll()
+                .antMatchers("/static/**/*").permitAll()
+                .antMatchers("/api/public/**/*").permitAll()
                 // Our private endpoints
                 .anyRequest().authenticated();
 
