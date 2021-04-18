@@ -24,11 +24,12 @@ public class FooController {
     }
 
     // example
-    @GetMapping("/foo-users")
+    @GetMapping("/api/foo-users")
     public ResponseEntity<List<FooUser>> foo() {
         val foo = FooUser.builder()
                 .firstname("basia")
-                .lastname("kasia").build();
+                .lastname("kasia")
+                .password("fofo").build();
 
         if (!this.userService.hasUserWithName("basia")) {
             this.userService.saveUser(foo);

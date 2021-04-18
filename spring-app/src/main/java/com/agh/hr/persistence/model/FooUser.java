@@ -29,10 +29,10 @@ public class FooUser implements UserDetails {
 
     private String password;
 
-    private boolean enabled = true;
+    private boolean enabled;
 
-    @ElementCollection
-    private Set<Role> authorities = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Role> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
