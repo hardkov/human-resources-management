@@ -1,21 +1,27 @@
 package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.model.FooUser;
-import com.agh.hr.persistence.repository.UserRepository;
+import com.agh.hr.persistence.repository.FooUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 // it should provide high-level api aka abstraction over repository if needed
 public class FooUserService {
 
-    private final UserRepository userRepository;
+    private final FooUserRepository userRepository;
 
     @Autowired
-    public FooUserService(UserRepository userRepository) {
+    public FooUserService(FooUserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    // todo in real user service create a method that finds user by username -> whatever that is?
+    public Optional<FooUser> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public void saveUser(FooUser user) {
@@ -23,7 +29,7 @@ public class FooUserService {
     }
 
     public boolean hasUserWithName(String firstname) {
-        return this.userRepository.findByFirstname(firstname).isPresent();
+        return this.userRepository.findByUsername(firstname).isPresent();
     }
 
     public List<FooUser> getAll() {
