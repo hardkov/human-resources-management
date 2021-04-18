@@ -10,12 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
 
-    @Transactional
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository){
+        this.userRepository=userRepository;
+    }
+
     public boolean saveUser(User user) {
         try {
             userRepository.save(user);
@@ -23,32 +28,26 @@ public class UserService {
         return true;
     }
 
-    @Transactional
     public Optional<User> getById(Long id) {
         return userRepository.findById(id);
     }
 
-    @Transactional
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @Transactional
     public void deleteUser(Long UserId) {
             userRepository.deleteById(UserId);
     }
 
-    @Transactional
     public List<User> getByFirstname(String firstname) {
         return userRepository.findByPersonalData_Firstname(firstname);
     }
 
-    @Transactional
     public List<User> getByLastname(String lastname) {
         return userRepository.findByPersonalData_Lastname(lastname);
     }
 
-    @Transactional
     public List<User> getByFullName(String firstname,String lastname) {
         return userRepository.findByPersonalData_FirstnameAndPersonalData_Lastname(firstname,lastname);
     }

@@ -3,7 +3,7 @@ package com.agh.hr.controllers;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.service.PersonalDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,69 +17,69 @@ public class PersonalDataController {
     private PersonalDataService dataService;
 
     @RequestMapping(value = "/data/{id}", method = RequestMethod.GET)
-    public @ResponseBody Optional<PersonalData> getPersonalDataById(@PathVariable Long id) {
-        return dataService.getById(id);
+    public ResponseEntity<Optional<PersonalData>> getPersonalDataById(@PathVariable Long id) {
+        return ResponseEntity.ok(dataService.getById(id));
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.GET)
-    public List<PersonalData> getAllPersonalData() {
-        return dataService.getAllPersonalData();
+    public ResponseEntity<List<PersonalData>> getAllPersonalData() {
+        return ResponseEntity.ok(dataService.getAllPersonalData());
     }
 
     @RequestMapping(value = "/data/{id}", method = RequestMethod.DELETE)
-    public HttpStatus deletePersonalData(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePersonalData(@PathVariable Long id) {
         dataService.deletePersonalData(id);
-        return HttpStatus.NO_CONTENT;
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.POST)
-    public HttpStatus insertPersonalData(@RequestBody PersonalData data) {
-        return dataService.savePersonalData(data) ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
+    public ResponseEntity<Void> insertPersonalData(@RequestBody PersonalData data) {
+        return dataService.savePersonalData(data)?ResponseEntity.ok().build():ResponseEntity.badRequest().build();
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.PUT)
-    public HttpStatus updatePersonalData(@RequestBody PersonalData data) {
-        return dataService.savePersonalData(data) ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST;
+    public  ResponseEntity<Void> updatePersonalData(@RequestBody PersonalData data) {
+        return dataService.savePersonalData(data)?ResponseEntity.accepted().build():ResponseEntity.badRequest().build();
     }
 
     @RequestMapping(value = "/dataByFirstname/{name}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByFirstname(@PathVariable String name) {
-        return dataService.getByFirstname(name);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByFirstname(@PathVariable String name) {
+        return ResponseEntity.ok(dataService.getByFirstname(name));
     }
 
     @RequestMapping(value = "/dataByLastname/{name}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByLastname(@PathVariable String name) {
-        return dataService.getByLastname(name);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByLastname(@PathVariable String name) {
+        return ResponseEntity.ok(dataService.getByLastname(name));
     }
 
     @RequestMapping(value = "/dataByFullname/{firstname}/{lastname}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByFullName(@PathVariable String firstname,@PathVariable String lastname) {
-        return dataService.getByFullName(firstname,lastname);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByFullName(@PathVariable String firstname,@PathVariable String lastname) {
+        return ResponseEntity.ok(dataService.getByFullName(firstname,lastname));
     }
 
     @RequestMapping(value = "/dataByAddress/{address}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByAddress(@PathVariable String address) {
-        return dataService.getByAddress(address);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByAddress(@PathVariable String address) {
+        return ResponseEntity.ok(dataService.getByAddress(address));
     }
 
     @RequestMapping(value = "/dataByEmail/{email}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByEmail(@PathVariable String email) {
-        return dataService.getByEmail(email);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(dataService.getByEmail(email));
     }
 
     @RequestMapping(value = "/dataByPhone/{phone}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByPhone(@PathVariable String phone) {
-        return dataService.getByPhone(phone);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByPhone(@PathVariable String phone) {
+        return ResponseEntity.ok(dataService.getByPhone(phone));
     }
 
     @RequestMapping(value = "/dataByBirthdateEquals/{date}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByBirthdateEquals(@PathVariable LocalDate date) {
-        return dataService.getByBirthdateEquals(date);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByBirthdateEquals(@PathVariable LocalDate date) {
+        return ResponseEntity.ok(dataService.getByBirthdateEquals(date));
     }
 
     @RequestMapping(value = "/dataByBirthdateBetween/{before}/{after}", method = RequestMethod.GET)
-    public List<PersonalData> getPersonalDataByBirthdateBetween(@PathVariable LocalDate before,@PathVariable LocalDate after) {
-        return dataService.getByBirthdateBetween(before,after);
+    public ResponseEntity<List<PersonalData>> getPersonalDataByBirthdateBetween(@PathVariable LocalDate before,@PathVariable LocalDate after) {
+        return ResponseEntity.ok(dataService.getByBirthdateBetween(before,after));
     }
 
 }

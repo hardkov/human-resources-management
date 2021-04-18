@@ -4,11 +4,9 @@ import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.agh.hr.persistence.model.FooUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,44 +18,44 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
-    public @ResponseBody Optional<User> getUserById(@PathVariable Long id) {
-        return userService.getById(id);
+    public  ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getById(id));
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
-    public HttpStatus deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return HttpStatus.NO_CONTENT;
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public HttpStatus insertUser(@RequestBody User user) {
-        return userService.saveUser(user) ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
+    public ResponseEntity<Void> insertUser(@RequestBody User user) {
+        return userService.saveUser(user)?ResponseEntity.ok().build():ResponseEntity.badRequest().build();
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.PUT)
-    public HttpStatus updateUser(@RequestBody User user) {
-        return userService.saveUser(user) ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST;
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+        return userService.saveUser(user)?ResponseEntity.accepted().build():ResponseEntity.badRequest().build();
     }
 
     @RequestMapping(value = "/userByFirstname/{name}", method = RequestMethod.GET)
-    public List<User> getUserByFirstname(@PathVariable String name) {
-        return userService.getByFirstname(name);
+    public ResponseEntity<List<User>> getUserByFirstname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByFirstname(name));
     }
 
     @RequestMapping(value = "/userByLastname/{name}", method = RequestMethod.GET)
-    public List<User> getUserByLastname(@PathVariable String name) {
-        return userService.getByLastname(name);
+    public ResponseEntity<List<User>> getUserByLastname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByLastname(name));
     }
 
     @RequestMapping(value = "/userByFullname/{firstname}/{lastname}", method = RequestMethod.GET)
-    public List<User> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
-        return userService.getByFullName(firstname,lastname);
+    public ResponseEntity<List<User>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
+        return ResponseEntity.ok(userService.getByFullName(firstname,lastname));
     }
 
 }
