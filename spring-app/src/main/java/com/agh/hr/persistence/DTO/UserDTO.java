@@ -6,7 +6,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class UserDTO {
-    private Long id;
-    private PersonalData personalData;
-    private String position;
+    protected Long id;
+    protected PersonalData personalData;
+    protected String position;
 }

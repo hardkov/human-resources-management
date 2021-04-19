@@ -1,5 +1,6 @@
 package com.agh.hr.config;
 
+import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -12,25 +13,11 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class Config implements WebMvcConfigurer {
-
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/default").addResourceLocations("/index.html");
-//    }
-//
-//    @Override
-//    public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addViewController("/notFound").setViewName("default");
-//    }
-//
-//    @Bean
-//    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> containerCustomizer() {
-//        return container -> container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/notFound"));
-//    }
-
+public class Config {
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        val modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        return modelMapper;
     }
 }

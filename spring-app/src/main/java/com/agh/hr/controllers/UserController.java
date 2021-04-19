@@ -13,20 +13,45 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public UserController(ModelMapper modelMapper, UserService userService) {
+        this.modelMapper = modelMapper;
+        this.userService = userService;
+    }
 
+    //// CREATE
+    @PostMapping(value = "/user")
+    public ResponseEntity<Void> insertUser(@RequestBody UserDTO userDTO) {
+        return userService.saveUser(convertToUser(userDTO))?ResponseEntity.ok().build():ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping(value = "/user/{id}/leave")
+    public ResponseEntity<Void> insertLeave(@PathVariable Long id, @RequestBody Leave leave) {
+        val userOpt = userService.getById(id);
+        if(userOpt.isPresent()){
+            val user = userOpt.get();
+            user.addLeave(leave);
+            return userService.saveUser(user) ?
+                    ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //// READ
     @GetMapping(value = "/user/{id}")
-    public ResponseEntity<Optional<UserDetailedDTO>> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getById(id).map(this::convertToDetailedDTO));
+    public ResponseEntity<UserDetailedDTO> getUserById(@PathVariable Long id) {
+        val userOpt = userService.getById(id);
+        return userOpt
+                .map(user -> ResponseEntity.ok(convertToDetailedDTO(user)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/user")
@@ -37,28 +62,12 @@ public class UserController {
         );
     }
 
-    @DeleteMapping(value = "/user/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(value = "/user")
-    public ResponseEntity<Void> insertUser(@RequestBody User user) {
-        return userService.saveUser(user)?ResponseEntity.ok().build():ResponseEntity.badRequest().build();
-    }
-
-    @PutMapping(value = "/user")
-    public ResponseEntity<Void> updateUser(@RequestBody User user) {
-        return userService.saveUser(user)?ResponseEntity.accepted().build():ResponseEntity.badRequest().build();
-    }
-
     @GetMapping(value = "/userByFirstname/{name}")
     public ResponseEntity<List<User>> getUserByFirstname(@PathVariable String name) {
         return ResponseEntity.ok(userService.getByFirstname(name));
     }
 
-    @RequestMapping(value = "/userByLastname/{name}", method = RequestMethod.GET)
+    @GetMapping(value = "/userByLastname/{name}")
     public ResponseEntity<List<User>> getUserByLastname(@PathVariable String name) {
         return ResponseEntity.ok(userService.getByLastname(name));
     }
@@ -68,13 +77,30 @@ public class UserController {
         return ResponseEntity.ok(userService.getByFullName(firstname,lastname));
     }
 
-    @PostMapping(value = "/user/{id}/leave")
-    public ResponseEntity<Optional<UserDetailedDTO>> insertLeave(@PathVariable Long id, @RequestBody Leave leave) {
-        Optional<User> user = userService.getById(id);
-        return user.map(u -> {
-            u.addLeave(leave);
-            return userService.saveUser(u);
-        }).orElse(false) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+    //// UPDATE
+    @PutMapping(value = "/user")
+    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
+        val userOpt = userService.getById(userDTO.getId());
+        if(userOpt.isPresent()) {
+            val user = userOpt.get();
+            val personalData = user.getPersonalData();
+            modelMapper.map(userDTO, user);
+            modelMapper.map(userDTO.getPersonalData(), personalData);
+            user.setPersonalData(personalData);
+            userService.saveUser(user);
+            return userService.saveUser(user) ?
+                    ResponseEntity.accepted().build():ResponseEntity.badRequest().build();
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //// DELETE
+    @DeleteMapping(value = "/user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 
     public UserDTO convertToDTO(User user) {
@@ -85,5 +111,5 @@ public class UserController {
         return modelMapper.map(user, UserDetailedDTO.class);
     }
 
-
+    public User convertToUser(UserDTO userDTO) { return modelMapper.map(userDTO, User.class); }
 }
