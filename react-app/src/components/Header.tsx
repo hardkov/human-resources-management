@@ -17,9 +17,13 @@ const useStyles = makeStyles((theme) => ({
 
   username: {
     marginLeft: theme.spacing(2),
+    color: theme.palette.primary.light,
   },
   button: {
     margin: theme.spacing(2),
+  },
+  iconButton: {
+    color: theme.palette.primary.light,
   },
 }));
 
@@ -31,7 +35,7 @@ const Header: React.FC = () => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton component={RouterLink} to="/">
+          <IconButton className={classes.iconButton} component={RouterLink} to="/">
             <HomeIcon />
           </IconButton>
           <div className={classes.buttonContainer}>
@@ -41,7 +45,7 @@ const Header: React.FC = () => {
               </Button>
             ))}
           </div>
-          <Typography className={classes.username} color="textPrimary" variant="h5">
+          <Typography className={classes.username} variant="h5">
             Admin
           </Typography>
         </Toolbar>
