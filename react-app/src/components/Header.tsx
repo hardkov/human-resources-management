@@ -29,7 +29,7 @@ const Header: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar position="static">
         <Toolbar>
           <IconButton component={RouterLink} to="/">
             <HomeIcon />
@@ -42,7 +42,7 @@ const Header: React.FC = () => {
             ))}
           </div>
           <Typography className={classes.username} color="textPrimary" variant="h5">
-            ADMIN
+            Admin
           </Typography>
         </Toolbar>
       </AppBar>
