@@ -19,6 +19,9 @@ dependencies {
 
     implementation          'org.projectlombok:lombok'
 
+    implementation  group: 'org.modelmapper', name: 'modelmapper', version: '2.4.0'
+
+
     runtimeOnly     group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
 
