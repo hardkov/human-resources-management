@@ -1,8 +1,11 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Button } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import { makeStyles } from '@material-ui/core/styles';
+
+import ButtonData from '../models/ButtonData';
+import useHeader from '../hooks/useHeader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,19 +32,25 @@ const useStyles = makeStyles((theme) => ({
 
 const Header: React.FC = () => {
   const classes = useStyles();
-  const buttons: string[] = ['LOGOUT'];
+  const buttons: ButtonData[] = useHeader();
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.iconButton} component={RouterLink} to="/">
+          <IconButton className={classes.iconButton} component={Link} to="/">
             <HomeIcon />
           </IconButton>
           <div className={classes.buttonContainer}>
             {buttons.map((button) => (
-              <Button className={classes.button} variant="contained" color="secondary">
-                {button}
+              <Button
+                className={classes.button}
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to={button.link}
+              >
+                {button.text}
               </Button>
             ))}
           </div>
