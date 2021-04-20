@@ -3,6 +3,7 @@ import { Grid, makeStyles } from '@material-ui/core';
 
 import HomeMenuItem from './HomeMenuItem';
 import useHomeMenu from '../hooks/useHomeMenu';
+import HomeMenuItemData from '../models/HomeMenuItemData';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles(() => ({
 
 const HomeMenu: React.FC = () => {
   const classes = useStyles();
-  const menuItems = useHomeMenu();
+  const menuItems: HomeMenuItemData[] = useHomeMenu();
 
   return (
     <Grid className={classes.grid} spacing={6} container direction="row" justify="center" alignItems="center">

@@ -1,11 +1,11 @@
 import UserType from '../models/UserType';
-import MenuItem from '../models/MenuItem';
+import HomeMenuItemData from '../models/HomeMenuItemData';
 import { getUserType } from '../services/authService';
 import applicationImg from '../assets/applications.png';
 import employeesImg from '../assets/employees.jpg';
 import logsImg from '../assets/logs.png';
 
-const useHomeMenu = (): MenuItem[] => {
+const useHomeMenu = (): HomeMenuItemData[] => {
   const currentUser: UserType = getUserType();
 
   if (currentUser === 'ADMIN') {

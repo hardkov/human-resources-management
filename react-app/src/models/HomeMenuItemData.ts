@@ -1,8 +1,8 @@
-interface MenuItem {
+interface HomeMenuItemData {
   img: string;
   description: string;
   title: string;
   link: string;
 }
 
-export default MenuItem;
+export default HomeMenuItemData;
