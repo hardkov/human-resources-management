@@ -9,12 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core';
 
-interface Props {
-  img: string;
-  description: string;
-  title: string;
-  link: string;
-}
+import MenuItem from '../models/MenuItem';
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -29,7 +24,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const HomeMenuItem: React.FC<Props> = ({ img, title, description, link }: Props) => {
+const HomeMenuItem: React.FC<MenuItem> = ({ img, title, description, link }: MenuItem) => {
   const classes = useStyles();
 
   return (
