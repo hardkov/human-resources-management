@@ -1,47 +1,18 @@
-import React, { useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { CssBaseline, ThemeProvider, createMuiTheme } from '@material-ui/core';
 
-const formField = (key: any, value: any) => {
-  const encodedKey = encodeURIComponent(key);
-  const encodedValue = encodeURIComponent(value);
-  return `${encodedKey}=${encodedValue}`;
-};
+import Routes from './components/Routes';
+import defaultTheme from './theme/defaultTheme.json';
 
-function App() {
-  useEffect(() => {
-    const callApi = async () => {
-      const formBody = [];
-      formBody.push(formField('username', 'admin'));
-      formBody.push(formField('password', 'admin'));
-      const response = await fetch(`api/login`, {
-        method: 'POST',
-        body: formBody.join('&'),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Accept: 'application/json',
-        },
-      });
+const theme = createMuiTheme(defaultTheme);
 
-      console.log(response);
-    };
-
-    callApi();
-  }, []);
-
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Routes />
+    </ThemeProvider>
   );
-}
+};
 
 export default App;

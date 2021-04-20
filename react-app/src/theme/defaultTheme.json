@@ -1,0 +1,19 @@
+{
+  "palette": {
+    "primary": {
+      "main": "#512DA8",
+      "light": "#FFFFFF"
+    },
+    "secondary": {
+      "main": "#8860D0"
+    },
+    "background": {
+      "default": "#FFFFFF",
+      "paper": "#e7e1f2"
+    },
+    "text": {
+      "primary": "#212121",
+      "secondary": "#757575"
+    }
+  }
+}
