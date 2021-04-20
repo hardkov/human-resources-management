@@ -24,6 +24,6 @@ public class LeaveApplication extends Application {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime endDate;
 
-    private boolean isPaid;
+    private boolean paid;
 
 }
