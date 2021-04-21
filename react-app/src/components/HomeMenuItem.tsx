@@ -9,7 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core';
 
-import HomeMenuItemData from '../models/HomeMenuItemData';
+import HomeMenuItemData from '../types/HomeMenuItemData';
 
 const useStyles = makeStyles(() => ({
   card: {

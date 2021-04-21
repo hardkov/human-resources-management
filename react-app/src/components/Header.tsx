@@ -4,7 +4,7 @@ import { AppBar, Toolbar, Typography, IconButton, Button } from '@material-ui/co
 import HomeIcon from '@material-ui/icons/Home';
 import { makeStyles } from '@material-ui/core/styles';
 
-import ButtonData from '../models/ButtonData';
+import ButtonData from '../types/ButtonData';
 import useHeader from '../hooks/useHeader';
 
 const useStyles = makeStyles((theme) => ({

@@ -3,7 +3,7 @@ import { Grid, makeStyles } from '@material-ui/core';
 
 import HomeMenuItem from './HomeMenuItem';
 import useHomeMenu from '../hooks/useHomeMenu';
-import HomeMenuItemData from '../models/HomeMenuItemData';
+import HomeMenuItemData from '../types/HomeMenuItemData';
 
 const useStyles = makeStyles(() => ({
   root: {
