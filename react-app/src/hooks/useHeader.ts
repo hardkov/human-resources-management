@@ -1,5 +1,5 @@
-import ButtonData from '../models/ButtonData';
-import UserType from '../models/UserType';
+import ButtonData from '../types/ButtonData';
+import UserType from '../types/UserType';
 import { getUserType } from '../services/authService';
 
 const useHeader = (): ButtonData[] => {
@@ -9,6 +9,19 @@ const useHeader = (): ButtonData[] => {
     return [
       {
         text: 'Logout',
+        link: '/',
+      },
+    ];
+  }
+
+  if (currentUser === 'EMPLOYEE') {
+    return [
+      {
+        text: 'Logout',
+        link: '/',
+      },
+      {
+        text: 'My Profile',
         link: '/',
       },
     ];

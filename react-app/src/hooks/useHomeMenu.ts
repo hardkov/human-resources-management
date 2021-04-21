@@ -1,9 +1,13 @@
-import UserType from '../models/UserType';
-import HomeMenuItemData from '../models/HomeMenuItemData';
+import UserType from '../types/UserType';
+import HomeMenuItemData from '../types/HomeMenuItemData';
 import { getUserType } from '../services/authService';
+
 import applicationImg from '../assets/applications.png';
 import employeesImg from '../assets/employees.jpg';
 import logsImg from '../assets/logs.png';
+import myapplicationsImg from '../assets/myapplications.jpg';
+import earningsImg from '../assets/earnings.jpg';
+import leavesImg from '../assets/leaves.jpg';
 
 const useHomeMenu = (): HomeMenuItemData[] => {
   const currentUser: UserType = getUserType();
@@ -19,13 +23,42 @@ const useHomeMenu = (): HomeMenuItemData[] => {
       {
         img: employeesImg,
         title: 'Employees',
-        description: 'See all the employees. Manage their permission and get insight into user data details.',
+        description: 'List of employees. Manage their permission and get insight into user data details.',
         link: '/',
       },
       {
         img: applicationImg,
         title: 'Applications',
-        description: 'See all applications from the users and accept or reject them.',
+        description: 'All applications from the users.',
+        link: '/',
+      },
+    ];
+  }
+
+  if (currentUser === 'EMPLOYEE') {
+    return [
+      {
+        img: myapplicationsImg,
+        title: 'My Applications',
+        description: 'Applications that you have submitted',
+        link: '/',
+      },
+      {
+        img: leavesImg,
+        title: 'My Leaves',
+        description: 'See all the leaves during your contract',
+        link: '/',
+      },
+      {
+        img: earningsImg,
+        title: 'My Earnings',
+        description: 'Aggregated data about your earnings',
+        link: '/',
+      },
+      {
+        img: applicationImg,
+        title: 'Create Application',
+        description: 'Create and submit and applications',
         link: '/',
       },
     ];

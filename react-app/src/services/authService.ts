@@ -1,7 +1,7 @@
-import UserType from '../models/UserType';
+import UserType from '../types/UserType';
 
 const getUserType = (): UserType => {
-  return 'ADMIN';
+  return 'EMPLOYEE';
 };
 
 export { getUserType };
