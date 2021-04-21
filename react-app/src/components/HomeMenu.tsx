@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
   },
   grid: {
     width: '100%',
+    margin: 0,
   },
 }));
 
@@ -26,9 +27,9 @@ const HomeMenu: React.FC = () => {
   const menuItems: HomeMenuItemData[] = useHomeMenu();
 
   return (
-    <Grid className={classes.grid} spacing={6} container direction="row" justify="center" alignItems="center">
+    <Grid className={classes.grid} spacing={6} container justify={menuItems.length < 4 ? 'center' : 'flex-start'}>
       {menuItems.map((item) => (
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <HomeMenuItem img={item.img} title={item.title} description={item.description} link={item.link} />
         </Grid>
       ))}
