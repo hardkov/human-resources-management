@@ -1,6 +1,7 @@
 package com.agh.hr.security;
 
 import com.agh.hr.persistence.service.FooUserService;
+import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,14 +24,14 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtil jwtTokenUtil;
-    private final FooUserService fooUserService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
 
     @Autowired
-    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil,
-                          FooUserService fooUserService) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.fooUserService = fooUserService;
+    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider,
+                          UserService userService) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userService = userService;
     }
 
     @Override
@@ -39,22 +40,22 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
         // Get authorization header and validate
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        val header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (isEmpty(header) || !header.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
 
         // Get jwt token and validate
-        final String token = header.split(" ")[1].trim();
-        if (!jwtTokenUtil.validate(token)) {
+        val token = header.split(" ")[1].trim();
+        if (!jwtTokenProvider.validate(token)) {
             chain.doFilter(request, response);
             return;
         }
 
         // Get user identity and set it on the spring security context
-        val userDetails = fooUserService
-                .findByUsername(jwtTokenUtil.getUsername(token));
+        val userDetails = userService
+                .findByUsername(jwtTokenProvider.getUsername(token));
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails.orElse(null), null,

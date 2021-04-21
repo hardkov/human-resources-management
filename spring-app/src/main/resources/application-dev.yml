@@ -6,18 +6,27 @@ spring:
 
   datasource:
     url: jdbc:h2:mem:devdb
-    username: secret-username
-    password: secret-password
+    username: admin
+    password: passw0rd
     driverClassName: org.h2.Driver
+
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
 
   security:
     filter:
       order: 10
 
 
+server:
+  error:
+    path: /error
+
 jwt:
   secret: zdtlD3JK56m6wTTgsNFhqzjqP
-  issuer: com.agh.hr
-
-
+  issuer: com.agh.iet
 

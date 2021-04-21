@@ -1,6 +1,8 @@
-package com.agh.hr.security;
+package com.agh.hr.config.security;
 
 import com.agh.hr.persistence.service.FooUserService;
+import com.agh.hr.persistence.service.UserService;
+import com.agh.hr.security.JwtTokenFilter;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,17 +38,17 @@ import static java.lang.String.format;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Logger logger;
-    private final FooUserService fooUserService;
+    private final UserService userService;
     private final JwtTokenFilter jwtTokenFilter;
 
 
     public SecurityConfig(Logger logger,
-                          FooUserService fooUserService,
+                          UserService userService,
                           JwtTokenFilter jwtTokenFilter) {
         super();
 
         this.logger = logger;
-        this.fooUserService = fooUserService;
+        this.userService = userService;
         this.jwtTokenFilter = jwtTokenFilter;
 
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
@@ -54,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(username -> fooUserService
+        auth.userDetailsService(username -> userService
                 .findByUsername(username)
                 .orElseThrow(
                         () -> new UsernameNotFoundException(
@@ -91,15 +93,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .and();
 
+        http = http.headers()
+                .frameOptions()
+                .sameOrigin()
+                .and();
+
         // Set permissions on endpoints
         http.authorizeRequests()
-                // Our public endpoints
-                .antMatchers("/").permitAll()
+//                .anyRequest().permitAll();
+//                 Our public endpoints
+                .antMatchers("/", "/*.html", "/h2-console/**").permitAll()
                 .antMatchers("/*.ico").permitAll()
                 .antMatchers("/*.png").permitAll()
                 .antMatchers("/manifest.json").permitAll()
-                .antMatchers("/static/**/*").permitAll()
-                .antMatchers("/api/public/**/*").permitAll()
+                .antMatchers("/static/**").permitAll()
+                .antMatchers("/api/public/**").permitAll()
+                // for dev-purposes - todo we could create a separate config for dev profile
                 // Our private endpoints
                 .anyRequest().authenticated();
 

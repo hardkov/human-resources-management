@@ -14,9 +14,9 @@ public class PersonalData {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    private String firstname;
 
-    private String surname;
+    private String lastname;
 
     private String email;
 

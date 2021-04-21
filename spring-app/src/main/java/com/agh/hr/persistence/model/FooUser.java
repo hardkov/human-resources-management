@@ -30,7 +30,7 @@ public class FooUser implements UserDetails {
 
     private boolean enabled;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> authorities;
 
     @Override

@@ -18,11 +18,9 @@ public class RoleLoader {
         this.roleService = roleService;
     }
 
-
     @EventListener
     @Order(1)
     public void appReady(ApplicationReadyEvent event) {
-        this.roleService.saveRole(RoleService.ADMIN_ROLE_AUTHORITY);
-        this.roleService.saveRole(RoleService.USER_ROLE_AUTHORITY);
+        RoleService.authorities().forEach(roleService::saveAuthority);
     }
 }
