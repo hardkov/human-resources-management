@@ -33,7 +33,6 @@ public class LeaveController {
             val user = userOpt.get();
             val leave = converters.DTOToLeave(leaveDTO);
             leave.setUser(user);
-            user.addLeave(leave);
             val insertedLeaveOpt = leaveService.saveLeave(leave);
             return insertedLeaveOpt
                     .map(insertedLeave -> ResponseEntity.ok(converters.leaveToDTO(insertedLeave)))
