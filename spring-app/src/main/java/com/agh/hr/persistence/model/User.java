@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,4 +40,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Application> applications;
 
+    public void addLeave(Leave leave){
+        this.leaves.add(leave);
+    }
 }

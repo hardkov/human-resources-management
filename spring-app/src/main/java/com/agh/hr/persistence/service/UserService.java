@@ -21,11 +21,10 @@ public class UserService {
         this.userRepository=userRepository;
     }
 
-    public boolean saveUser(User user) {
+    public Optional<User> saveUser(User user) {
         try {
-            userRepository.save(user);
-        }catch(Exception e){return false;}
-        return true;
+            return Optional.of(userRepository.save(user));
+        }catch(Exception e){return Optional.empty();}
     }
 
     public Optional<User> getById(Long id) {

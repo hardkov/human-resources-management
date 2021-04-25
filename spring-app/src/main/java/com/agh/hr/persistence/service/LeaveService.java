@@ -22,11 +22,10 @@ public class LeaveService {
         this.leaveRepository=leaveRepository;
     }
 
-    public boolean saveLeave(Leave leave) {
+    public Optional<Leave> saveLeave(Leave leave) {
         try {
-            leaveRepository.save(leave);
-        }catch(Exception e){return false;}
-        return true;
+            return Optional.of(leaveRepository.save(leave));
+        }catch(Exception e){return Optional.empty();}
     }
 
     public Optional<Leave> getById(Long id) {

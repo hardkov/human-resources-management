@@ -14,6 +14,9 @@ public class Leave {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    private User user;
+
     @Column(columnDefinition = "DATE")
     private LocalDate startDate;
 

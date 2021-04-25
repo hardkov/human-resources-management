@@ -1,6 +1,9 @@
 package com.agh.hr.controllers;
 
+import com.agh.hr.persistence.DTO.Converters;
+import com.agh.hr.persistence.DTO.LeaveDTO;
 import com.agh.hr.persistence.model.User;
+import com.agh.hr.persistence.DTO.UserDTO;
 import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,53 +12,81 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
+    private final Converters converters;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
-
-    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
-    public  ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getById(id));
+    public UserController(Converters converters, UserService userService) {
+        this.converters = converters;
+        this.userService = userService;
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    //// CREATE
+    @PostMapping(value = "/user")
+    public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
+        val user = converters.DTOToUser(userDTO);
+        val insertedUserOpt = userService.saveUser(user);
+        return insertedUserOpt
+                .map(insertedUser -> ResponseEntity.ok(converters.userToDTO(insertedUser)))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+    //// READ
+    @GetMapping(value = "/user")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(
+                userService.getAllUsers().stream().map(converters::userToDTO)
+                        .collect(Collectors.toList())
+        );
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public ResponseEntity<Void> insertUser(@RequestBody User user) {
-        return userService.saveUser(user)?ResponseEntity.ok().build():ResponseEntity.badRequest().build();
+    @GetMapping(value = "/user/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        val userOpt = userService.getById(id);
+        return userOpt
+                .map(user -> ResponseEntity.ok(converters.userToDTO(user)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateUser(@RequestBody User user) {
-        return userService.saveUser(user)?ResponseEntity.accepted().build():ResponseEntity.badRequest().build();
-    }
-
-    @RequestMapping(value = "/userByFirstname/{name}", method = RequestMethod.GET)
+    @GetMapping(value = "/userByFirstname/{name}")
     public ResponseEntity<List<User>> getUserByFirstname(@PathVariable String name) {
         return ResponseEntity.ok(userService.getByFirstname(name));
     }
 
-    @RequestMapping(value = "/userByLastname/{name}", method = RequestMethod.GET)
+    @GetMapping(value = "/userByLastname/{name}")
     public ResponseEntity<List<User>> getUserByLastname(@PathVariable String name) {
         return ResponseEntity.ok(userService.getByLastname(name));
     }
 
-    @RequestMapping(value = "/userByFullname/{firstname}/{lastname}", method = RequestMethod.GET)
+    @GetMapping(value = "/userByFullname/{firstname}/{lastname}")
     public ResponseEntity<List<User>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
         return ResponseEntity.ok(userService.getByFullName(firstname,lastname));
     }
 
+    //// UPDATE
+    @PutMapping(value = "/user")
+    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
+        val userOpt = userService.getById(userDTO.getId());
+        if(userOpt.isPresent()) {
+            val user = userOpt.get();
+            converters.updateUserWithDTO(userDTO, user);
+            userService.saveUser(user);
+            return userService.saveUser(user).isPresent() ?
+                    ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //// DELETE
+    @DeleteMapping(value = "/user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
+    }
 }
