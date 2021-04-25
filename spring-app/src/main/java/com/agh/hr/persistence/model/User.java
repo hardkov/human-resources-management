@@ -40,7 +40,5 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Application> applications;
 
-    public void addLeave(Leave leave){
-        this.leaves.add(leave);
-    }
+
 }

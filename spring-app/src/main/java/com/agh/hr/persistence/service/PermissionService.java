@@ -21,11 +21,11 @@ public class PermissionService {
         this.permissionRepository=permissionRepository;
     }
 
-    public boolean savePermission(Permission user) {
+    public Optional<Permission> savePermission(Permission user) {
         try {
-            permissionRepository.save(user);
-        }catch(Exception e){return false;}
-        return true;
+            return Optional.of(permissionRepository.save(user));
+        }catch(Exception e){return Optional.empty();}
+
     }
 
     public Optional<Permission> getById(Long id) {
