@@ -6,7 +6,6 @@ import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.service.LeaveService;
 import com.agh.hr.persistence.service.UserService;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +71,7 @@ public class LeaveController {
     //// UPDATE
     @PutMapping(value = "/leave")
     public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO) {
-        val leaveOpt = leaveService.getById(leaveDTO.getId());
+        Optional<Leave> leaveOpt = leaveService.getById(leaveDTO.getId());
         if(leaveOpt.isPresent()){
             Leave leave = leaveOpt.get();
             converters.updateLeaveWithDTO(leaveDTO, leave);

@@ -52,18 +52,24 @@ public class UserController {
     }
 
     @GetMapping(value = "/userByFirstname/{name}")
-    public ResponseEntity<List<User>> getUserByFirstname(@PathVariable String name) {
-        return ResponseEntity.ok(userService.getByFirstname(name));
+    public ResponseEntity<List<UserDTO>> getUserByFirstname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByFirstname(name).stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/userByLastname/{name}")
-    public ResponseEntity<List<User>> getUserByLastname(@PathVariable String name) {
-        return ResponseEntity.ok(userService.getByLastname(name));
+    public ResponseEntity<List<UserDTO>> getUserByLastname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByLastname(name).stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/userByFullname/{firstname}/{lastname}")
-    public ResponseEntity<List<User>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
-        return ResponseEntity.ok(userService.getByFullName(firstname,lastname));
+    public ResponseEntity<List<UserDTO>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
+        return ResponseEntity.ok(userService.getByFullName(firstname,lastname).stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList()));
     }
 
     //// UPDATE
