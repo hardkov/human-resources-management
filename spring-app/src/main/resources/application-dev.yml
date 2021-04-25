@@ -8,3 +8,5 @@ spring:
     username: secret-username
     password: secret-password
     driverClassName: org.h2.Driver
+  jpa:
+    show-sql: true

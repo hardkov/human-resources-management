@@ -35,7 +35,6 @@ public class LeaveController {
             User user = userOpt.get();
             Leave leave = converters.DTOToLeave(leaveDTO);
             leave.setUser(user);
-            user.addLeave(leave);
             Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave);
             return insertedLeaveOpt
                     .map(insertedLeave -> ResponseEntity.ok(converters.leaveToDTO(insertedLeave)))

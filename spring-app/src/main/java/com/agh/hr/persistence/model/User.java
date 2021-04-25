@@ -20,12 +20,12 @@ public class User {
 
     private String passwordHash;
 
-    @OneToMany
-    private List<Permission> permissions;
+    @OneToOne
+    private Permission permissions;
 
     private String position;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Leave> leaves;
 
     @OneToMany(cascade = CascadeType.ALL)

@@ -15,6 +15,7 @@ public class Leave {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(columnDefinition = "DATE")
