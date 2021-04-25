@@ -1,7 +1,6 @@
 package com.agh.hr.persistence.DTO;
 
 import com.agh.hr.persistence.model.*;
-import jdk.jfr.Description;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

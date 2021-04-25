@@ -1,17 +1,16 @@
 package com.agh.hr.controllers;
 
 import com.agh.hr.persistence.DTO.Converters;
-import com.agh.hr.persistence.DTO.LeaveDTO;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.DTO.UserDTO;
 import com.agh.hr.persistence.service.UserService;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,8 +27,8 @@ public class UserController {
     //// CREATE
     @PostMapping(value = "/user")
     public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
-        val user = converters.DTOToUser(userDTO);
-        val insertedUserOpt = userService.saveUser(user);
+        User user = converters.DTOToUser(userDTO);
+        Optional<User> insertedUserOpt = userService.saveUser(user);
         return insertedUserOpt
                 .map(insertedUser -> ResponseEntity.ok(converters.userToDTO(insertedUser)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -46,7 +45,7 @@ public class UserController {
 
     @GetMapping(value = "/user/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        val userOpt = userService.getById(id);
+        Optional<User> userOpt = userService.getById(id);
         return userOpt
                 .map(user -> ResponseEntity.ok(converters.userToDTO(user)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -70,9 +69,9 @@ public class UserController {
     //// UPDATE
     @PutMapping(value = "/user")
     public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
-        val userOpt = userService.getById(userDTO.getId());
+        Optional<User> userOpt = userService.getById(userDTO.getId());
         if(userOpt.isPresent()) {
-            val user = userOpt.get();
+            User user = userOpt.get();
             converters.updateUserWithDTO(userDTO, user);
             userService.saveUser(user);
             return userService.saveUser(user).isPresent() ?
