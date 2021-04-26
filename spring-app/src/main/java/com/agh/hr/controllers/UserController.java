@@ -6,6 +6,9 @@ import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +33,11 @@ public class UserController implements SecuredRestController {
 
     //// CREATE
     @PostMapping(value = "/user")
-    @Operation(summary = "Endpoint responsible for inserting users.. (Just an example how to add docs!)")
+    @Operation(summary = "Inserting single user",
+               responses = {
+                @ApiResponse(responseCode = "200", description = "Created user's DTO"),
+                @ApiResponse(responseCode = "400", description = "User could not be created", content = @Content())
+               })
     public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
         User user = converters.DTOToUser(userDTO);
         Optional<User> insertedUserOpt = userService.saveUser(user);
@@ -41,6 +48,10 @@ public class UserController implements SecuredRestController {
 
     //// READ
     @GetMapping(value = "/user")
+    @Operation(summary = "Reading list of all users",
+               responses = {
+                @ApiResponse(responseCode = "200", description = "List of all users' DTOs")
+               })
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(
                 userService.getAllUsers().stream().map(converters::userToDTO)
@@ -49,6 +60,11 @@ public class UserController implements SecuredRestController {
     }
 
     @GetMapping(value = "/user/{id}")
+    @Operation(summary = "Reading user by userID",
+               responses = {
+                @ApiResponse(responseCode = "200", description = "The user's DTO"),
+                @ApiResponse(responseCode = "404", description = "User not found", content = @Content())
+               })
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         Optional<User> userOpt = userService.getById(id);
         return userOpt
@@ -57,6 +73,10 @@ public class UserController implements SecuredRestController {
     }
 
     @GetMapping(value = "/userByFirstname/{name}")
+    @Operation(summary = "Reading users with specific firstname",
+               responses = {
+                @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
+               })
     public ResponseEntity<List<UserDTO>> getUserByFirstname(@PathVariable String name) {
         return ResponseEntity.ok(userService.getByFirstname(name).stream()
                 .map(converters::userToDTO)
@@ -64,6 +84,10 @@ public class UserController implements SecuredRestController {
     }
 
     @GetMapping(value = "/userByLastname/{name}")
+    @Operation(summary = "Reading users with specific lastname",
+               responses = {
+                @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
+               })
     public ResponseEntity<List<UserDTO>> getUserByLastname(@PathVariable String name) {
         return ResponseEntity.ok(userService.getByLastname(name).stream()
                 .map(converters::userToDTO)
@@ -71,6 +95,10 @@ public class UserController implements SecuredRestController {
     }
 
     @GetMapping(value = "/userByFullname/{firstname}/{lastname}")
+    @Operation(summary = "Reading users with specific firstname and lastname",
+               responses = {
+                @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
+               })
     public ResponseEntity<List<UserDTO>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
         return ResponseEntity.ok(userService.getByFullName(firstname,lastname).stream()
                 .map(converters::userToDTO)
@@ -79,6 +107,12 @@ public class UserController implements SecuredRestController {
 
     //// UPDATE
     @PutMapping(value = "/user")
+    @Operation(summary = "Updating user with userID (if exists)",
+               responses = {
+                @ApiResponse(responseCode = "200", description = "User updated successfully"),
+                @ApiResponse(responseCode = "404", description = "User not found"),
+                @ApiResponse(responseCode = "400", description = "User could not be updated")
+               })
     public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
         Optional<User> userOpt = userService.getById(userDTO.getId());
         if(userOpt.isPresent()) {
@@ -95,6 +129,7 @@ public class UserController implements SecuredRestController {
 
     //// DELETE
     @DeleteMapping(value = "/user/{id}")
+    @Operation(summary = "Deleting user with userID")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();

@@ -33,8 +33,9 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     private PersonalData personalData;
 
-    @OneToOne
-    private Permission permissions;
+    // TODO: Discuss about this relation; now OneToMany for compatibility
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Permission> permissions;
 
     private String position;
 
