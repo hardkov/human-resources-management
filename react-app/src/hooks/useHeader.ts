@@ -27,6 +27,19 @@ const useHeader = (): ButtonData[] => {
     ];
   }
 
+  if (currentUser === 'SUPERVISOR') {
+    return [
+      {
+        text: 'Logout',
+        link: '/',
+      },
+      {
+        text: 'My Profile',
+        link: '/',
+      },
+    ];
+  }
+
   return [];
 };
 
