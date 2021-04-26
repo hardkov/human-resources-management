@@ -1,6 +1,5 @@
 package com.agh.hr.config.security;
 
-import com.agh.hr.persistence.service.FooUserService;
 import com.agh.hr.persistence.service.UserService;
 import com.agh.hr.security.JwtTokenFilter;
 import org.slf4j.Logger;

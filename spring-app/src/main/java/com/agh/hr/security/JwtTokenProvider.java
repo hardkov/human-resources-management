@@ -63,39 +63,20 @@ public class JwtTokenProvider {
     }
 
     public String getUserId(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.get(USER_ID_CLAIM, String.class);
+        return getClaims(token).get(USER_ID_CLAIM, String.class);
     }
 
     public String getUsername(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.get(USERNAME_CLAIM, String.class);
+        return getClaims(token).get(USERNAME_CLAIM, String.class);
     }
 
     public Date getExpirationDate(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getExpiration();
+        return getClaims(token).getExpiration();
     }
 
     public Set<String> getAuthorities(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return Arrays.stream(claims.get(AUTHORITIES_CLAIM).toString().split(","))
+        val authorities = getClaims(token).get(AUTHORITIES_CLAIM).toString().split(",");
+        return Arrays.stream(authorities)
                 .collect(Collectors.toSet());
     }
 
@@ -117,6 +98,13 @@ public class JwtTokenProvider {
         }
 
         return false;
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
 }

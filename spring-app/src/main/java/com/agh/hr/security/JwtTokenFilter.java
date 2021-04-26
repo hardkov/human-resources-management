@@ -1,6 +1,5 @@
 package com.agh.hr.security;
 
-import com.agh.hr.persistence.service.FooUserService;
 import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
