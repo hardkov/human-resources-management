@@ -1,5 +1,6 @@
 package com.agh.hr.controllers;
 
+import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.service.PersonalDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class PersonalDataController {
+public class PersonalDataController implements SecuredRestController {
 
     @Autowired
     private PersonalDataService dataService;

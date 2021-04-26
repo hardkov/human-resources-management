@@ -21,6 +21,10 @@ spring:
     filter:
       order: 10
 
+springdoc:
+  swagger-ui:
+    path: /swagger
+
 
 server:
   error:
