@@ -33,8 +33,8 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     private PersonalData personalData;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Permission> permissions;
+    @OneToOne
+    private Permission permissions;
 
     private String position;
 
@@ -83,7 +83,4 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    public void addLeave(Leave leave){
-        this.leaves.add(leave);
-    }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,8 +32,8 @@ public class UserController implements SecuredRestController {
     @PostMapping(value = "/user")
     @Operation(summary = "Endpoint responsible for inserting users.. (Just an example how to add docs!)")
     public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
-        val user = converters.DTOToUser(userDTO);
-        val insertedUserOpt = userService.saveUser(user);
+        User user = converters.DTOToUser(userDTO);
+        Optional<User> insertedUserOpt = userService.saveUser(user);
         return insertedUserOpt
                 .map(insertedUser -> ResponseEntity.ok(converters.userToDTO(insertedUser)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -49,33 +50,39 @@ public class UserController implements SecuredRestController {
 
     @GetMapping(value = "/user/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        val userOpt = userService.getById(id);
+        Optional<User> userOpt = userService.getById(id);
         return userOpt
                 .map(user -> ResponseEntity.ok(converters.userToDTO(user)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/userByFirstname/{name}")
-    public ResponseEntity<List<User>> getUserByFirstname(@PathVariable String name) {
-        return ResponseEntity.ok(userService.getByFirstname(name));
+    public ResponseEntity<List<UserDTO>> getUserByFirstname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByFirstname(name).stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/userByLastname/{name}")
-    public ResponseEntity<List<User>> getUserByLastname(@PathVariable String name) {
-        return ResponseEntity.ok(userService.getByLastname(name));
+    public ResponseEntity<List<UserDTO>> getUserByLastname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByLastname(name).stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/userByFullname/{firstname}/{lastname}")
-    public ResponseEntity<List<User>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
-        return ResponseEntity.ok(userService.getByFullName(firstname,lastname));
+    public ResponseEntity<List<UserDTO>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
+        return ResponseEntity.ok(userService.getByFullName(firstname,lastname).stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList()));
     }
 
     //// UPDATE
     @PutMapping(value = "/user")
     public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
-        val userOpt = userService.getById(userDTO.getId());
+        Optional<User> userOpt = userService.getById(userDTO.getId());
         if(userOpt.isPresent()) {
-            val user = userOpt.get();
+            User user = userOpt.get();
             converters.updateUserWithDTO(userDTO, user);
             userService.saveUser(user);
             return userService.saveUser(user).isPresent() ?
