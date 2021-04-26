@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class BonusDTO {
     private Long id;
+    private UserDTO user;
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal amount;

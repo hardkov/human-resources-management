@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class DelegationDTO {
     private Long id;
+    private UserDTO user;
     private LocalDate startDate;
     private LocalDate endDate;
     private String destination;

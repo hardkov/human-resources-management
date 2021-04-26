@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ContractDTO {
-    protected Long id;
-    protected PersonalDataDTO personalData;
-    protected String position;
+    private Long id;
+    private UserDTO user;
+    private PersonalDataDTO personalData;
+    private String position;
 }
