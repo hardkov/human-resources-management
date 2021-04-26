@@ -23,11 +23,10 @@ public class PersonalDataService {
         this.personalDataRepository=personalDataRepository;
     }
 
-    public boolean savePersonalData(PersonalData data) {
+    public Optional<PersonalData> savePersonalData(PersonalData data) {
         try {
-            personalDataRepository.save(data);
-        }catch(Exception e){return false;}
-        return true;
+            return Optional.of(personalDataRepository.save(data));
+        }catch(Exception e){return Optional.empty();}
     }
 
     public Optional<PersonalData> getById(Long id) {

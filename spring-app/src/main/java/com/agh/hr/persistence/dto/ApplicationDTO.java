@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ApplicationDTO {
+public abstract class ApplicationDTO {
     private long id;
     private String content;
     private PersonalDataDTO personalData;

@@ -3,14 +3,16 @@ package com.agh.hr.controllers;
 import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.LeaveDTO;
+import com.agh.hr.persistence.model.Leave;
+import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.service.LeaveService;
 import com.agh.hr.persistence.service.UserService;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,12 +31,12 @@ public class LeaveController implements SecuredRestController {
     //// CREATE
     @PostMapping(value = "/leave/user/{userId}")
     public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @RequestBody LeaveDTO leaveDTO) {
-        val userOpt = userService.getById(userId);
+        Optional<User> userOpt = userService.getById(userId);
         if(userOpt.isPresent()){
-            val user = userOpt.get();
-            val leave = converters.DTOToLeave(leaveDTO);
+            User user = userOpt.get();
+            Leave leave = converters.DTOToLeave(leaveDTO);
             leave.setUser(user);
-            val insertedLeaveOpt = leaveService.saveLeave(leave);
+            Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave);
             return insertedLeaveOpt
                     .map(insertedLeave -> ResponseEntity.ok(converters.leaveToDTO(insertedLeave)))
                     .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -55,7 +57,7 @@ public class LeaveController implements SecuredRestController {
 
     @GetMapping(value = "/leave/user/{userId}")
     public ResponseEntity<List<LeaveDTO>> getLeavesByUserId(@PathVariable Long userId) {
-        val userOpt = userService.getById(userId);
+        Optional<User> userOpt = userService.getById(userId);
         return userOpt
                 .map(user -> ResponseEntity.ok(
                         user
@@ -69,9 +71,9 @@ public class LeaveController implements SecuredRestController {
     //// UPDATE
     @PutMapping(value = "/leave")
     public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO) {
-        val leaveOpt = leaveService.getById(leaveDTO.getId());
+        Optional<Leave> leaveOpt = leaveService.getById(leaveDTO.getId());
         if(leaveOpt.isPresent()){
-            val leave = leaveOpt.get();
+            Leave leave = leaveOpt.get();
             converters.updateLeaveWithDTO(leaveDTO, leave);
             return leaveService.saveLeave(leave).isPresent() ?
                     ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
