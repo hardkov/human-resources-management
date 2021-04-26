@@ -15,6 +15,10 @@ public class Delegation {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn
+    private User user;
+
     @Column(columnDefinition = "DATE")
     private LocalDate startDate;
 
