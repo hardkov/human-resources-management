@@ -99,9 +99,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Set permissions on endpoints
         http.authorizeRequests()
-//                .anyRequest().permitAll();
-//                 Our public endpoints
+                // Our public endpoints
                 .antMatchers("/", "/*.html", "/h2-console/**").permitAll()
+                .antMatchers("/swagger", "/swagger-ui/**", "/v3/**").permitAll()
                 .antMatchers("/*.ico").permitAll()
                 .antMatchers("/*.png").permitAll()
                 .antMatchers("/manifest.json").permitAll()

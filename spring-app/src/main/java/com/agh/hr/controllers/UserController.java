@@ -1,9 +1,12 @@
 package com.agh.hr.controllers;
 
+import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class UserController {
+public class UserController implements SecuredRestController {
     private final Converters converters;
     private final UserService userService;
 
@@ -26,6 +29,7 @@ public class UserController {
 
     //// CREATE
     @PostMapping(value = "/user")
+    @Operation(summary = "Endpoint responsible for inserting users.. (Just an example how to add docs!)")
     public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
         val user = converters.DTOToUser(userDTO);
         val insertedUserOpt = userService.saveUser(user);

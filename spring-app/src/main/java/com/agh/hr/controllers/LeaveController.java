@@ -1,5 +1,6 @@
 package com.agh.hr.controllers;
 
+import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.service.LeaveService;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class LeaveController {
+public class LeaveController implements SecuredRestController {
     private final Converters converters;
     private final LeaveService leaveService;
     private final UserService userService;
