@@ -23,20 +23,16 @@ public class UserService {
         this.userRepository=userRepository;
     }
 
-    public boolean saveUser(User user) {
+    public Optional<User> saveUser(User user) {
         try {
-            userRepository.save(user);
-        }catch(Exception e){return false;}
-        return true;
+            return Optional.of(userRepository.save(user));
+        } catch(Exception e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<User> findByUsername(String username) {
-        val foo =  userRepository.findByUsername(username);
-
-        foo.ifPresent(us -> System.out.println(us.getAuthorities()));
-
-
-        return foo;
+        return userRepository.findByUsername(username);
     }
 
     public Optional<User> getById(Long id) {

@@ -1,4 +1,4 @@
-package com.agh.hr.dto;
+package com.agh.hr.persistence.dto;
 
 import lombok.Data;
 

@@ -38,7 +38,7 @@ public class User implements UserDetails {
 
     private String position;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Leave> leaves;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -83,4 +83,7 @@ public class User implements UserDetails {
         return enabled;
     }
 
+    public void addLeave(Leave leave){
+        this.leaves.add(leave);
+    }
 }

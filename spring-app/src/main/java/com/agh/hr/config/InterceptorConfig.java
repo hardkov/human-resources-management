@@ -17,5 +17,4 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/notFound").setViewName("default");
     }
-
 }

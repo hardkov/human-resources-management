@@ -5,7 +5,7 @@ import HomeMenu from './HomeMenu';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: theme.spacing(16),
+    marginTop: theme.spacing(10),
   },
 }));
 const Home: React.FC = () => {

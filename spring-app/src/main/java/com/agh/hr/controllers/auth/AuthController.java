@@ -1,6 +1,6 @@
 package com.agh.hr.controllers.auth;
 
-import com.agh.hr.dto.AuthRequest;
+import com.agh.hr.persistence.dto.AuthRequest;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.security.JwtTokenProvider;
 import lombok.val;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController
