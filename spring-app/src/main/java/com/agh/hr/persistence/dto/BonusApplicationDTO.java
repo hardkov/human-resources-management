@@ -1,4 +1,4 @@
-package com.agh.hr.persistence.DTO;
+package com.agh.hr.persistence.dto;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

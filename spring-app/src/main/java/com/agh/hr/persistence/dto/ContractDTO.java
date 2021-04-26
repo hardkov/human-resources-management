@@ -1,4 +1,4 @@
-package com.agh.hr.persistence.DTO;
+package com.agh.hr.persistence.dto;
 
 import lombok.AccessLevel;
 import lombok.Data;

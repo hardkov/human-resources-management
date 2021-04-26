@@ -2,8 +2,10 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -24,7 +26,13 @@ public class UserService {
     public Optional<User> saveUser(User user) {
         try {
             return Optional.of(userRepository.save(user));
-        }catch(Exception e){return Optional.empty();}
+        } catch(Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public Optional<User> getById(Long id) {

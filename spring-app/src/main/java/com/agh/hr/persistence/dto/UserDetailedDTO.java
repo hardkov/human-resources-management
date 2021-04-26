@@ -1,14 +1,11 @@
-package com.agh.hr.persistence.DTO;
+package com.agh.hr.persistence.dto;
 
 import com.agh.hr.persistence.model.*;
-import jdk.jfr.Description;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)

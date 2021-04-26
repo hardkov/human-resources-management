@@ -1,9 +1,8 @@
 package com.agh.hr.controllers;
 
-import com.agh.hr.persistence.DTO.Converters;
-import com.agh.hr.persistence.DTO.LeaveDTO;
+import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.model.User;
-import com.agh.hr.persistence.DTO.UserDTO;
+import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;

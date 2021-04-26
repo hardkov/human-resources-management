@@ -1,7 +1,7 @@
 package com.agh.hr.controllers;
 
-import com.agh.hr.persistence.DTO.Converters;
-import com.agh.hr.persistence.DTO.LeaveDTO;
+import com.agh.hr.persistence.dto.Converters;
+import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.service.LeaveService;
 import com.agh.hr.persistence.service.UserService;
 import lombok.val;

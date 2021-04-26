@@ -1,11 +1,10 @@
-package com.agh.hr.persistence.DTO;
+package com.agh.hr.persistence.dto;
 
 import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
 import lombok.val;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
