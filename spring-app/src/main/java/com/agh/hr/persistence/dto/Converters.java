@@ -17,7 +17,7 @@ public class Converters {
 
     //// USER
     public User DTOToUser(UserDTO userDTO) {
-        val user = modelMapper.map(userDTO, User.class);
+        User user = modelMapper.map(userDTO, User.class);
         user.setPersonalData(DTOToPersonalData(userDTO.personalData));
         return user;
     }
@@ -54,7 +54,7 @@ public class Converters {
     }
 
     public LeaveDTO leaveToDTO(Leave leave) {
-        val leaveDTO = modelMapper.map(leave, LeaveDTO.class);
+        LeaveDTO leaveDTO = modelMapper.map(leave, LeaveDTO.class);
         leaveDTO.setUser(userToDTO(leave.getUser()));
         return leaveDTO;
     }

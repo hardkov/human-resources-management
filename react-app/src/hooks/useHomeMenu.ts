@@ -40,29 +40,71 @@ const useHomeMenu = (): HomeMenuItemData[] => {
       {
         img: myapplicationsImg,
         title: 'My Applications',
-        description: 'Applications that you have submitted',
+        description: 'Applications that you have submitted.',
         link: '/',
       },
       {
         img: leavesImg,
         title: 'My Leaves',
-        description: 'See all the leaves during your contract',
+        description: 'See all the leaves during your contract.',
         link: '/',
       },
       {
         img: earningsImg,
         title: 'My Earnings',
-        description: 'Aggregated data about your earnings',
+        description: 'Aggregated data about your earnings.',
         link: '/',
       },
       {
         img: applicationImg,
         title: 'Create Application',
-        description: 'Create and submit and applications',
+        description: 'Create and submit an applications.',
         link: '/',
       },
     ];
   }
+
+  if (currentUser === 'SUPERVISOR') {
+    return [
+      {
+        img: myapplicationsImg,
+        title: 'My Applications',
+        description: 'Applications that you have submitted.',
+        link: '/',
+      },
+      {
+        img: leavesImg,
+        title: 'My Leaves',
+        description: 'See all the leaves during your contract.',
+        link: '/',
+      },
+      {
+        img: earningsImg,
+        title: 'My Earnings',
+        description: 'Aggregated data about your earnings.',
+        link: '/',
+      },
+      {
+        img: applicationImg,
+        title: 'Create Application',
+        description: 'Create and submit an applications.',
+        link: '/',
+      },
+      {
+        img: employeesImg,
+        title: 'Employees',
+        description: 'List of employees. Manage their permission and get insight into user data details.',
+        link: '/',
+      },
+      {
+        img: applicationImg,
+        title: 'Applications',
+        description: 'All applications from the users.',
+        link: '/',
+      },
+    ];
+  }
+
   return [];
 };
 
