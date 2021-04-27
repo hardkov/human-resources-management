@@ -17,9 +17,13 @@ public abstract class Application {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @ManyToOne
+    @JoinColumn
+    private User user;
+
     private String content;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn
     private PersonalData personalData;
 

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public abstract class ApplicationDTO {
     private long id;
     private String content;
+    private UserDTO user;
     private PersonalDataDTO personalData;
     private String place;
     private LocalDateTime date;
