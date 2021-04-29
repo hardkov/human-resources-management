@@ -17,11 +17,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
+import java.util.Calendar;
+import java.util.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Component
@@ -52,58 +55,57 @@ public class FakeUsersLoader {
         val usersNumber = 20;
         val supervisorsNumber = 5;
 
-        val minimumLeaves = 0;
-        val maximumLeaves = 10;
+        val minLeaves = 0;
+        val maxLeaves = 4;
 
+        val minLeaveDuration = 1;
+        val maxLeaveDuration = 14;
+
+        //// USERS
         val fakeUsers =
-                Stream.generate(() -> fakeUser(faker, roleService.userRole()))
-                        .limit(usersNumber);
+                Stream
+                        .generate(() ->
+                        fakeUser(faker, roleService.userRole())
+                                .build()
+                        ).limit(usersNumber);
+
         val fakeSupervisors =
-                Stream.generate(() -> fakeUser(faker, roleService.supervisorRole()))
-                        .limit(supervisorsNumber);
+                Stream
+                        .generate(() ->
+                        fakeUser(faker, roleService.supervisorRole())
+                                .position(faker.job().seniority() + " Project Manager")
+                                .build()
+                        ).limit(supervisorsNumber);
 
-        val adminPersonalData = PersonalData.builder()
-                .firstname("John")
-                .lastname("Legend")
-                .address("LA")
-                .birthdate(LocalDate.of(1978, 12, 28))
-                .email("john.legend@gmail.com")
-                .phoneNumber("111 111 111")
-                .build();
-
-        val admin = User.builder()
-                .username("admin@gmail.com")
-                .passwordHash(passwordEncoder.encode("passw0rd"))
-                .enabled(true)
-                .authorities(Collections.singleton(roleService.adminRole()))
-                .personalData(adminPersonalData)
+        val admin = fakeUser(faker, roleService.adminRole())
                 .position("System Administrator")
-                .leaves(Collections.emptyList())
-                .bonuses(Collections.emptyList())
-                .delegations(Collections.emptyList())
-                .applications(Collections.emptyList())
+                .username("admin@gmail.com")
                 .build();
 
-        val insertedUsers = userRepository
-                .saveAll(Stream
-                        .of(fakeUsers, fakeSupervisors, Stream.of(admin))
-                        .reduce(Stream::concat)
-                        .get().collect(Collectors.toList())
-                );
+        val allUsers = Stream
+                .of(fakeUsers, fakeSupervisors, Stream.of(admin))
+                .reduce(Stream::concat)
+                .get().collect(Collectors.toList());
 
-        val insertedLeaves = insertedUsers.stream()
-                .flatMap(u -> Stream
-                        .generate(() -> fakeLeave(faker, u))
-                        .limit(faker.number().numberBetween(minimumLeaves, maximumLeaves))
-                )
-                .collect(Collectors.toList());
-        leaveRepository.saveAll(insertedLeaves);
+        val insertedUsers = userRepository.saveAll(allUsers);
+
+        //// LEAVES
+        val fakeLeaves = generateLeavesForUsers(
+                faker,
+                insertedUsers,
+                minLeaves,
+                maxLeaves,
+                minLeaveDuration,
+                maxLeaveDuration
+        ).collect(Collectors.toList());
+
+        leaveRepository.saveAll(fakeLeaves);
     }
 
     private PersonalData fakePersonalData(Faker faker) {
         val fakeName = faker.name();
-        val minimumBirthdate = Date.valueOf(LocalDate.of(1969, 1, 1));
-        val maximumBirthdate = Date.valueOf(LocalDate.of(2000, 12, 31));
+        val minimumBirthdate = new Date(1969, Calendar.JANUARY, 1);
+        val maximumBirthdate = new Date(2000, Calendar.MARCH, 31);
         return PersonalData.builder()
                 .firstname(fakeName.firstName())
                 .lastname(fakeName.lastName())
@@ -117,7 +119,7 @@ public class FakeUsersLoader {
                 .build();
     }
 
-    private User fakeUser(Faker faker, Role role) {
+    private User.UserBuilder fakeUser(Faker faker, Role role) {
         val userPersonalData = fakePersonalData(faker);
 
         return User.builder()
@@ -130,13 +132,12 @@ public class FakeUsersLoader {
                 .leaves(Collections.emptyList())
                 .bonuses(Collections.emptyList())
                 .delegations(Collections.emptyList())
-                .applications(Collections.emptyList())
-                .build();
+                .applications(Collections.emptyList());
     }
 
-    private Leave fakeLeave(Faker faker, User user) {
-        val minimumStartDate = Date.valueOf(LocalDate.of(2016, 1, 1));
-        val maximumStartDate = Date.valueOf(LocalDate.of(2021, 3, 1));
+    private Leave.LeaveBuilder fakeLeave(Faker faker) {
+        val minimumStartDate = new Date(2019, Calendar.JANUARY, 1);
+        val maximumStartDate = new Date(2021, Calendar.MARCH, 1);
         val duration = faker.number().numberBetween(1, 14);
         val startDate = faker.date()
                 .between(minimumStartDate, maximumStartDate)
@@ -146,8 +147,40 @@ public class FakeUsersLoader {
         return Leave.builder()
                 .paid(faker.bool().bool())
                 .startDate(startDate)
-                .user(user)
-                .endDate(startDate.plusDays(duration))
-                .build();
+                .user(null)
+                .endDate(startDate.plusDays(duration));
+    }
+
+    private Stream<Leave> generateLeaveForSingleUser(Faker faker, User user, int minLeaves, int maxLeaves, int minLeaveDuration, int maxLeaveDuration) {
+        val startDates = IntStream
+                .rangeClosed(1, 6)
+                .map(m -> m * 2 - faker.number().numberBetween(0, 1))
+                .mapToObj(m -> LocalDate.of(2020, m, faker.number().numberBetween(1,28)))
+                .collect(Collectors.toList());
+
+        Collections.shuffle(startDates);
+        return startDates
+                .stream()
+                .limit(faker.number().numberBetween(minLeaves,maxLeaves))
+                .map(d -> fakeLeave(faker)
+                        .user(user)
+                        .startDate(d)
+                        .endDate(d.plusDays(faker.number().numberBetween(minLeaveDuration, maxLeaveDuration)))
+                        .build()
+                );
+    }
+
+    private Stream<Leave> generateLeavesForUsers(Faker faker, List<User> users, int minLeaves, int maxLeaves, int minLeaveDuration, int maxLeaveDuration) {
+        return users.stream()
+                .flatMap(u ->
+                        generateLeaveForSingleUser(
+                                faker,
+                                u,
+                                minLeaves,
+                                maxLeaves,
+                                minLeaveDuration,
+                                maxLeaveDuration
+                        )
+                );
     }
 }
