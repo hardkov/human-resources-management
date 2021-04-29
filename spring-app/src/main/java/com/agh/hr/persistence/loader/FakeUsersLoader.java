@@ -77,13 +77,23 @@ public class FakeUsersLoader {
                                 .build()
                         ).limit(supervisorsNumber);
 
+        val user = fakeUser(faker, roleService.userRole())
+                .position("Ordinary User")
+                .username("user@gmail.com")
+                .build();
+
+        val supervisor = fakeUser(faker, roleService.supervisorRole())
+                .position("Supervisor")
+                .username("supervisor@gmail.com")
+                .build();
+
         val admin = fakeUser(faker, roleService.adminRole())
-                .position("System Administrator")
+                .position("Admin")
                 .username("admin@gmail.com")
                 .build();
 
         val allUsers = Stream
-                .of(fakeUsers, fakeSupervisors, Stream.of(admin))
+                .of(fakeUsers, fakeSupervisors, Stream.of(user, supervisor, admin))
                 .reduce(Stream::concat)
                 .get().collect(Collectors.toList());
 
@@ -104,14 +114,14 @@ public class FakeUsersLoader {
 
     private PersonalData fakePersonalData(Faker faker) {
         val fakeName = faker.name();
-        val minimumBirthdate = new Date(1969, Calendar.JANUARY, 1);
-        val maximumBirthdate = new Date(2000, Calendar.MARCH, 31);
+        val minimumBirthdate = new Date(1969 - 1900, Calendar.JANUARY, 1);
+        val maximumBirthdate = new Date(2000 - 1900, Calendar.MARCH, 31);
         return PersonalData.builder()
                 .firstname(fakeName.firstName())
                 .lastname(fakeName.lastName())
                 .address(faker.address().fullAddress())
                 .email(faker.internet().emailAddress())
-                .phoneNumber(faker.phoneNumber().phoneNumber())
+                .phoneNumber(faker.phoneNumber().cellPhone())
                 .birthdate(faker.date()
                         .between(minimumBirthdate, maximumBirthdate)
                         .toInstant()
