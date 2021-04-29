@@ -1,6 +1,7 @@
-interface ActionResult {
+interface ActionResult<D = void> {
   success: boolean;
-  errors: string[];
+  data?: D;
+  errors?: string[];
 }
 
 export default ActionResult;
