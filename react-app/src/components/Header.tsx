@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header: React.FC = () => {
   const classes = useStyles();
-  const buttons: ButtonData[] = useHeader();
+  const [username, buttons]: [string | undefined, ButtonData[] | []] = useHeader();
 
   return (
     <div className={classes.root}>
@@ -55,7 +55,7 @@ const Header: React.FC = () => {
             ))}
           </div>
           <Typography className={classes.username} variant="h5">
-            Admin
+            {username}
           </Typography>
         </Toolbar>
       </AppBar>
