@@ -1,24 +1,35 @@
 import ButtonData from '../types/ButtonData';
 import UserType from '../types/UserType';
-import { getUserType } from '../services/authService';
+import { getUserName, getUserType } from '../services/authService';
 
-const useHeader = (): ButtonData[] => {
-  const currentUser: UserType = getUserType();
+const useHeader = (): [string | undefined, ButtonData[]] => {
+  const userType: UserType | undefined = getUserType();
+  const username = getUserName();
+  let buttons: ButtonData[] = [];
 
-  if (currentUser === 'ADMIN') {
-    return [
+  if (userType === 'ADMIN') {
+    buttons = [
       {
         text: 'Logout',
+        link: '/logout',
+      },
+    ];
+  } else if (userType === 'EMPLOYEE') {
+    buttons = [
+      {
+        text: 'Logout',
+        link: '/logout',
+      },
+      {
+        text: 'My Profile',
         link: '/',
       },
     ];
-  }
-
-  if (currentUser === 'EMPLOYEE') {
-    return [
+  } else if (userType === 'SUPERVISOR') {
+    buttons = [
       {
         text: 'Logout',
-        link: '/',
+        link: '/logout',
       },
       {
         text: 'My Profile',
@@ -27,20 +38,7 @@ const useHeader = (): ButtonData[] => {
     ];
   }
 
-  if (currentUser === 'SUPERVISOR') {
-    return [
-      {
-        text: 'Logout',
-        link: '/',
-      },
-      {
-        text: 'My Profile',
-        link: '/',
-      },
-    ];
-  }
-
-  return [];
+  return [username, buttons];
 };
 
 export default useHeader;
