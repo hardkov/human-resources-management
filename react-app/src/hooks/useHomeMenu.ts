@@ -10,7 +10,7 @@ import earningsImg from '../assets/earnings.jpg';
 import leavesImg from '../assets/leaves.jpg';
 
 const useHomeMenu = (): HomeMenuItemData[] => {
-  const currentUser: UserType = getUserType();
+  const currentUser: UserType | undefined = getUserType();
 
   if (currentUser === 'ADMIN') {
     return [
