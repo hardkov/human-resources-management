@@ -2,12 +2,12 @@ import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { isLoggedIn } from '../../services/authService';
 
-const PrivateRoute = (routeProps: RouteProps) => {
+const ProtectedRoute = (routeProps: RouteProps) => {
   if (isLoggedIn()) {
-    return <Route {...routeProps} />;
+    return <Redirect to="/home" />;
   }
 
-  return <Redirect to="/" />;
+  return <Route {...routeProps} />;
 };
 
-export default PrivateRoute;
+export default ProtectedRoute;
