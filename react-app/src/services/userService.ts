@@ -3,6 +3,7 @@ import { getAuthHeaders } from '../helpers/auth';
 import { USER_DATA_ENDPOINT } from './config';
 import UserData from '../types/UserData';
 import ActionResult from '../types/ActionResult';
+import PersonalData from '../types/PersonalData';
 
 const getUser = async (userId: string): Promise<ActionResult<UserData>> => {
   try {
@@ -36,4 +37,26 @@ const getAllUsers = async (): Promise<ActionResult<UserData[]>> => {
   }
 };
 
-export { getUser, getAllUsers };
+const addUser = async (userData: UserData): Promise<ActionResult> => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      USER_DATA_ENDPOINT,
+      {
+        data: userData,
+      },
+      {
+        headers: getAuthHeaders(),
+      },
+    );
+
+    if (response.status === 200) {
+      return { success: true };
+    }
+
+    return { success: false, errors: ['User could not be created'] };
+  } catch {
+    return { success: false, errors: ['User could not be created'] };
+  }
+};
+
+export { getUser, getAllUsers, addUser };
