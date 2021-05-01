@@ -6,7 +6,7 @@ interface PersonalData {
   phoneNumber: string;
   address: string;
   birthdate: string;
-  thumbnail: string[];
+  thumbnail: string[] | null;
 }
 
 export default PersonalData;

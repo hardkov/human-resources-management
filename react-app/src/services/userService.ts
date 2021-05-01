@@ -39,15 +39,9 @@ const getAllUsers = async (): Promise<ActionResult<UserData[]>> => {
 
 const addUser = async (userData: UserData): Promise<ActionResult> => {
   try {
-    const response: AxiosResponse = await axios.post(
-      USER_DATA_ENDPOINT,
-      {
-        data: userData,
-      },
-      {
-        headers: getAuthHeaders(),
-      },
-    );
+    const response: AxiosResponse = await axios.post(USER_DATA_ENDPOINT, userData, {
+      headers: getAuthHeaders(),
+    });
 
     if (response.status === 200) {
       return { success: true };
@@ -61,15 +55,9 @@ const addUser = async (userData: UserData): Promise<ActionResult> => {
 
 const updateUser = async (userData: UserData): Promise<ActionResult> => {
   try {
-    const response: AxiosResponse = await axios.put(
-      USER_DATA_ENDPOINT,
-      {
-        data: userData,
-      },
-      {
-        headers: getAuthHeaders(),
-      },
-    );
+    const response: AxiosResponse = await axios.put(USER_DATA_ENDPOINT, userData, {
+      headers: getAuthHeaders(),
+    });
 
     if (response.status === 200) {
       return { success: true };
