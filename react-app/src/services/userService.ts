@@ -59,4 +59,26 @@ const addUser = async (userData: UserData): Promise<ActionResult> => {
   }
 };
 
-export { getUser, getAllUsers, addUser };
+const updateUser = async (userData: UserData): Promise<ActionResult> => {
+  try {
+    const response: AxiosResponse = await axios.put(
+      USER_DATA_ENDPOINT,
+      {
+        data: userData,
+      },
+      {
+        headers: getAuthHeaders(),
+      },
+    );
+
+    if (response.status === 200) {
+      return { success: true };
+    }
+
+    return { success: false, errors: ['User could not be updated'] };
+  } catch {
+    return { success: false, errors: ['User could not be updated'] };
+  }
+};
+
+export { getUser, getAllUsers, addUser, updateUser };
