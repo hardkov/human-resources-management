@@ -5,6 +5,7 @@ import {getAllLeaves} from "../services/LeaveService";
 import LeaveData from "../types/LeaveData";
 import ActionResult from "../types/ActionResult";
 import {leaves} from "./Mock/Leaves";
+import Header from "./Header";
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -36,26 +37,28 @@ const LeavesView: React.FC = () => {
 
 
     const columns = [
-        { field: 'firstName', headerName: 'First name', width: 300 },
-        { field: 'lastName', headerName: 'Last name', width: 300 },
+        { field: 'firstname', headerName: 'First Name', width: 300 },
+        { field: 'lastname', headerName: 'Last Name', width: 300 },
         {field: 'startDate', headerName: 'Start', width: 300,},
         {field: 'endDate', headerName: 'End', width: 300},
-        {field: 'paid', headerName: 'Paid', width: 300},
+        {field: 'paid', headerName: 'Paid', width: 300, typography: {fontSize: 24}},
     ];
 
     const rows: any = []
 
-        leaves.forEach(a => rows.push({"id": a.id, "firstName": a.user.personalData.firstname, "lastName": a.user.personalData.lastname,
-            "startDate": a.startDate, "endDate": a.endDate,"paid": a.paid ? "yes" : "no"}));
+        leaves.forEach(a => rows.push({"id": a.id, "firstname": a.user.personalData.firstname, "lastname": a.user.personalData.lastname,
+            "startDate": a.startDate, "endDate": a.endDate,"paid": a.paid ? "\u2714" : "\u2718"}));
 
     console.log(rows)
 
 
         return (
+            <>
+            <Header />
             <div style={{ height: 1000, width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} pageSize={20}  />
             </div>
-
+            </>
         );
 
 

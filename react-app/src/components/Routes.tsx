@@ -6,6 +6,7 @@ import PrivateRoute from './utils/PrivateRoute';
 import Logout from './Logout';
 import Login from './Login';
 import ProtectedRoute from './utils/ProtectedRoute';
+import LeavesView from "./LeavesView";
 
 const Routes: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const Routes: React.FC = () => {
         <PrivateRoute path="/home" component={Home} />
         <ProtectedRoute exact path="/" component={Login} />
         <Route exact path="/logout" component={Logout} />
+        <PrivateRoute exact path="/leaves" component={LeavesView} />
       </Switch>
     </Router>
   );
