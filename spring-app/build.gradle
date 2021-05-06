@@ -66,6 +66,10 @@ test {
     useJUnitPlatform()
 }
 
+clean {
+    delete 'src/main/resources/static'
+}
+
 compileJava {
     inputs.files(processResources)
 }
@@ -88,4 +92,8 @@ bootRun {
 
 check {
     dependsOn 'integrationTest'
+}
+
+build {
+    mustRunAfter 'copyBundledReactApp'
 }
