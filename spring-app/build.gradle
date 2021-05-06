@@ -41,6 +41,10 @@ test {
     useJUnitPlatform()
 }
 
+clean {
+    delete 'src/main/resources/static'
+}
+
 compileJava {
     inputs.files(processResources)
 }
@@ -59,4 +63,8 @@ bootJar {
 
 bootRun {
     jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
+}
+
+build {
+    mustRunAfter 'copyBundledReactApp'
 }
