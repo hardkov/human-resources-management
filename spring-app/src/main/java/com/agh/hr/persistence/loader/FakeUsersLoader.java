@@ -28,7 +28,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Component
-@Profile("dev")
 public class FakeUsersLoader {
 
     private final UserRepository userRepository;

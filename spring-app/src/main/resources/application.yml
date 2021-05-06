@@ -1,5 +1,5 @@
 spring:
   profiles:
-    active: dev # todo creat production profile with mysql connection details
+    active: dev
   application:
     name: hr-management
