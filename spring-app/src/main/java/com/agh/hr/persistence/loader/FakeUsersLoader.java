@@ -11,7 +11,6 @@ import com.github.javafaker.Faker;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,7 +63,7 @@ public class FakeUsersLoader {
         val fakeUsers =
                 Stream
                         .generate(() ->
-                        fakeUser(faker, roleService.userRole())
+                        fakeUser(faker, roleService.employeeRole())
                                 .build()
                         ).limit(usersNumber);
 
@@ -76,7 +75,7 @@ public class FakeUsersLoader {
                                 .build()
                         ).limit(supervisorsNumber);
 
-        val user = fakeUser(faker, roleService.userRole())
+        val user = fakeUser(faker, roleService.employeeRole())
                 .position("Ordinary User")
                 .username("user@gmail.com")
                 .build();
