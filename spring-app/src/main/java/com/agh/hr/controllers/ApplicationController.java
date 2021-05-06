@@ -23,5 +23,9 @@ public class ApplicationController implements SecuredRestController {
         this.applicationService = applicationService;
     }
 
+    @RequestMapping(value = "/health-check", method = RequestMethod.GET)
+    public ResponseEntity<Void> getRoot() throws IOException {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
