@@ -1,4 +1,4 @@
-name: production deployment
+name: CI pipeline
  
 on:
   push:
@@ -25,9 +25,6 @@ jobs:
     - name: Grant execute permissions for gradlew
       run:  chmod +x gradlew
         
-    - name: Build with Gradle
+    - name: Build and Test with Gradle
       run: ./gradlew build
       
-    - name: Test with Gradle
-      run: ./gradlew test
-
