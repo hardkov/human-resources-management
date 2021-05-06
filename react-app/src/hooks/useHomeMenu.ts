@@ -76,7 +76,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: leavesImg,
         title: 'My Leaves',
         description: 'See all the leaves during your contract.',
-        link: '/',
+        link: '/leaves',
       },
       {
         img: earningsImg,
