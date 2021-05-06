@@ -9,6 +9,12 @@ subprojects {
     }
 }
 
+task build {
+    doLast {
+        ':spring-app:build'
+    }
+}
+
 task 'run' (type: Exec) {
     dependsOn ':spring-app:build', ':spring-app:bootRun'
 }
