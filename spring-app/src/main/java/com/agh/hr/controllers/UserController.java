@@ -109,7 +109,7 @@ public class UserController implements SecuredRestController {
     @PutMapping(value = "/user")
     @Operation(summary = "Updating user with userID (if exists)",
                responses = {
-                @ApiResponse(responseCode = "200", description = "User updated successfully"),
+                @ApiResponse(responseCode = "202", description = "Request accepted for processing"),
                 @ApiResponse(responseCode = "404", description = "User not found"),
                 @ApiResponse(responseCode = "400", description = "User could not be updated")
                })
@@ -118,7 +118,6 @@ public class UserController implements SecuredRestController {
         if(userOpt.isPresent()) {
             User user = userOpt.get();
             converters.updateUserWithDTO(userDTO, user);
-            userService.saveUser(user);
             return userService.saveUser(user).isPresent() ?
                     ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
         }
