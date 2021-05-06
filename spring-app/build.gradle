@@ -74,7 +74,7 @@ compileJava {
     inputs.files(processResources)
 }
 
-task copyBundledReactApp(type: Copy) {
+task bundleReactApp(type: Copy) {
     dependsOn ':react-app:assemble'
 
     from '../react-app/build'
@@ -82,13 +82,19 @@ task copyBundledReactApp(type: Copy) {
 }
 
 bootJar {
-    dependsOn 'copyBundledReactApp'
+    configure {
+        mustRunAfter bundleReactApp
+    }
+
+    dependsOn(bundleReactApp)
+
     archivesBaseName = 'hrm'
 }
 
 bootRun {
     jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
 }
+<<<<<<< HEAD
 
 check {
     dependsOn 'integrationTest'
@@ -97,3 +103,5 @@ check {
 build {
     mustRunAfter 'copyBundledReactApp'
 }
+=======
+>>>>>>> 2826555 (fixed gradle scripts)
