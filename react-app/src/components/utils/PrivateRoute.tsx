@@ -7,7 +7,7 @@ const PrivateRoute = (routeProps: any) => {
     return <Route {...routeProps} />;
   }
 
-  return <Redirect to="/" />;
+  return <Redirect to="/login" />;
 };
 
 export default PrivateRoute;

@@ -18,9 +18,9 @@ const Routes: React.FC = () => {
   return (
     <Router>
       <Switch>
-        <PrivateRoute exact path="/home" component={homeWithLayout} />
+        <PrivateRoute exact path="/" component={homeWithLayout} />
         <Route exact path="/logout" component={Logout} />
-        <ProtectedRoute exact path="/" component={Login} />
+        <ProtectedRoute exact path="/login" component={Login} />
       </Switch>
     </Router>
   );
