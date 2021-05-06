@@ -52,7 +52,7 @@ public class UserServiceDatabaseIntegrationTests {
                 .username("sus")
                 .passwordHash(passwordEncoder.encode("passw0rd"))
                 .enabled(true)
-                .authorities(Collections.singleton(roleService.userRole()))
+                .authorities(Collections.singleton(roleService.employeeRole()))
                 .personalData(personalData)
                 .position("Tester")
                 .leaves(Collections.emptyList())

@@ -94,7 +94,6 @@ bootJar {
 bootRun {
     jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
 }
-<<<<<<< HEAD
 
 check {
     dependsOn 'integrationTest'
@@ -103,5 +102,3 @@ check {
 build {
     mustRunAfter 'copyBundledReactApp'
 }
-=======
->>>>>>> 2826555 (fixed gradle scripts)
