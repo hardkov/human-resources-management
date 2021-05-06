@@ -4,6 +4,7 @@ import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import com.agh.hr.persistence.service.RoleService;
 import com.agh.hr.persistence.service.UserService;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.AssertTrue;
 import java.util.Collections;
 import java.util.List;
@@ -20,16 +22,19 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class UserServiceDatabaseTests {
+@Transactional
+public class UserServiceDatabaseIntegrationTests {
+
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     private User userTest;
-    private UserService userService;
-    private PasswordEncoder passwordEncoder;
-    private RoleService roleService;
 
     @Autowired
-    public UserServiceDatabaseTests(UserService userService,PasswordEncoder passwordEncoder,RoleService roleService){
+    public UserServiceDatabaseIntegrationTests(UserService userService,
+                                               PasswordEncoder passwordEncoder,
+                                               RoleService roleService){
         this.userService=userService;
         this.passwordEncoder=passwordEncoder;
         this.roleService=roleService;
@@ -38,12 +43,12 @@ public class UserServiceDatabaseTests {
 
     @BeforeEach
     public void setup(){
-        userTest = new UserTest();
-        PersonalData personalData= new ConvertersTests.PersonalDataTest();
-        personalData.setFirstname("Susan");
-        personalData.setLastname("Barrow");
+        val personalData= PersonalData.builder()
+                .firstname("Susan")
+                .lastname("Barrow")
+                .build();
 
-        userTest=User.builder()
+        this.userTest = User.builder()
                 .username("sus")
                 .passwordHash(passwordEncoder.encode("passw0rd"))
                 .enabled(true)

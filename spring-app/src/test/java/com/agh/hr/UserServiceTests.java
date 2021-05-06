@@ -3,6 +3,7 @@ package com.agh.hr;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import com.agh.hr.persistence.service.UserService;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Optional;
@@ -12,40 +13,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-//This is a snippet on how service testing could be done in a future
-public class UserServiceTests{
+public class UserServiceTests {
 
-    //Class to be tested
     private UserService userService;
 
-    //Dependencies
     private UserRepository userRepository;
 
+    private User user;
+
+    private String username ;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         userRepository = mock(UserRepository.class);
         userService = new UserService(userRepository);
+
+        this.username = "foo@gmail.com";
+        this.user = User.builder()
+                .id(10L)
+                .username(username)
+                .build();
     }
 
-    class UserTest extends User{}
     @Test
     public void getUsernameSuccess(){
-        User user = new UserTest();
-        user.setUsername("susan");
-        when(userRepository.findByUsername("susan")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
-        Optional<User> result = userService.findByUsername("susan");
+        val result = userService.findByUsername(username);
+
         assertTrue(result.isPresent());
-        assertEquals("susan",result.get().getUsername());
+        assertEquals(username, result.get().getUsername());
     }
 
     @Test
     public void getUsernameFail(){
-        when(userRepository.findByUsername("susan")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
-        Optional<User> result = userService.findByUsername("susan");
-        assertEquals(Optional.empty(),result);
+        val actual = userService.findByUsername(username);
+        val expected = Optional.empty();
+        assertEquals(expected, actual);
     }
 
 }

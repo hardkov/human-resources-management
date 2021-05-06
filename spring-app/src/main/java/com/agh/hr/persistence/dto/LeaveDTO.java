@@ -1,13 +1,11 @@
 package com.agh.hr.persistence.dto;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Data @Builder
+@NoArgsConstructor @AllArgsConstructor
 public class LeaveDTO {
     private Long id;
     private UserDTO user;

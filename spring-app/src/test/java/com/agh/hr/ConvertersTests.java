@@ -1,5 +1,7 @@
 package com.agh.hr;
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.agh.hr.config.ModelMapperConfig;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.dto.PersonalDataDTO;
@@ -9,108 +11,142 @@ import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import lombok.val;
 
 import java.time.LocalDate;
-import java.util.*;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { ModelMapperConfig.class, Converters.class } )
 public class ConvertersTests {
 
     @Autowired
     private Converters converters;
 
-
     private User userTest;
     private UserDTO userTestDTO;
 
     @BeforeEach
-    public void setup(){
-        MockitoAnnotations.initMocks(this);
+    public void setup() {
+        val personalData= PersonalData.builder()
+            .firstname("Susan")
+            .lastname("Barrow")
+            .build();
 
-        userTest = new UserTest();
-        PersonalData personalData= new PersonalDataTest();
-        personalData.setFirstname("Susan");
-        personalData.setLastname("Barrow");
-        userTest.setPersonalData(personalData);
-        userTest.setId(10L);
+        this.userTest = User.builder()
+            .id(10L)
+            .personalData(personalData)
+            .build();
 
-        userTestDTO=new UserDTO();
-        PersonalDataDTO personalDataDTO=new PersonalDataDTO();
-        personalDataDTO.setFirstname("Susan");
-        personalDataDTO.setLastname("Barrow");
-        userTestDTO.setPersonalData(personalDataDTO);
-        userTestDTO.setId(10L);
+        val personalDataDTO= PersonalDataDTO.builder()
+            .firstname("Susan")
+            .lastname("Barrow")
+            .build();
+
+        this.userTestDTO = UserDTO.builder()
+                .id(10L)
+                .personalData(personalDataDTO)
+                .build();
     }
 
-    static class LeaveTest extends Leave{}
-    static class UserTest extends User{}
-    static class PersonalDataTest extends PersonalData{}
 
     @Test
     void testDTOToUser() {
-        assertEquals(userTest,converters.DTOToUser(userTestDTO));
+        assertEquals(userTest, converters.DTOToUser(userTestDTO));
     }
 
     @Test
     void testUserToDTO() {
-        assertEquals(userTestDTO,converters.userToDTO(userTest));
+        assertEquals(userTestDTO, converters.userToDTO(userTest));
     }
 
     @Test
     void testUpdateUserWithDTO() {
         userTestDTO.setId(20L);
-        converters.updateUserWithDTO(userTestDTO,userTest);
-        assertEquals(20L,userTest.getId().longValue());
+        converters.updateUserWithDTO(userTestDTO, userTest);
+
+        assertEquals(20L, userTest.getId().longValue());
     }
 
     @Test
-    void testDTOToPersonalData(){
-        assertEquals(userTest.getPersonalData(),converters.DTOToPersonalData(userTestDTO.getPersonalData()));
+    void testDTOToPersonalData() {
+        val actual = converters.DTOToPersonalData(userTestDTO.getPersonalData());
+        val expected = userTest.getPersonalData();
+
+        assertEquals(expected, actual);
     }
 
     @Test
     void testPersonalDataToDTO(){
-        assertEquals(userTestDTO.getPersonalData(),converters.personalDataToDTO(userTest.getPersonalData()));
+        val expected = userTestDTO.getPersonalData();
+        val actual = converters.personalDataToDTO(userTest.getPersonalData());
+
+        assertEquals(expected, actual);
     }
 
     @Test
     void testUpdatePersonalDataWithDTO(){
-        userTestDTO.getPersonalData().setLastname("Harvey");
-        converters.updatePersonalDataWithDTO(userTestDTO.getPersonalData(),userTest.getPersonalData());
-        assertEquals("Harvey",userTest.getPersonalData().getLastname());
+        val expectedLastname = "Harvey";
+        userTestDTO.getPersonalData().setLastname(expectedLastname);
+
+        val personalDataDTO = userTestDTO.getPersonalData();
+        val personalData = userTest.getPersonalData();
+        converters.updatePersonalDataWithDTO(personalDataDTO, personalData);
+
+        val actualLastname = userTest.getPersonalData().getLastname();
+
+        assertEquals(expectedLastname, actualLastname);
     }
 
     @Test
     void testDTOToLeave(){
-        Leave leave=new LeaveTest();
-        leave.setStartDate(LocalDate.of(2020,12,12));
-        LeaveDTO leaveDTO=new LeaveDTO();
-        leaveDTO.setStartDate(LocalDate.of(2020,12,12));
-        assertEquals(leave,converters.DTOToLeave(leaveDTO));
+        val startDate = LocalDate.of(2020,12,12);
+        val leave = Leave.builder()
+                .startDate(startDate)
+                .build();
+
+        val leaveDTO = LeaveDTO.builder()
+                .startDate(startDate)
+                .build();
+
+        assertEquals(leave, converters.DTOToLeave(leaveDTO));
     }
 
     @Test
     void testLeaveToDTO(){
-        Leave leave=new LeaveTest();
-        leave.setStartDate(LocalDate.of(2020,12,12));
-        leave.setUser(userTest);
-        LeaveDTO leaveDTO=new LeaveDTO();
-        leaveDTO.setStartDate(LocalDate.of(2020,12,12));
-        leaveDTO.setUser(userTestDTO);
-        assertEquals(leaveDTO,converters.leaveToDTO(leave));
+        val startDate = LocalDate.of(2020,12,12);
+        val leave = Leave.builder()
+                .startDate(startDate)
+                .user(userTest)
+                .build();
+
+        val leaveDTO = LeaveDTO.builder()
+                .startDate(startDate)
+                .user(userTestDTO)
+                .build();
+
+        assertEquals(leaveDTO, converters.leaveToDTO(leave));
     }
 
     @Test
     void testUpdateLeaveWithDTO(){
-        Leave leave=new LeaveTest();
-        leave.setStartDate(LocalDate.of(2020,12,12));
-        LeaveDTO leaveDTO=new LeaveDTO();
-        leaveDTO.setStartDate(LocalDate.of(2020,12,16));
+        val startDate = LocalDate.of(2020,12,12);
+        val leave = Leave.builder()
+                .startDate(startDate)
+                .user(userTest)
+                .build();
+
+        val updatedStartDate = LocalDate.of(2020,12,16);
+        val leaveDTO = LeaveDTO.builder()
+                .startDate(updatedStartDate)
+                .build();
+
         converters.updateLeaveWithDTO(leaveDTO,leave);
-        assertEquals(LocalDate.of(2020,12,16),leave.getStartDate());
+        assertEquals(updatedStartDate, leave.getStartDate());
     }
 
 }

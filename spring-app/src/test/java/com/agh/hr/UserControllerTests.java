@@ -9,10 +9,12 @@ import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.service.UserService;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import java.util.*;
 
@@ -29,28 +31,31 @@ public class UserControllerTests {
 
     private User userTest;
     private UserDTO userTestDTO;
+
     @BeforeEach
-    public void setup(){
-        MockitoAnnotations.initMocks(this);
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
 
-        userTest = new UserTest();
-        PersonalData personalData= new PersonalDataTest();
-        personalData.setFirstname("Susan");
-        personalData.setLastname("Barrow");
-        userTest.setPersonalData(personalData);
-        userTest.setId(10L);
+        val personalData= PersonalData.builder()
+                .firstname("Susan")
+                .lastname("Barrow")
+                .build();
 
-        userTestDTO=new UserDTO();
-        PersonalDataDTO personalDataDTO=new PersonalDataDTO();
-        personalDataDTO.setId(10L);
-        personalDataDTO.setFirstname("Susan");
-        personalDataDTO.setLastname("Barrow");
-        userTestDTO.setPersonalData(personalDataDTO);
-        userTestDTO.setId(10L);
+        this.userTest = User.builder()
+                .id(10L)
+                .personalData(personalData)
+                .build();
+
+        val personalDataDTO= PersonalDataDTO.builder()
+                .firstname("Susan")
+                .lastname("Barrow")
+                .build();
+
+        this.userTestDTO = UserDTO.builder()
+                .id(10L)
+                .personalData(personalDataDTO)
+                .build();
     }
-
-    static class UserTest extends User{}
-    static class PersonalDataTest extends PersonalData{}
 
     @Test
     void testSuccessCreateUser() {
@@ -62,7 +67,6 @@ public class UserControllerTests {
                 ()->assertEquals(200,userController.insertUser(userTestDTO).getStatusCodeValue()),
                 ()->assertNotNull(userController.insertUser(userTestDTO).getBody()),
                 ()->assertEquals(userController.insertUser(userTestDTO).getBody(),userTestDTO)
-
         );
 
         verify(converters, times(3)).userToDTO(userTest);

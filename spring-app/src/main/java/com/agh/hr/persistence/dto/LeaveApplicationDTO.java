@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class LeaveApplicationDTO extends ApplicationDTO{
+public class LeaveApplicationDTO extends ApplicationDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private boolean paid;
