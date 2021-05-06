@@ -9,12 +9,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/default").addResourceLocations("/index.html");
-    }
-
-    @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/notFound").setViewName("default");
+        registry.addViewController("/notFound").setViewName("forward:/error.html");
+
+        registry.addViewController("/").setViewName("forward:/index.html");
+        registry.addViewController("/home").setViewName("forward:/index.html");
+        registry.addViewController("/login").setViewName("forward:/index.html");
     }
 }
