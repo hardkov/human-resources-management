@@ -6,14 +6,21 @@ import PrivateRoute from './utils/PrivateRoute';
 import Logout from './Logout';
 import Login from './Login';
 import ProtectedRoute from './utils/ProtectedRoute';
+import Layout from './utils/Layout';
+
+const homeWithLayout = () => (
+  <Layout>
+    <Home />
+  </Layout>
+);
 
 const Routes: React.FC = () => {
   return (
     <Router>
       <Switch>
-        <PrivateRoute path="/home" component={Home} />
-        <ProtectedRoute exact path="/" component={Login} />
+        <PrivateRoute exact path="/home" component={homeWithLayout} />
         <Route exact path="/logout" component={Logout} />
+        <ProtectedRoute exact path="/" component={Login} />
       </Switch>
     </Router>
   );
