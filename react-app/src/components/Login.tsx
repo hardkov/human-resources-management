@@ -29,7 +29,7 @@ const Login = () => {
     else if (result.errors) setErrors(result.errors[0]);
   };
 
-  if (redirect) return <Redirect to="/home" />;
+  if (redirect) return <Redirect to="/" />;
   return <LoginForm handleSubmit={handleSubmit} handleCredentialsChange={handleCredentialsChange} error={error} />;
 };
 
