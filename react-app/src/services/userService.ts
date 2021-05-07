@@ -3,7 +3,6 @@ import { getAuthHeaders } from '../helpers/auth';
 import { USER_DATA_ENDPOINT } from './config';
 import UserData from '../types/UserData';
 import ActionResult from '../types/ActionResult';
-import PersonalData from '../types/PersonalData';
 
 const getUser = async (userId: string): Promise<ActionResult<UserData>> => {
   try {

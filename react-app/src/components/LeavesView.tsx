@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
-import { getAllLeaves } from '../services/LeaveService';
+import { getAllLeaves } from '../services/leaveService';
 import LeaveData from '../types/LeaveData';
 import ActionResult from '../types/ActionResult';
 

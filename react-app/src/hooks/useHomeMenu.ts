@@ -24,7 +24,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: employeesImg,
         title: 'Employees',
         description: 'List of employees. Manage their permission and get insight into user data details.',
-        link: '/',
+        link: '/employees',
       },
       {
         img: applicationImg,
@@ -94,7 +94,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: employeesImg,
         title: 'Employees',
         description: 'List of employees. Manage their permission and get insight into user data details.',
-        link: '/',
+        link: '/employees',
       },
       {
         img: applicationImg,
