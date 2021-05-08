@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { UseFormRegister } from 'react-hook-form';
 
 import UserFormField from './UserFormField';
-import krzysiomisio from '../../assets/krzysiomisio.jpg';
+import krzysiomisio from '../../../assets/krzysiomisio.jpg';
 
 const useStyles = makeStyles((theme) => ({
   paper: {

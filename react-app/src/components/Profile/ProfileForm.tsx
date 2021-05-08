@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import UserForm from '../UserForm/UserForm';
+import UserForm from './UserForm/UserForm';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
