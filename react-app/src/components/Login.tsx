@@ -10,7 +10,7 @@ interface Credentials {
   password: string;
 }
 
-const Login = () => {
+const Login: React.FC = () => {
   const [credentials, setCredentials] = useState<Credentials>({ username: '', password: '' });
   const [redirect, setRedirect] = useState<boolean>(false);
   const [error, setErrors] = useState<string>('');

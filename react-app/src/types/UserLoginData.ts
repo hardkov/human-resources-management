@@ -3,7 +3,7 @@ import UserType from './UserType';
 interface UserLoginData {
   sub: string;
   username: string;
-  userId: string;
+  userId: number;
   authorities: UserType;
 }
 

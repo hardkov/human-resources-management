@@ -47,16 +47,9 @@ const EmployeeRow = (props: any): JSX.Element => {
         </TableCell>
         <TableCell>
           <div className={styles.buttonContainer}>
-            {
-              <Button
-                className={styles.button}
-                variant="contained"
-                color="secondary"
-                // to={button.link}
-              >
-                <EditIcon />
-              </Button>
-            }
+            <Button className={styles.button} variant="contained" color="secondary">
+              <EditIcon />
+            </Button>
           </div>
         </TableCell>
       </TableRow>
