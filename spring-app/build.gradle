@@ -28,12 +28,6 @@ configurations {
     integrationTestRuntimeOnly.extendsFrom testRuntime
 }
 
-//task integrationTest(type: Test) {
-//    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-//    classpath = sourceSets.integrationTest.runtimeClasspath
-//}
-
-
 dependencies {
     implementation          'org.springframework.boot:spring-boot-starter-web'
     implementation          'org.springframework.boot:spring-boot-starter-security'
@@ -100,5 +94,5 @@ check {
 }
 
 build {
-    mustRunAfter 'copyBundledReactApp'
+    mustRunAfter 'bundleReactApp'
 }
