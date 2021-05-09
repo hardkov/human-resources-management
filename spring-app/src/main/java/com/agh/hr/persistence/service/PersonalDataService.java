@@ -1,6 +1,7 @@
 package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.model.PersonalData;
+import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.PersonalDataRepository;
 import com.agh.hr.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,47 +30,47 @@ public class PersonalDataService {
         }catch(Exception e){return Optional.empty();}
     }
 
-    public Optional<PersonalData> getById(Long id) {
-        return personalDataRepository.findById(id);
+    public Optional<PersonalData> getById(Long id, User userAuth) {
+        return personalDataRepository.findById(id,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getAllPersonalData() {
-        return personalDataRepository.findAll();
+    public List<PersonalData> getAllPersonalData(User userAuth) {
+        return personalDataRepository.findAll(Auth.getReadIds(userAuth));
     }
 
     public void deletePersonalData(Long dataId) {
             personalDataRepository.deleteById(dataId);
     }
 
-    public List<PersonalData> getByFirstname(String firstname) {
-        return personalDataRepository.findByFirstname(firstname);
+    public List<PersonalData> getByFirstname(String firstname,User userAuth) {
+        return personalDataRepository.findByFirstname(firstname,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getByLastname(String lastname) {
-        return personalDataRepository.findByLastname(lastname);
+    public List<PersonalData> getByLastname(String lastname,User userAuth) {
+        return personalDataRepository.findByLastname(lastname,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getByFullName(String firstname,String lastname) {
-        return personalDataRepository.findByFirstnameAndLastname(firstname,lastname);
+    public List<PersonalData> getByFullName(String firstname,String lastname,User userAuth) {
+        return personalDataRepository.findByFirstnameAndLastname(firstname,lastname,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getByAddress(String address) {
-        return personalDataRepository.findByAddress(address);
+    public List<PersonalData> getByAddress(String address,User userAuth) {
+        return personalDataRepository.findByAddress(address,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getByPhone(String phone) {
-        return personalDataRepository.findByPhoneNumber(phone);
+    public List<PersonalData> getByPhone(String phone,User userAuth) {
+        return personalDataRepository.findByPhoneNumber(phone,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getByEmail(String email) {
-        return personalDataRepository.findByEmail(email);
+    public List<PersonalData> getByEmail(String email,User userAuth) {
+        return personalDataRepository.findByEmail(email,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getByBirthdateEquals(LocalDate date) {
-        return personalDataRepository.findByBirthdateEquals(date);
+    public List<PersonalData> getByBirthdateEquals(LocalDate date,User userAuth) {
+        return personalDataRepository.findByBirthdateEquals(date,Auth.getReadIds(userAuth));
     }
 
-    public List<PersonalData> getByBirthdateBetween(LocalDate before,LocalDate after) {
-        return personalDataRepository.findByBirthdateBetween(before,after);
+    public List<PersonalData> getByBirthdateBetween(LocalDate before,LocalDate after,User userAuth) {
+        return personalDataRepository.findByBirthdateBetween(before,after,Auth.getReadIds(userAuth));
     }
 }

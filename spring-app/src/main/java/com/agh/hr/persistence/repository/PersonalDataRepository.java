@@ -12,8 +12,11 @@ import java.util.Optional;
 @Repository
 public interface PersonalDataRepository extends JpaRepository<PersonalData, Long> {
 
+    @Query("SELECT d FROM PersonalData d WHERE d.user.id IN ?1")
+    List<PersonalData> findAll(List<Long> allowedIds);
+
     @Query("SELECT d FROM PersonalData d WHERE d.id IS ?1 AND d.user.id IN ?2")
-    Optional<User> findById(Long id, List<Long> allowedIds);
+    Optional<PersonalData> findById(Long id, List<Long> allowedIds);
 
     @Query("SELECT d FROM PersonalData d WHERE d.firstname IS ?1 AND d.user.id IN ?2")
     List<PersonalData> findByFirstname(String firstname, List<Long> allowedIds);

@@ -14,7 +14,7 @@ public class PersonalData {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn
     private User user;
 
