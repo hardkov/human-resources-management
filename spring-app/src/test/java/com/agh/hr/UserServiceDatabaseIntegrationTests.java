@@ -1,4 +1,5 @@
 package com.agh.hr;
+import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
@@ -47,7 +48,6 @@ public class UserServiceDatabaseIntegrationTests {
                 .firstname("Susan")
                 .lastname("Barrow")
                 .build();
-
         this.userTest = User.builder()
                 .username("sus")
                 .passwordHash(passwordEncoder.encode("passw0rd"))
@@ -61,7 +61,6 @@ public class UserServiceDatabaseIntegrationTests {
                 .applications(Collections.emptyList()).build();
 
     }
-    static class UserTest extends User {}
 
     @Test
     void testSaveUser(){
@@ -85,7 +84,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testGetById(){
         Optional<User> result=userService.saveUser(userTest);
-        assertTrue(userService.getById(userTest.getId()).isPresent());
+        assertTrue(userService.getById(userTest.getId(),userTest).isPresent());
 
     }
 
@@ -93,41 +92,42 @@ public class UserServiceDatabaseIntegrationTests {
     void testSuccessGetByFirstname(){
         assertAll(
                 ()->assertTrue(userService.saveUser(userTest).isPresent()),
-                ()->assertEquals(1,userService.getByFirstname("Susan").size())
+                ()->assertEquals(1,userService.getByFirstname("Susan",userTest).size())
         );
 
     }
 
     @Test
     void testFailGetByFirstname(){
-        assertEquals(0,userService.getByFirstname("Susan").size());
+        assertEquals(0,userService.getByFirstname("Susan",userTest).size());
     }
 
     @Test
     void testSuccessGetByLastname(){
         assertAll(
                 ()->assertTrue(userService.saveUser(userTest).isPresent()),
-                ()->assertEquals(1,userService.getByLastname("Barrow").size())
+                ()->assertEquals(1,userService.getByLastname("Barrow",userTest).size())
         );
 
     }
 
     @Test
     void testFailGetByLastname(){
-        assertEquals(0,userService.getByLastname("Barrow").size());
+        assertEquals(0,userService.getByLastname("Barrow",userTest).size());
     }
 
     @Test
     void testSuccessGetByFullName(){
         assertAll(
                 ()->assertTrue(userService.saveUser(userTest).isPresent()),
-                ()->assertEquals(1,userService.getByFullName("Susan","Barrow").size())
+                ()->assertEquals(1,userService.getByFullName("Susan","Barrow",userTest).size())
         );
     }
 
     @Test
     void testFailGetByFullName(){
-        assertEquals(0,userService.getByFullName("Susan","Barrow").size());
+        assertEquals(0,userService
+                .getByFullName("Susan","Barrow",userTest).size());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class UserServiceDatabaseIntegrationTests {
         assertAll(
                 ()->userService.saveUser(userTest),
                 ()->userService.deleteUser(userTest.getId()),
-                ()->assertFalse(userService.getById(userTest.getId()).isPresent())
+                ()->assertFalse(userService.getById(userTest.getId(),userTest).isPresent())
         );
     }
 
