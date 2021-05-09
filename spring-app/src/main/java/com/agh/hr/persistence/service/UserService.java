@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +22,12 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepository){
         this.userRepository=userRepository;
+
     }
 
     public Optional<User> saveUser(User user) {
         try {
-            return Optional.of(userRepository.save(user));
+                return Optional.of(userRepository.save(user));
         } catch(Exception e) {
             return Optional.empty();
         }
@@ -35,28 +37,28 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> getById(Long id) {
-        return userRepository.findById(id);
+    public Optional<User> getById(Long id,User userAuth) {
+        return userRepository.findById(id,Auth.getReadIds(userAuth));
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers(User userAuth) {
+        return userRepository.findAll(Auth.getReadIds(userAuth));
     }
 
     public void deleteUser(Long UserId) {
             userRepository.deleteById(UserId);
     }
 
-    public List<User> getByFirstname(String firstname) {
-        return userRepository.findByPersonalData_Firstname(firstname);
+    public List<User> getByFirstname(String firstname,User userAuth) {
+        return userRepository.findByPersonalData_Firstname(firstname,Auth.getReadIds(userAuth));
     }
 
-    public List<User> getByLastname(String lastname) {
-        return userRepository.findByPersonalData_Lastname(lastname);
+    public List<User> getByLastname(String lastname,User userAuth) {
+        return userRepository.findByPersonalData_Lastname(lastname,Auth.getReadIds(userAuth));
     }
 
-    public List<User> getByFullName(String firstname,String lastname) {
-        return userRepository.findByPersonalData_FirstnameAndPersonalData_Lastname(firstname,lastname);
+    public List<User> getByFullName(String firstname,String lastname,User userAuth) {
+        return userRepository.findByPersonalData_FirstnameAndPersonalData_Lastname(firstname,lastname,Auth.getReadIds(userAuth));
     }
 
 
