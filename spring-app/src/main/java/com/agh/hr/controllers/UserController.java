@@ -4,6 +4,7 @@ import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.dto.UserDTO;
+import com.agh.hr.persistence.service.Auth;
 import com.agh.hr.persistence.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +43,9 @@ public class UserController implements SecuredRestController {
                })
     public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO,@AuthenticationPrincipal User userAuth) {
         User user = converters.DTOToUser(userDTO);
-        Optional<User> insertedUserOpt = userService.saveUser(user,userAuth);
+        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(user.getId())))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Optional<User> insertedUserOpt = userService.saveUser(user);
         return insertedUserOpt
                 .map(insertedUser -> ResponseEntity.ok(converters.userToDTO(insertedUser)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -116,11 +120,13 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "400", description = "User could not be updated")
                })
     public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO,@AuthenticationPrincipal User userAuth) {
+        if(!(Auth.getWriteIds(userAuth).contains(userDTO.getId())))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         Optional<User> userOpt = userService.getById(userDTO.getId(),userAuth);
         if(userOpt.isPresent()) {
             User user = userOpt.get();
             converters.updateUserWithDTO(userDTO, user);
-            return userService.saveUser(user,userAuth).isPresent() ?
+            return userService.saveUser(user).isPresent() ?
                     ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
         }
         else {
@@ -132,7 +138,9 @@ public class UserController implements SecuredRestController {
     @DeleteMapping(value = "/user/{id}")
     @Operation(summary = "Deleting user with userID")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id,@AuthenticationPrincipal User userAuth) {
-        userService.deleteUser(id,userAuth);
+        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(id)))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
 }
