@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,8 +40,9 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "404", description = "User not found", content = @Content()),
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved", content = @Content()),
                })
-    public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @RequestBody LeaveDTO leaveDTO) {
-        Optional<User> userOpt = userService.getById(userId);
+    public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @RequestBody LeaveDTO leaveDTO
+            ,@AuthenticationPrincipal User userAuth) {
+        Optional<User> userOpt = userService.getById(userId,userAuth);
         if(userOpt.isPresent()){
             User user = userOpt.get();
             Leave leave = converters.DTOToLeave(leaveDTO);
@@ -74,8 +76,9 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of user's leaves' DTOs"),
                 @ApiResponse(responseCode = "404", description = "User not found", content = @Content())
                })
-    public ResponseEntity<List<LeaveDTO>> getLeavesByUserId(@PathVariable Long userId) {
-        Optional<User> userOpt = userService.getById(userId);
+    public ResponseEntity<List<LeaveDTO>> getLeavesByUserId(@PathVariable Long userId
+            ,@AuthenticationPrincipal User userAuth) {
+        Optional<User> userOpt = userService.getById(userId,userAuth);
         return userOpt
                 .map(user -> ResponseEntity.ok(
                         user
