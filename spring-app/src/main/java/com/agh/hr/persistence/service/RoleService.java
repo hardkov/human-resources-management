@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 @Service
 public class RoleService {
 
-    public static final String USER_AUTHORITY = "USER";
+    public static final String EMPLOYEE_AUTHORITY = "EMPLOYEE";
     public static final String SUPERVISOR_AUTHORITY = "SUPERVISOR";
     public static final String ADMIN_AUTHORITY = "ADMIN";
 
@@ -30,8 +30,8 @@ public class RoleService {
     }
 
     public Role userRole() {
-        return this.roleRepository.findByAuthority(USER_AUTHORITY)
-                .orElseThrow(() -> new NoSuchElementException(USER_AUTHORITY));
+        return this.roleRepository.findByAuthority(EMPLOYEE_AUTHORITY)
+                .orElseThrow(() -> new NoSuchElementException(EMPLOYEE_AUTHORITY));
     }
 
     public Role supervisorRole() {
@@ -45,6 +45,6 @@ public class RoleService {
     }
 
     public static List<String> authorities() {
-        return Arrays.asList(USER_AUTHORITY, SUPERVISOR_AUTHORITY, ADMIN_AUTHORITY);
+        return Arrays.asList(EMPLOYEE_AUTHORITY, SUPERVISOR_AUTHORITY, ADMIN_AUTHORITY);
     }
 }

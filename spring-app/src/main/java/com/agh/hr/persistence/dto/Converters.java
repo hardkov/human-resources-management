@@ -3,27 +3,51 @@ package com.agh.hr.persistence.dto;
 import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
-import lombok.val;
+import com.agh.hr.persistence.service.RoleService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 public class Converters {
     private final ModelMapper modelMapper;
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public Converters(ModelMapper modelMapper) {
+    @Autowired
+    public Converters(ModelMapper modelMapper, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.modelMapper = modelMapper;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     //// USER
     public User DTOToUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        user.setPersonalData(DTOToPersonalData(userDTO.personalData));
+        user.setPersonalData(DTOToPersonalData(userDTO.getPersonalData()));
+        return user;
+    }
+
+    public User InsertionDTOToUser(UserInsertionDTO userInsertionDTO) {
+        User user = modelMapper.map(userInsertionDTO, User.class);
+        user.setPersonalData(DTOToPersonalData(userInsertionDTO.getPersonalData()));
+        user.setPasswordHash(passwordEncoder.encode(userInsertionDTO.getPassword()));
+        if (RoleService.SUPERVISOR_AUTHORITY.equals(userInsertionDTO.getRole()))
+            user.setAuthorities(Collections.singleton(roleService.supervisorRole()));
+        else
+            user.setAuthorities(Collections.singleton(roleService.userRole()));
+
+        user.getPersonalData().setId(null);
+        user.setId(null);
+        user.setEnabled(true);
         return user;
     }
 
     public void updateUserWithDTO(UserDTO userDTO, User user) {
-        updatePersonalDataWithDTO(userDTO.personalData, user.getPersonalData());
+        updatePersonalDataWithDTO(userDTO.getPersonalData(), user.getPersonalData());
         modelMapper.map(userDTO, user);
     }
 

@@ -1,5 +1,5 @@
 import 'date-fns';
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -11,6 +11,7 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker
 } from '@material-ui/pickers';
+import UserInsertionData from "../types/UserInsertionData";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,22 +37,60 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-    handleSubmit: (event: React.FormEvent) => void;
-    handleUserChange: (event: React.FormEvent) => void;
-    handlePersonalDataChange: (event: React.FormEvent) => void;
-    handleBirthdateChange: (date: Date) => void;
+    handleSubmitCallback: (data: UserInsertionData) => void;
     error: string;
 }
 
-const UserInsertForm = ({ handleSubmit, handleUserChange, handlePersonalDataChange, handleBirthdateChange, error }: Props) => {
+const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
     const classes = useStyles();
 
     const [selectedDate, setSelectedDate] = React.useState(new Date(2021, 0, 1))
+    const [details, setDetails] = useState<UserInsertionData>({
+        id: null,
+        position: "",
+        username: "",
+        role: "SUPERVISOR",
+        password: "",
+        personalData:{
+            id: null,
+            firstname: "",
+            lastname: "",
+            email: "",
+            phoneNumber: "",
+            address: "",
+            birthdate: "",
+            thumbnail: null
+        }});
 
     const handleDateSelectionChange = (date: Date | null) => {
         if(date){
             setSelectedDate(date)
         }
+    }
+
+    const handleUserChange = (event: React.FormEvent) => {
+        const target = event.target as HTMLInputElement;
+        setDetails({ ...details, [target.name]: target.value });
+        console.log(details)
+    };
+
+    const handlePersonalDataChange = (event: React.FormEvent) => {
+        const target = event.target as HTMLInputElement;
+        setDetails({ ...details, personalData: {...details.personalData, [target.name]: target.value} });
+        console.log(details)
+    };
+
+    const handleBirthdateChange = useCallback((date: Date) => {
+        setDetails(d => {
+            return {...d, personalData: {
+                    ...d.personalData, birthdate:
+                        `${date.getFullYear()}-${`0${date.getMonth()+1}`.slice(-2)}-${`0${date.getDate()}`.slice(-2)}`}}
+        });
+    }, []);
+
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault()
+        handleSubmitCallback(details)
     }
 
     React.useEffect(() => {
@@ -148,6 +187,28 @@ const UserInsertForm = ({ handleSubmit, handleUserChange, handlePersonalDataChan
                                 label="Address"
                                 id="address"
                                 onChange={handlePersonalDataChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="outlined"
+                                required
+                                fullWidth
+                                name="username"
+                                label="Username"
+                                id="username"
+                                onChange={handleUserChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="outlined"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                id="password"
+                                onChange={handleUserChange}
                             />
                         </Grid>
                     </Grid>
