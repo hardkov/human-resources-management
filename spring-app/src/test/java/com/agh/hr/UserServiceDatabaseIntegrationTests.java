@@ -61,16 +61,18 @@ public class UserServiceDatabaseIntegrationTests {
                 .bonuses(Collections.emptyList())
                 .delegations(Collections.emptyList())
                 .applications(Collections.emptyList()).build();
+
         val permissions= Permission.builder().build();
         permissions.addToWrite(10L);
         permissions.setAdd(true);
         userTest.setPermissions(permissions);
+        userTest.getPersonalData().setUser(userTest);
     }
 
     @Test
     void testSaveUser(){
         Optional<User> result=userService.saveUser(userTest,userTest,true);
-        assertEquals(Optional.of(userTest),result);
+        assertTrue(result.isPresent());
     }
 
     @Test
@@ -137,6 +139,7 @@ public class UserServiceDatabaseIntegrationTests {
 
     @Test
     void testDeleteUser(){
+
         assertAll(
                 ()->userService.saveUser(userTest,userTest,true),
                 ()->userService.deleteUser(userTest.getId(),userTest),
