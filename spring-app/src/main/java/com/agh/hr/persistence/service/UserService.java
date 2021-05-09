@@ -4,6 +4,8 @@ import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,12 @@ public class UserService {
 
     }
 
-    public Optional<User> saveUser(User user) {
+    public Optional<User> saveUser(User user,User userAuth,boolean isNew) {
+
+        if(isNew&&!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(user.getId())))
+            return Optional.empty();
+        else if(!isNew &&!(Auth.getWriteIds(userAuth).contains(user.getId())))
+            return Optional.empty();
         try {
                 return Optional.of(userRepository.save(user));
         } catch(Exception e) {
@@ -45,8 +52,11 @@ public class UserService {
         return userRepository.findAll(Auth.getReadIds(userAuth));
     }
 
-    public void deleteUser(Long UserId) {
-            userRepository.deleteById(UserId);
+    public ResponseEntity<Void> deleteUser(Long userId,User userAuth) {
+        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(userId)))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        userRepository.deleteById(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public List<User> getByFirstname(String firstname,User userAuth) {

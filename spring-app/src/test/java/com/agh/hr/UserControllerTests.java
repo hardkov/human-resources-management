@@ -65,7 +65,7 @@ public class UserControllerTests {
 
     @Test
     void testSuccessCreateUser() {
-        when(userService.saveUser(userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,userTest,true)).thenReturn(Optional.of(userTest));
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
@@ -81,7 +81,7 @@ public class UserControllerTests {
 
     @Test
     void testFailCreateUser() {
-        when(userService.saveUser(userTest)).thenReturn(Optional.empty());
+        when(userService.saveUser(userTest,userTest,true)).thenReturn(Optional.empty());
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
@@ -230,7 +230,7 @@ public class UserControllerTests {
     @Test
     void testSuccessUpdateUser() {
 
-        when(userService.saveUser(userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,userTest,false)).thenReturn(Optional.of(userTest));
         when(userService.getById(10L,userTest)).thenReturn(Optional.of(userTest));
 
         assertEquals(202,userController.updateUser(userTestDTO,userTest).getStatusCodeValue());
@@ -241,7 +241,7 @@ public class UserControllerTests {
     @Test
     void testFailUpdateUser() {
 
-        when(userService.saveUser(userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,userTest,false)).thenReturn(Optional.of(userTest));
         when(userService.getById(20L,userTest)).thenReturn(Optional.of(userTest));
 
         assertEquals(404,userController.updateUser(userTestDTO,userTest).getStatusCodeValue());

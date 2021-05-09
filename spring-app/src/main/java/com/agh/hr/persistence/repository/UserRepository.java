@@ -26,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.id IN ?1")
     List<User> findAll(List<Long> allowedIds);
+
+    @Query("SELECT u FROM User u WHERE u.personalData.id IS ?1")
+    Optional<User> getUserByPersonalDataId(Long id);
 }

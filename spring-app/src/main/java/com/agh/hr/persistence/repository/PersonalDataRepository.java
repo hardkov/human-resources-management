@@ -24,7 +24,7 @@ public interface PersonalDataRepository extends JpaRepository<PersonalData, Long
     @Query("SELECT d FROM PersonalData d WHERE d.lastname IS ?1 AND d.user.id IN ?2")
     List<PersonalData> findByLastname(String lastname, List<Long> allowedIds);
 
-    @Query("SELECT d FROM User d WHERE d.firstname IS ?1 AND d.lastname IS ?2 AND d.user.id IN ?3")
+    @Query("SELECT d FROM PersonalData d WHERE d.firstname IS ?1 AND d.lastname IS ?2 AND d.user.id IN ?3")
     List<PersonalData> findByFirstnameAndLastname(String firstname,String lastname, List<Long> allowedIds);
 
     @Query("SELECT d FROM PersonalData d WHERE d.address IS ?1 AND d.user.id IN ?2")

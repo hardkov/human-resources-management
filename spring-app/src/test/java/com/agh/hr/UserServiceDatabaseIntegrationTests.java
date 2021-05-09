@@ -48,7 +48,9 @@ public class UserServiceDatabaseIntegrationTests {
                 .firstname("Susan")
                 .lastname("Barrow")
                 .build();
+
         this.userTest = User.builder()
+                .id(10L)
                 .username("sus")
                 .passwordHash(passwordEncoder.encode("passw0rd"))
                 .enabled(true)
@@ -59,19 +61,22 @@ public class UserServiceDatabaseIntegrationTests {
                 .bonuses(Collections.emptyList())
                 .delegations(Collections.emptyList())
                 .applications(Collections.emptyList()).build();
-
+        val permissions= Permission.builder().build();
+        permissions.addToWrite(10L);
+        permissions.setAdd(true);
+        userTest.setPermissions(permissions);
     }
 
     @Test
     void testSaveUser(){
-        Optional<User> result=userService.saveUser(userTest);
+        Optional<User> result=userService.saveUser(userTest,userTest,true);
         assertEquals(Optional.of(userTest),result);
     }
 
     @Test
     void testSuccessFindByUsername(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,userTest,true).isPresent()),
                 ()->assertTrue(userService.findByUsername("sus").isPresent())
         );
     }
@@ -83,7 +88,7 @@ public class UserServiceDatabaseIntegrationTests {
 
     @Test
     void testGetById(){
-        Optional<User> result=userService.saveUser(userTest);
+        Optional<User> result=userService.saveUser(userTest,userTest,true);
         assertTrue(userService.getById(userTest.getId(),userTest).isPresent());
 
     }
@@ -91,7 +96,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByFirstname(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,userTest,true).isPresent()),
                 ()->assertEquals(1,userService.getByFirstname("Susan",userTest).size())
         );
 
@@ -105,7 +110,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByLastname(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,userTest,true).isPresent()),
                 ()->assertEquals(1,userService.getByLastname("Barrow",userTest).size())
         );
 
@@ -119,7 +124,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByFullName(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,userTest,true).isPresent()),
                 ()->assertEquals(1,userService.getByFullName("Susan","Barrow",userTest).size())
         );
     }
@@ -133,8 +138,8 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testDeleteUser(){
         assertAll(
-                ()->userService.saveUser(userTest),
-                ()->userService.deleteUser(userTest.getId()),
+                ()->userService.saveUser(userTest,userTest,true),
+                ()->userService.deleteUser(userTest.getId(),userTest),
                 ()->assertFalse(userService.getById(userTest.getId(),userTest).isPresent())
         );
     }

@@ -44,5 +44,9 @@ public class PermissionService {
         return permissionRepository.findByAddEquals(add);
     }
 
+    public boolean isAllowedToGet(long id){
 
+
+        return false;
+    }
 }

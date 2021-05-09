@@ -59,50 +59,26 @@ public class PersonalDataController implements SecuredRestController {
     @RequestMapping(value = "/data/{PersonalDataId}", method = RequestMethod.DELETE)
     @Operation(summary = "Deleting personal data with personalDataId")
     public ResponseEntity<Void> deletePersonalData(@PathVariable Long PersonalDataId,@AuthenticationPrincipal User userAuth) {
-        Optional<PersonalData> personalData=dataService.getById(PersonalDataId,userAuth);
-        if(!personalData.isPresent())
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(personalData.get().getUser().getId())))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        dataService.deletePersonalData(PersonalDataId);
-        return ResponseEntity.ok().build();
-    }
-
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
-    @Operation(summary = "Inserting new personal data",
-               responses = {
-                @ApiResponse(responseCode = "200", description = "Personal data DTO"),
-                @ApiResponse(responseCode = "400", description = "Personal data record could not be saved")
-               })
-    public ResponseEntity<PersonalDataDTO> insertPersonalData(@RequestBody PersonalDataDTO dataDTO,
-                                                              @AuthenticationPrincipal User userAuth) {
-        PersonalData data = converters.DTOToPersonalData(dataDTO);
-        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(data.getUser().getId())))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        Optional<PersonalData> insertedPersonalDataOpt = dataService.savePersonalData(data);
-        return insertedPersonalDataOpt.map(insertedData -> ResponseEntity.ok(converters.personalDataToDTO(insertedData)))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+        return dataService.deletePersonalData(PersonalDataId,userAuth);
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.PUT)
     @Operation(summary = "Updating personal data (if personal data with specified ID exists)",
                responses = {
                 @ApiResponse(responseCode = "200", description = "Personal data updated successfully"),
-                @ApiResponse(responseCode = "403", description = "Personal could not be updated")
+                @ApiResponse(responseCode = "400", description = "Personal could not be updated")
                })
     public  ResponseEntity<Void> updatePersonalData(@RequestBody PersonalDataDTO dataDTO,
                                                     @AuthenticationPrincipal User userAuth) {
         Optional<PersonalData> personalDataOpt = dataService.getById(dataDTO.getId(),userAuth);
         if(personalDataOpt.isPresent()){
-            if(!(Auth.getWriteIds(userAuth).contains(personalDataOpt.get().getUser().getId())))
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             PersonalData data = personalDataOpt.get();
             converters.updatePersonalDataWithDTO(dataDTO, data);
-            return dataService.savePersonalData(data).isPresent() ?
+            return dataService.savePersonalData(data,userAuth).isPresent() ?
                     ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         }
         else
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @RequestMapping(value = "/dataByFirstname/{name}", method = RequestMethod.GET)

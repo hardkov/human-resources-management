@@ -43,9 +43,7 @@ public class UserController implements SecuredRestController {
                })
     public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO,@AuthenticationPrincipal User userAuth) {
         User user = converters.DTOToUser(userDTO);
-        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(user.getId())))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        Optional<User> insertedUserOpt = userService.saveUser(user);
+        Optional<User> insertedUserOpt = userService.saveUser(user,userAuth,true);
         return insertedUserOpt
                 .map(insertedUser -> ResponseEntity.ok(converters.userToDTO(insertedUser)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -120,13 +118,11 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "400", description = "User could not be updated")
                })
     public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO,@AuthenticationPrincipal User userAuth) {
-        if(!(Auth.getWriteIds(userAuth).contains(userDTO.getId())))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         Optional<User> userOpt = userService.getById(userDTO.getId(),userAuth);
         if(userOpt.isPresent()) {
             User user = userOpt.get();
             converters.updateUserWithDTO(userDTO, user);
-            return userService.saveUser(user).isPresent() ?
+            return userService.saveUser(user,userAuth,false).isPresent() ?
                     ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
         }
         else {
@@ -138,9 +134,6 @@ public class UserController implements SecuredRestController {
     @DeleteMapping(value = "/user/{id}")
     @Operation(summary = "Deleting user with userID")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id,@AuthenticationPrincipal User userAuth) {
-        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(id)))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+        return userService.deleteUser(id,userAuth);
     }
 }

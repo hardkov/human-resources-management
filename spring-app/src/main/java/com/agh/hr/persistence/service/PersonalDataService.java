@@ -5,6 +5,8 @@ import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.PersonalDataRepository;
 import com.agh.hr.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +20,20 @@ public class PersonalDataService {
 
 
     private final PersonalDataRepository personalDataRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PersonalDataService(PersonalDataRepository personalDataRepository){
+    public PersonalDataService(PersonalDataRepository personalDataRepository,UserRepository userRepository){
         this.personalDataRepository=personalDataRepository;
+        this.userRepository=userRepository;
     }
 
-    public Optional<PersonalData> savePersonalData(PersonalData data) {
+    public Optional<PersonalData> savePersonalData(PersonalData data, User userAuth) {
+        Optional<User> user=userRepository.getUserByPersonalDataId(data.getId());
+        if(!user.isPresent())
+            return Optional.empty();
+        if(!(Auth.getWriteIds(userAuth).contains(user.get().getId())))
+            return Optional.empty();
         try {
             return Optional.of(personalDataRepository.save(data));
         }catch(Exception e){return Optional.empty();}
@@ -38,8 +47,14 @@ public class PersonalDataService {
         return personalDataRepository.findAll(Auth.getReadIds(userAuth));
     }
 
-    public void deletePersonalData(Long dataId) {
-            personalDataRepository.deleteById(dataId);
+    public ResponseEntity<Void> deletePersonalData(Long dataId, User userAuth) {
+        Optional<User> user=userRepository.getUserByPersonalDataId(dataId);
+        if(!user.isPresent())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(user.get().getId())))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        personalDataRepository.deleteById(dataId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public List<PersonalData> getByFirstname(String firstname,User userAuth) {
