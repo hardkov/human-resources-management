@@ -29,12 +29,17 @@ public class UserService {
 
     public Optional<User> saveUser(User user,User userAuth,boolean isNew) {
 
-        if(isNew&&!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(user.getId())))
+        if(isNew&&!(Auth.getAdd(userAuth)))
             return Optional.empty();
         else if(!isNew &&!(Auth.getWriteIds(userAuth).contains(user.getId())))
             return Optional.empty();
         try {
-                return Optional.of(userRepository.save(user));
+                val result= Optional.of(userRepository.save(user));
+                if(isNew) {
+                    userAuth.getPermissions().addToWrite(result.get().getId());
+                    val newUserAuth = userRepository.save(userAuth);
+                }
+                return result;
         } catch(Exception e) {
             return Optional.empty();
         }

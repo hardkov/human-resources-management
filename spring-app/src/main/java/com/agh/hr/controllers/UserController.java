@@ -15,10 +15,12 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,7 +43,9 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "Created user's DTO"),
                 @ApiResponse(responseCode = "400", description = "User could not be created", content = @Content())
                })
-    public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO,@AuthenticationPrincipal User userAuth) {
+    public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO,Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         User user = converters.DTOToUser(userDTO);
         Optional<User> insertedUserOpt = userService.saveUser(user,userAuth,true);
         return insertedUserOpt
@@ -55,7 +59,9 @@ public class UserController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of all users' DTOs")
                })
-    public ResponseEntity<List<UserDTO>> getAllUsers(@AuthenticationPrincipal User userAuth) {
+    public ResponseEntity<List<UserDTO>> getAllUsers(Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         return ResponseEntity.ok(
                 userService.getAllUsers(userAuth).stream().map(converters::userToDTO)
                         .collect(Collectors.toList())
@@ -68,7 +74,9 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "The user's DTO"),
                 @ApiResponse(responseCode = "404", description = "User not found", content = @Content())
                })
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id,@AuthenticationPrincipal User userAuth) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id,Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         Optional<User> userOpt = userService.getById(id,userAuth);
         return userOpt
                 .map(user -> ResponseEntity.ok(converters.userToDTO(user)))
@@ -80,7 +88,9 @@ public class UserController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
                })
-    public ResponseEntity<List<UserDTO>> getUserByFirstname(@PathVariable String name,@AuthenticationPrincipal User userAuth) {
+    public ResponseEntity<List<UserDTO>> getUserByFirstname(@PathVariable String name,Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         return ResponseEntity.ok(userService.getByFirstname(name,userAuth).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList()));
@@ -91,7 +101,9 @@ public class UserController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
                })
-    public ResponseEntity<List<UserDTO>> getUserByLastname(@PathVariable String name,@AuthenticationPrincipal User userAuth) {
+    public ResponseEntity<List<UserDTO>> getUserByLastname(@PathVariable String name, Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         return ResponseEntity.ok(userService.getByLastname(name,userAuth).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList()));
@@ -103,7 +115,9 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
                })
     public ResponseEntity<List<UserDTO>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname,
-                                                           @AuthenticationPrincipal User userAuth) {
+                                                           Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         return ResponseEntity.ok(userService.getByFullName(firstname,lastname,userAuth).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList()));
@@ -117,7 +131,9 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "404", description = "User not found"),
                 @ApiResponse(responseCode = "400", description = "User could not be updated")
                })
-    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO,@AuthenticationPrincipal User userAuth) {
+    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO,Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         Optional<User> userOpt = userService.getById(userDTO.getId(),userAuth);
         if(userOpt.isPresent()) {
             User user = userOpt.get();
@@ -133,7 +149,9 @@ public class UserController implements SecuredRestController {
     //// DELETE
     @DeleteMapping(value = "/user/{id}")
     @Operation(summary = "Deleting user with userID")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id,@AuthenticationPrincipal User userAuth) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id,Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        User userAuth = (User) authentication.getPrincipal();
         return userService.deleteUser(id,userAuth);
     }
 }
