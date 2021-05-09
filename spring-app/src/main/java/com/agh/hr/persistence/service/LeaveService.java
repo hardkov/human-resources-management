@@ -1,8 +1,11 @@
 package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.model.Leave;
+import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.LeaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,50 +25,60 @@ public class LeaveService {
         this.leaveRepository=leaveRepository;
     }
 
-    public Optional<Leave> saveLeave(Leave leave) {
+    public Optional<Leave> saveLeave(Leave leave, User userAuth,boolean isNew) {
+        if(isNew&&!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(leave.getUser().getId())))
+            return Optional.empty();
+        else if(!isNew &&!(Auth.getWriteIds(userAuth).contains(leave.getUser().getId())))
+            return Optional.empty();
         try {
             return Optional.of(leaveRepository.save(leave));
         }catch(Exception e){return Optional.empty();}
     }
 
-    public Optional<Leave> getById(Long id) {
-        return leaveRepository.findById(id);
+    public Optional<Leave> getById(Long id,User userAuth) {
+        return leaveRepository.findById(id,Auth.getReadIds(userAuth));
     }
 
-    public List<Leave> getAllLeaves() {
-        return leaveRepository.findAll();
+    public List<Leave> getAllLeaves(User userAuth) {
+        return leaveRepository.findAll(Auth.getReadIds(userAuth));
     }
 
-    public void deleteLeave(Long leaveId) {
-            leaveRepository.deleteById(leaveId);
+    public ResponseEntity<Void> deleteLeave(Long leaveId,User userAuth) {
+        Optional<Leave> leave=leaveRepository.findById(leaveId);
+        if(!leave.isPresent())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(leave.get().getUser().getId())))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        leaveRepository.deleteById(leaveId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    public List<Leave> getByStartDateEquals(LocalDateTime startDate) {
-        return leaveRepository.findByStartDateEquals(startDate);
+    public List<Leave> getByStartDateEquals(LocalDateTime startDate,User userAuth) {
+        return leaveRepository.findByStartDateEquals(startDate,Auth.getReadIds(userAuth));
     }
 
-    public List<Leave> getByStartDateBefore(LocalDateTime before) {
-        return leaveRepository.findByStartDateBefore(before);
+    public List<Leave> getByStartDateBefore(LocalDateTime before,User userAuth) {
+        return leaveRepository.findByStartDateBefore(before,Auth.getReadIds(userAuth));
     }
 
-    public List<Leave> getByStartDateAfter(LocalDateTime after) {
-        return leaveRepository.findByStartDateAfter(after);
+    public List<Leave> getByStartDateAfter(LocalDateTime after,User userAuth) {
+        return leaveRepository.findByStartDateAfter(after,Auth.getReadIds(userAuth));
     }
 
-    public List<Leave> getByEndDateEquals(LocalDateTime endDate) {
-        return leaveRepository.findByEndDateEquals(endDate);
+    public List<Leave> getByEndDateEquals(LocalDateTime endDate,User userAuth) {
+        return leaveRepository.findByEndDateEquals(endDate,Auth.getReadIds(userAuth));
     }
 
-    public List<Leave> getByEndDateBefore(LocalDateTime before) {
-        return leaveRepository.findByEndDateBefore(before);
+    public List<Leave> getByEndDateBefore(LocalDateTime before,User userAuth) {
+        return leaveRepository.findByEndDateBefore(before,Auth.getReadIds(userAuth));
     }
 
-    public List<Leave> getByEndDateAfter(LocalDateTime after) {
-        return leaveRepository.findByEndDateAfter(after);
+    public List<Leave> getByEndDateAfter(LocalDateTime after,User userAuth) {
+        return leaveRepository.findByEndDateAfter(after,Auth.getReadIds(userAuth));
     }
 
-    public List<Leave> getByPaidEquals(boolean paid) {
-        return leaveRepository.findByPaidEquals(paid);
+    public List<Leave> getByPaidEquals(boolean paid,User userAuth) {
+        return leaveRepository.findByPaidEquals(paid,Auth.getReadIds(userAuth));
     }
     
 }

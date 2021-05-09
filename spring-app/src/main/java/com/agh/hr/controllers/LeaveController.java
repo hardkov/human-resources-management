@@ -47,7 +47,7 @@ public class LeaveController implements SecuredRestController {
             User user = userOpt.get();
             Leave leave = converters.DTOToLeave(leaveDTO);
             leave.setUser(user);
-            Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave);
+            Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave,userAuth,true);
             return insertedLeaveOpt
                     .map(insertedLeave -> ResponseEntity.ok(converters.leaveToDTO(insertedLeave)))
                     .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -63,9 +63,9 @@ public class LeaveController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of all leaves")
                })
-    public ResponseEntity<List<LeaveDTO>> getAllLeaves() {
+    public ResponseEntity<List<LeaveDTO>> getAllLeaves(@AuthenticationPrincipal User userAuth) {
         return ResponseEntity.ok(
-                leaveService.getAllLeaves().stream().map(converters::leaveToDTO)
+                leaveService.getAllLeaves(userAuth).stream().map(converters::leaveToDTO)
                         .collect(Collectors.toList())
         );
     }
@@ -97,12 +97,12 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "404", description = "Leave not found"),
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved")
                })
-    public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO) {
-        Optional<Leave> leaveOpt = leaveService.getById(leaveDTO.getId());
+    public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO,@AuthenticationPrincipal User userAuth) {
+        Optional<Leave> leaveOpt = leaveService.getById(leaveDTO.getId(),userAuth);
         if(leaveOpt.isPresent()){
             Leave leave = leaveOpt.get();
             converters.updateLeaveWithDTO(leaveDTO, leave);
-            return leaveService.saveLeave(leave).isPresent() ?
+            return leaveService.saveLeave(leave,userAuth,false).isPresent() ?
                     ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         }
         else
@@ -112,8 +112,7 @@ public class LeaveController implements SecuredRestController {
     //// DELETE
     @DeleteMapping(value = "/leave/{id}")
     @Operation(summary = "Deleting leave with leaveID")
-    public ResponseEntity<Void> deleteLeave(@PathVariable Long id) {
-        leaveService.deleteLeave(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> deleteLeave(@PathVariable Long id,@AuthenticationPrincipal User userAuth) {
+        return userService.deleteUser(id,userAuth);
     }
 }
