@@ -19,7 +19,6 @@ public class Converters {
     public User DTOToUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         PersonalData personalData=DTOToPersonalData(userDTO.personalData);
-        personalData.setUser(user);
         user.setPersonalData(personalData);
         return user;
     }
