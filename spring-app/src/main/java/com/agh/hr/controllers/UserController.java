@@ -4,23 +4,15 @@ import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.dto.UserDTO;
-import com.agh.hr.persistence.service.Auth;
 import com.agh.hr.persistence.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,11 +35,9 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "Created user's DTO"),
                 @ApiResponse(responseCode = "400", description = "User could not be created", content = @Content())
                })
-    public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
+    public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
         User user = converters.DTOToUser(userDTO);
-        Optional<User> insertedUserOpt = userService.saveUser(user,userAuth,true);
+        Optional<User> insertedUserOpt = userService.saveUser(user,true);
         return insertedUserOpt
                 .map(insertedUser -> ResponseEntity.ok(converters.userToDTO(insertedUser)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -59,11 +49,9 @@ public class UserController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of all users' DTOs")
                })
-    public ResponseEntity<List<UserDTO>> getAllUsers(Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(
-                userService.getAllUsers(userAuth).stream().map(converters::userToDTO)
+                userService.getAllUsers().stream().map(converters::userToDTO)
                         .collect(Collectors.toList())
         );
     }
@@ -74,10 +62,8 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "The user's DTO"),
                 @ApiResponse(responseCode = "404", description = "User not found", content = @Content())
                })
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        Optional<User> userOpt = userService.getById(id,userAuth);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        Optional<User> userOpt = userService.getById(id);
         return userOpt
                 .map(user -> ResponseEntity.ok(converters.userToDTO(user)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -88,10 +74,8 @@ public class UserController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
                })
-    public ResponseEntity<List<UserDTO>> getUserByFirstname(@PathVariable String name,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(userService.getByFirstname(name,userAuth).stream()
+    public ResponseEntity<List<UserDTO>> getUserByFirstname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByFirstname(name).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList()));
     }
@@ -101,10 +85,8 @@ public class UserController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
                })
-    public ResponseEntity<List<UserDTO>> getUserByLastname(@PathVariable String name, Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(userService.getByLastname(name,userAuth).stream()
+    public ResponseEntity<List<UserDTO>> getUserByLastname(@PathVariable String name) {
+        return ResponseEntity.ok(userService.getByLastname(name).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList()));
     }
@@ -114,11 +96,8 @@ public class UserController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of matched users' DTOs")
                })
-    public ResponseEntity<List<UserDTO>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname,
-                                                           Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(userService.getByFullName(firstname,lastname,userAuth).stream()
+    public ResponseEntity<List<UserDTO>> getUserByFullName(@PathVariable String firstname,@PathVariable String lastname) {
+        return ResponseEntity.ok(userService.getByFullName(firstname,lastname).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList()));
     }
@@ -131,14 +110,12 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "404", description = "User not found"),
                 @ApiResponse(responseCode = "400", description = "User could not be updated")
                })
-    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        Optional<User> userOpt = userService.getById(userDTO.getId(),userAuth);
+    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
+        Optional<User> userOpt = userService.getById(userDTO.getId());
         if(userOpt.isPresent()) {
             User user = userOpt.get();
             converters.updateUserWithDTO(userDTO, user);
-            return userService.saveUser(user,userAuth,false).isPresent() ?
+            return userService.saveUser(user,false).isPresent() ?
                     ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
         }
         else {
@@ -149,9 +126,7 @@ public class UserController implements SecuredRestController {
     //// DELETE
     @DeleteMapping(value = "/user/{id}")
     @Operation(summary = "Deleting user with userID")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        return userService.deleteUser(id,userAuth);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        return userService.deleteUser(id);
     }
 }

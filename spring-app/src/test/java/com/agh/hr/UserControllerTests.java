@@ -15,8 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.security.Principal;
 import java.util.*;
 
 public class UserControllerTests {
@@ -32,6 +33,7 @@ public class UserControllerTests {
 
     private User userTest;
     private UserDTO userTestDTO;
+    private Principal principal;
 
     @BeforeEach
     public void setup() {
@@ -41,15 +43,10 @@ public class UserControllerTests {
                 .firstname("Susan")
                 .lastname("Barrow")
                 .build();
-        val permission=Permission.builder()
-                .add(true).build();
-        permission.addToWrite(10L);
-        permission.addToRead(10L);
 
         this.userTest = User.builder()
                 .id(10L)
                 .personalData(personalData)
-                .permissions(permission)
                 .build();
 
         val personalDataDTO= PersonalDataDTO.builder()
@@ -65,14 +62,14 @@ public class UserControllerTests {
 
     @Test
     void testSuccessCreateUser() {
-        when(userService.saveUser(userTest,userTest,true)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,true)).thenReturn(Optional.of(userTest));
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
         assertAll(
-                ()->assertEquals(200,userController.insertUser(userTestDTO,userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.insertUser(userTestDTO,userTest).getBody()),
-                ()->assertEquals(userController.insertUser(userTestDTO,userTest).getBody(),userTestDTO)
+                ()->assertEquals(200,userController.insertUser(userTestDTO).getStatusCodeValue()),
+                ()->assertNotNull(userController.insertUser(userTestDTO).getBody()),
+                ()->assertEquals(userController.insertUser(userTestDTO).getBody(),userTestDTO)
         );
 
         verify(converters, times(3)).userToDTO(userTest);
@@ -81,13 +78,13 @@ public class UserControllerTests {
 
     @Test
     void testFailCreateUser() {
-        when(userService.saveUser(userTest,userTest,true)).thenReturn(Optional.empty());
+        when(userService.saveUser(userTest,true)).thenReturn(Optional.empty());
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
         assertAll(
-                ()->assertEquals(400,userController.insertUser(userTestDTO,userTest).getStatusCodeValue()),
-                ()->assertNull(userController.insertUser(userTestDTO,userTest).getBody())
+                ()->assertEquals(400,userController.insertUser(userTestDTO).getStatusCodeValue()),
+                ()->assertNull(userController.insertUser(userTestDTO).getBody())
         );
         verify(converters, times(0)).userToDTO(userTest);
     }
@@ -104,11 +101,11 @@ public class UserControllerTests {
 
 
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
-        when(userService.getAllUsers(userTest)).thenReturn(userList);
+        when(userService.getAllUsers()).thenReturn(userList);
         assertAll(
-                ()->assertEquals(200,userController.getAllUsers(userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.getAllUsers(userTest).getBody()),
-                ()->assertTrue(userController.getAllUsers(userTest).getBody().containsAll(userDTOList))
+                ()->assertEquals(200,userController.getAllUsers().getStatusCodeValue()),
+                ()->assertNotNull(userController.getAllUsers().getBody()),
+                ()->assertTrue(userController.getAllUsers().getBody().containsAll(userDTOList))
         );
         verify(converters, times(30)).userToDTO(userTest);
     }
@@ -117,11 +114,11 @@ public class UserControllerTests {
     void testSuccessGetUserById() {
 
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
-        when(userService.getById(10L,userTest)).thenReturn(Optional.of(userTest));
+        when(userService.getById(10L)).thenReturn(Optional.of(userTest));
         assertAll(
-                ()->assertEquals(200,userController.getUserById(10L,userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.getUserById(10L,userTest).getBody()),
-                ()->assertEquals(10L,Objects.requireNonNull(userController.getUserById(10L,userTest)
+                ()->assertEquals(200,userController.getUserById(10L).getStatusCodeValue()),
+                ()->assertNotNull(userController.getUserById(10L).getBody()),
+                ()->assertEquals(10L,Objects.requireNonNull(userController.getUserById(10L)
                         .getBody()).getId().longValue())
         );
         verify(converters, times(3)).userToDTO(userTest);
@@ -131,10 +128,10 @@ public class UserControllerTests {
     void testFailGetUserById() {
 
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
-        when(userService.getById(10L,userTest)).thenReturn(Optional.of(userTest));
+        when(userService.getById(10L)).thenReturn(Optional.of(userTest));
         assertAll(
-                ()->assertEquals(404,userController.getUserById(20L,userTest).getStatusCodeValue()),
-                ()->assertNull(userController.getUserById(20L,userTest).getBody())
+                ()->assertEquals(404,userController.getUserById(20L).getStatusCodeValue()),
+                ()->assertNull(userController.getUserById(20L).getBody())
         );
         verify(converters, times(0)).userToDTO(userTest);
     }
@@ -144,13 +141,13 @@ public class UserControllerTests {
         List<User> userList=new ArrayList<>();
         userList.add(userTest);
 
-        when(userService.getByFirstname("Susan",userTest)).thenReturn(userList);
+        when(userService.getByFirstname("Susan")).thenReturn(userList);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
         assertAll(
-                ()->assertEquals(200,userController.getUserByFirstname("Susan",userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.getUserByFirstname("Susan",userTest).getBody()),
-                ()->assertFalse(Objects.requireNonNull(userController.getUserByFirstname("Susan",userTest).getBody()).isEmpty()),
-                ()->assertEquals("Susan",Objects.requireNonNull(userController.getUserByFirstname("Susan",userTest)
+                ()->assertEquals(200,userController.getUserByFirstname("Susan").getStatusCodeValue()),
+                ()->assertNotNull(userController.getUserByFirstname("Susan").getBody()),
+                ()->assertFalse(Objects.requireNonNull(userController.getUserByFirstname("Susan").getBody()).isEmpty()),
+                ()->assertEquals("Susan",Objects.requireNonNull(userController.getUserByFirstname("Susan")
                         .getBody()).get(0).getPersonalData().getFirstname())
         );
         verify(converters, times(4)).userToDTO(userTest);
@@ -158,10 +155,10 @@ public class UserControllerTests {
     @Test
     void testFailGetUserByFirstname() {
         List<User> emptyUserList=new ArrayList<>();
-        when(userService.getByFirstname("Sussan",userTest)).thenReturn(emptyUserList);
+        when(userService.getByFirstname("Sussan")).thenReturn(emptyUserList);
         assertAll(
-                ()->assertNotNull(userController.getUserByFirstname("Sussan",userTest)),
-                ()->assertTrue(Objects.requireNonNull(userController.getUserByFirstname("Sussan",userTest).getBody()).isEmpty())
+                ()->assertNotNull(userController.getUserByFirstname("Sussan")),
+                ()->assertTrue(Objects.requireNonNull(userController.getUserByFirstname("Sussan").getBody()).isEmpty())
         );
         verify(converters, times(0)).userToDTO(userTest);
     }
@@ -171,13 +168,13 @@ public class UserControllerTests {
         List<User> userList=new ArrayList<>();
         userList.add(userTest);
 
-        when(userService.getByLastname("Barrow",userTest)).thenReturn(userList);
+        when(userService.getByLastname("Barrow")).thenReturn(userList);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
         assertAll(
-                ()->assertEquals(200,userController.getUserByLastname("Barrow",userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.getUserByLastname("Barrow",userTest).getBody()),
-                ()->assertFalse(Objects.requireNonNull(userController.getUserByLastname("Barrow",userTest).getBody()).isEmpty()),
-                ()->assertEquals("Barrow",Objects.requireNonNull(userController.getUserByLastname("Barrow",userTest)
+                ()->assertEquals(200,userController.getUserByLastname("Barrow").getStatusCodeValue()),
+                ()->assertNotNull(userController.getUserByLastname("Barrow").getBody()),
+                ()->assertFalse(Objects.requireNonNull(userController.getUserByLastname("Barrow").getBody()).isEmpty()),
+                ()->assertEquals("Barrow",Objects.requireNonNull(userController.getUserByLastname("Barrow")
                         .getBody()).get(0).getPersonalData().getLastname())
         );
         verify(converters, times(4)).userToDTO(userTest);
@@ -187,11 +184,11 @@ public class UserControllerTests {
     @Test
     void testFailGetUserByLastname() {
         List<User> emptyUserList=new ArrayList<>();
-        when(userService.getByLastname("Sussan",userTest)).thenReturn(emptyUserList);
+        when(userService.getByLastname("Sussan")).thenReturn(emptyUserList);
         assertAll(
-                ()->assertEquals(200,userController.getUserByLastname("Sussan",userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.getUserByLastname("Sussan",userTest)),
-                ()->assertTrue(Objects.requireNonNull(userController.getUserByLastname("Sussan",userTest).getBody()).isEmpty())
+                ()->assertEquals(200,userController.getUserByLastname("Sussan").getStatusCodeValue()),
+                ()->assertNotNull(userController.getUserByLastname("Sussan")),
+                ()->assertTrue(Objects.requireNonNull(userController.getUserByLastname("Sussan").getBody()).isEmpty())
         );
         verify(converters, times(0)).userToDTO(userTest);
 
@@ -201,16 +198,16 @@ public class UserControllerTests {
     void testSuccessGetUserByFullname() {
         List<User> userList=new ArrayList<>();
         userList.add(userTest);
-        when(userService.getByFullName("Susan","Barrow",userTest)).thenReturn(userList);
+        when(userService.getByFullName("Susan","Barrow")).thenReturn(userList);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
         assertAll(
-                ()->assertEquals(200,userController.getUserByFullName("Susan","Barrow",userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.getUserByFullName("Susan","Barrow",userTest)),
+                ()->assertEquals(200,userController.getUserByFullName("Susan","Barrow").getStatusCodeValue()),
+                ()->assertNotNull(userController.getUserByFullName("Susan","Barrow")),
                 ()->assertEquals("Susan",Objects.requireNonNull(userController
-                        .getUserByFullName("Susan","Barrow",userTest).getBody())
+                        .getUserByFullName("Susan","Barrow").getBody())
                         .get(0).getPersonalData().getFirstname()),
                 ()->assertEquals("Barrow",Objects.requireNonNull(userController
-                        .getUserByFullName("Susan","Barrow",userTest).getBody()).get(0).getPersonalData().getLastname())
+                        .getUserByFullName("Susan","Barrow").getBody()).get(0).getPersonalData().getLastname())
         );
         verify(converters, times(4)).userToDTO(userTest);
     }
@@ -218,11 +215,11 @@ public class UserControllerTests {
     @Test
     void testFailGetUserByFullname() {
         List<User> emptyUserList=new ArrayList<>();
-        when(userService.getByFullName("Susan","Barrow",userTest)).thenReturn(emptyUserList);
+        when(userService.getByFullName("Susan","Barrow")).thenReturn(emptyUserList);
         assertAll(
-                ()->assertEquals(200,userController.getUserByFullName("Susan","Barrow",userTest).getStatusCodeValue()),
-                ()->assertNotNull(userController.getUserByFullName("Susan","Barrow",userTest)),
-                ()->assertTrue(Objects.requireNonNull(userController.getUserByFullName("Susan","Barrow",userTest).getBody()).isEmpty())
+                ()->assertEquals(200,userController.getUserByFullName("Susan","Barrow").getStatusCodeValue()),
+                ()->assertNotNull(userController.getUserByFullName("Susan","Barrow")),
+                ()->assertTrue(Objects.requireNonNull(userController.getUserByFullName("Susan","Barrow").getBody()).isEmpty())
         );
         verify(converters, times(0)).userToDTO(userTest);
     }
@@ -230,10 +227,10 @@ public class UserControllerTests {
     @Test
     void testSuccessUpdateUser() {
 
-        when(userService.saveUser(userTest,userTest,false)).thenReturn(Optional.of(userTest));
-        when(userService.getById(10L,userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,false)).thenReturn(Optional.of(userTest));
+        when(userService.getById(10L)).thenReturn(Optional.of(userTest));
 
-        assertEquals(202,userController.updateUser(userTestDTO,userTest).getStatusCodeValue());
+        assertEquals(202,userController.updateUser(userTestDTO).getStatusCodeValue());
         verify(converters, times(1)).updateUserWithDTO(userTestDTO,userTest);
 
     }
@@ -241,10 +238,10 @@ public class UserControllerTests {
     @Test
     void testFailUpdateUser() {
 
-        when(userService.saveUser(userTest,userTest,false)).thenReturn(Optional.of(userTest));
-        when(userService.getById(20L,userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,false)).thenReturn(Optional.of(userTest));
+        when(userService.getById(20L)).thenReturn(Optional.of(userTest));
 
-        assertEquals(404,userController.updateUser(userTestDTO,userTest).getStatusCodeValue());
+        assertEquals(404,userController.updateUser(userTestDTO).getStatusCodeValue());
         verify(converters, times(0)).updateUserWithDTO(userTestDTO,userTest);
 
     }

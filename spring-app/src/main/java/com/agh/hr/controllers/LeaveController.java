@@ -43,15 +43,14 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved", content = @Content()),
                })
     public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @RequestBody LeaveDTO leaveDTO
-            ,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        Optional<User> userOpt = userService.getById(userId,userAuth);
+            ) {
+        
+        Optional<User> userOpt = userService.getById(userId);
         if(userOpt.isPresent()){
             User user = userOpt.get();
             Leave leave = converters.DTOToLeave(leaveDTO);
             leave.setUser(user);
-            Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave,userAuth,true);
+            Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave,true);
             return insertedLeaveOpt
                     .map(insertedLeave -> ResponseEntity.ok(converters.leaveToDTO(insertedLeave)))
                     .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -67,11 +66,10 @@ public class LeaveController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of all leaves")
                })
-    public ResponseEntity<List<LeaveDTO>> getAllLeaves(Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
+    public ResponseEntity<List<LeaveDTO>> getAllLeaves() {
+        
         return ResponseEntity.ok(
-                leaveService.getAllLeaves(userAuth).stream().map(converters::leaveToDTO)
+                leaveService.getAllLeaves().stream().map(converters::leaveToDTO)
                         .collect(Collectors.toList())
         );
     }
@@ -83,10 +81,9 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "404", description = "User not found", content = @Content())
                })
     public ResponseEntity<List<LeaveDTO>> getLeavesByUserId(@PathVariable Long userId
-            ,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        Optional<User> userOpt = userService.getById(userId,userAuth);
+            ) {
+        
+        Optional<User> userOpt = userService.getById(userId);
         return userOpt
                 .map(user -> ResponseEntity.ok(
                         user
@@ -105,14 +102,13 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "404", description = "Leave not found"),
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved")
                })
-    public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        Optional<Leave> leaveOpt = leaveService.getById(leaveDTO.getId(),userAuth);
+    public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO) {
+        
+        Optional<Leave> leaveOpt = leaveService.getById(leaveDTO.getId());
         if(leaveOpt.isPresent()){
             Leave leave = leaveOpt.get();
             converters.updateLeaveWithDTO(leaveDTO, leave);
-            return leaveService.saveLeave(leave,userAuth,false).isPresent() ?
+            return leaveService.saveLeave(leave,false).isPresent() ?
                     ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         }
         else
@@ -122,9 +118,8 @@ public class LeaveController implements SecuredRestController {
     //// DELETE
     @DeleteMapping(value = "/leave/{id}")
     @Operation(summary = "Deleting leave with leaveID")
-    public ResponseEntity<Void> deleteLeave(@PathVariable Long id,Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        User userAuth = (User) authentication.getPrincipal();
-        return userService.deleteUser(id,userAuth);
+    public ResponseEntity<Void> deleteLeave(@PathVariable Long id) {
+        
+        return userService.deleteUser(id);
     }
 }
