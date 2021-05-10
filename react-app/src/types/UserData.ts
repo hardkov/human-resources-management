@@ -1,7 +1,7 @@
 import PersonalData from './PersonalData';
 
 interface UserData {
-  id: number | null;
+  id: number;
   personalData: PersonalData;
   position: string;
 }

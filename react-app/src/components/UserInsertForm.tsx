@@ -6,6 +6,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {FormControl} from "@material-ui/core";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
@@ -15,18 +20,21 @@ import UserInsertionData from "../types/UserInsertionData";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(16),
+        marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.primary.main
     },
     form: {
         width: '100%',
         marginTop: theme.spacing(3),
+    },
+    input: {
+        width: '100%'
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
@@ -46,13 +54,12 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
 
     const [selectedDate, setSelectedDate] = React.useState(new Date(2021, 0, 1))
     const [details, setDetails] = useState<UserInsertionData>({
-        id: null,
         position: "",
         username: "",
-        role: "SUPERVISOR",
+        role: "EMPLOYEE",
         password: "",
         personalData:{
-            id: null,
+            id: 0,
             firstname: "",
             lastname: "",
             email: "",
@@ -69,6 +76,12 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
     }
 
     const handleUserChange = (event: React.FormEvent) => {
+        const target = event.target as HTMLInputElement;
+        setDetails({ ...details, [target.name]: target.value });
+        console.log(details)
+    };
+
+    const handleUserChangeInput = (event: React.ChangeEvent<{ value: unknown }>) => {
         const target = event.target as HTMLInputElement;
         setDetails({ ...details, [target.name]: target.value });
         console.log(details)
@@ -106,7 +119,7 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                             <TextField
                                 name="firstname"
                                 variant="outlined"
@@ -117,7 +130,7 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
                                 onChange={handlePersonalDataChange}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                             <TextField
                                 variant="outlined"
                                 required
@@ -131,6 +144,7 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
                         <Grid item xs={12}>
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <KeyboardDatePicker
+                                    fullWidth
                                     disableToolbar
                                     variant="inline"
                                     format="dd/MM/yyyy"
@@ -155,6 +169,22 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
                                 id="position"
                                 onChange={handleUserChange}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl required variant="outlined" className={classes.input}>
+                                <InputLabel id="roleLabel">Role in company</InputLabel>
+                                <Select
+                                    id="role"
+                                    name="role"
+                                    labelId="roleLabel"
+                                    label="Role in company"
+                                    defaultValue="EMPLOYEE"
+                                    onChange={handleUserChangeInput}
+                                >
+                                    <MenuItem value="EMPLOYEE">Employee</MenuItem>
+                                    <MenuItem value="SUPERVISOR">Supervisor</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -189,7 +219,7 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
                                 onChange={handlePersonalDataChange}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                             <TextField
                                 variant="outlined"
                                 required
@@ -200,12 +230,13 @@ const UserInsertForm = ({ handleSubmitCallback, error }: Props) => {
                                 onChange={handleUserChange}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                             <TextField
                                 variant="outlined"
                                 required
                                 fullWidth
                                 name="password"
+                                type="password"
                                 label="Password"
                                 id="password"
                                 onChange={handleUserChange}

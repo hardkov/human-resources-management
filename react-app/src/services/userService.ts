@@ -4,6 +4,7 @@ import { USER_DATA_ENDPOINT } from './config';
 import UserData from '../types/UserData';
 import ActionResult from '../types/ActionResult';
 import PersonalData from '../types/PersonalData';
+import UserInsertionData from "../types/UserInsertionData";
 
 const getUser = async (userId: string): Promise<ActionResult<UserData>> => {
   try {
@@ -37,7 +38,7 @@ const getAllUsers = async (): Promise<ActionResult<UserData[]>> => {
   }
 };
 
-const addUser = async (userData: UserData): Promise<ActionResult> => {
+const addUser = async (userData: UserInsertionData): Promise<ActionResult> => {
   try {
     const response: AxiosResponse = await axios.post(USER_DATA_ENDPOINT, userData, {
       headers: getAuthHeaders(),
