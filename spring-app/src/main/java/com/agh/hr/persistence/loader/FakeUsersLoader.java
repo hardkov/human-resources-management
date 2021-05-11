@@ -1,9 +1,6 @@
 package com.agh.hr.persistence.loader;
 
-import com.agh.hr.persistence.model.Leave;
-import com.agh.hr.persistence.model.PersonalData;
-import com.agh.hr.persistence.model.Role;
-import com.agh.hr.persistence.model.User;
+import com.agh.hr.persistence.model.*;
 import com.agh.hr.persistence.repository.LeaveRepository;
 import com.agh.hr.persistence.repository.UserRepository;
 import com.agh.hr.persistence.service.RoleService;
@@ -16,12 +13,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -65,24 +59,49 @@ public class FakeUsersLoader {
                         .generate(() ->
                         fakeUser(faker, roleService.employeeRole())
                                 .build()
-                        ).limit(usersNumber);
+                        ).limit(usersNumber)
+                        .collect(Collectors.toList());
 
         val fakeSupervisors =
                 Stream
-                        .generate(() ->
-                        fakeUser(faker, roleService.supervisorRole())
-                                .position(faker.job().seniority() + " Project Manager")
-                                .build()
-                        ).limit(supervisorsNumber);
+                        .generate(() -> {
+                            List<Long> shuffledUsers = fakeUsers
+                                    .stream()
+                                    .map(User::getId)
+                                    .collect(Collectors.toList());
+                            Collections.shuffle(shuffledUsers);
+                            List<Long> supervisedUsers = shuffledUsers.subList(0, usersNumber/4);
+                            return fakeUser(faker, roleService.supervisorRole())
+                                    .position(faker.job().seniority() + " Project Manager")
+                                    .permissions(Permission.builder()
+                                            .add(true)
+                                            .read(supervisedUsers)
+                                            .write(supervisedUsers)
+                                            .build())
+                                    .build();
+                        }).limit(supervisorsNumber)
+                        .collect(Collectors.toList());
 
         val user = fakeUser(faker, roleService.employeeRole())
                 .position("Ordinary User")
                 .username("user@gmail.com")
                 .build();
 
+        val shuffledUsers = fakeUsers
+                .stream()
+                .map(User::getId)
+                .collect(Collectors.toList());
+        Collections.shuffle(shuffledUsers);
+        val supervisedUsers = shuffledUsers.subList(0, usersNumber/2);
+
         val supervisor = fakeUser(faker, roleService.supervisorRole())
                 .position("Supervisor")
                 .username("supervisor@gmail.com")
+                .permissions(Permission.builder()
+                        .add(true)
+                        .read(supervisedUsers)
+                        .write(supervisedUsers)
+                        .build())
                 .build();
 
         val admin = fakeUser(faker, roleService.adminRole())
@@ -91,7 +110,7 @@ public class FakeUsersLoader {
                 .build();
 
         val allUsers = Stream
-                .of(fakeUsers, fakeSupervisors, Stream.of(user, supervisor, admin))
+                .of(fakeUsers.stream(), fakeSupervisors.stream(), Stream.of(user, supervisor, admin))
                 .reduce(Stream::concat)
                 .get().collect(Collectors.toList());
 
@@ -136,6 +155,7 @@ public class FakeUsersLoader {
                 .enabled(true)
                 .authorities(Collections.singleton(role))
                 .personalData(userPersonalData)
+                .permissions(Permission.builder().add(false).build())
                 .position(faker.programmingLanguage().name() + " Developer")
                 .leaves(Collections.emptyList())
                 .bonuses(Collections.emptyList())
