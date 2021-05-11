@@ -120,6 +120,6 @@ public class LeaveController implements SecuredRestController {
     @Operation(summary = "Deleting leave with leaveID")
     public ResponseEntity<Void> deleteLeave(@PathVariable Long id) {
         
-        return userService.deleteUser(id);
+        return leaveService.deleteLeave(id);
     }
 }

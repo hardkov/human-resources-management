@@ -39,4 +39,31 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
     @Query("SELECT l FROM Leave l WHERE l.paid IS ?1 AND l.user.id IN ?2")
     List<Leave> findByPaidEquals(Boolean paid, List<Long> allowedIds);
 
+    @Query("SELECT l FROM Leave l WHERE l.id IS ?1")
+    Optional<Leave> findByIdAdmin(Long id);
+
+    @Query("SELECT l FROM Leave l")
+    List<Leave> findAllAdmin();
+
+    @Query("SELECT l FROM Leave l WHERE l.startDate IS ?1")
+    List<Leave> findByStartDateEqualsAdmin(LocalDateTime startDate);
+
+    @Query("SELECT l FROM Leave l WHERE l.startDate< ?1")
+    List<Leave> findByStartDateBeforeAdmin(LocalDateTime startDate);
+
+    @Query("SELECT l FROM Leave l WHERE l.startDate> ?1")
+    List<Leave> findByStartDateAfterAdmin(LocalDateTime startDate);
+
+    @Query("SELECT l FROM Leave l WHERE l.endDate IS ?1")
+    List<Leave> findByEndDateEqualsAdmin(LocalDateTime endDate);
+
+    @Query("SELECT l FROM Leave l WHERE l.endDate < ?1")
+    List<Leave> findByEndDateBeforeAdmin(LocalDateTime endDate);
+
+    @Query("SELECT l FROM Leave l WHERE l.endDate > ?1")
+    List<Leave> findByEndDateAfterAdmin(LocalDateTime endDate);
+
+    @Query("SELECT l FROM Leave l WHERE l.paid IS ?1")
+    List<Leave> findByPaidEqualsAdmin(Boolean paid);
+
 }
