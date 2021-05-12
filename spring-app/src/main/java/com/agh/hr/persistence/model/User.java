@@ -34,6 +34,7 @@ public class User implements UserDetails {
     private PersonalData personalData;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "permissions_id")
     private Permission permissions;
 
     private String position;

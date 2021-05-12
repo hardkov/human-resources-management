@@ -17,6 +17,9 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @OneToOne(mappedBy = "permissions")
+    private User user;
+
     @ElementCollection
     @Builder.Default
     private List<Long> write=new ArrayList<>();
