@@ -34,23 +34,24 @@ public class User implements UserDetails {
     private PersonalData personalData;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "permissions_id")
     private Permission permissions;
 
     private String position;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<Leave> leaves;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Contract> contracts;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Bonus> bonuses;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Delegation> delegations;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Application> applications;
 
     @Override

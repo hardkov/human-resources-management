@@ -1,4 +1,5 @@
 package com.agh.hr;
+import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
@@ -10,11 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.AssertTrue;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +37,7 @@ public class UserServiceDatabaseIntegrationTests {
     private final RoleService roleService;
 
     private User userTest;
+    private User userAuth;
 
     @Autowired
     public UserServiceDatabaseIntegrationTests(UserService userService,
@@ -49,6 +57,7 @@ public class UserServiceDatabaseIntegrationTests {
                 .build();
 
         this.userTest = User.builder()
+                .id(10L)
                 .username("sus")
                 .passwordHash(passwordEncoder.encode("passw0rd"))
                 .enabled(true)
@@ -59,20 +68,74 @@ public class UserServiceDatabaseIntegrationTests {
                 .bonuses(Collections.emptyList())
                 .delegations(Collections.emptyList())
                 .applications(Collections.emptyList()).build();
+        userTest.getPersonalData().setUser(userTest);
 
+        this.userAuth = User.builder()
+                .username("test")
+                .passwordHash(passwordEncoder.encode("passw0rd"))
+                .enabled(true)
+                .authorities(Collections.singleton(roleService.employeeRole()))
+                .position("Tester")
+                .leaves(Collections.emptyList())
+                .bonuses(Collections.emptyList())
+                .delegations(Collections.emptyList())
+                .applications(Collections.emptyList()).build();
+
+        val permissions= Permission.builder().build();
+        permissions.addToWrite(10L);
+        permissions.setAdd(true);
+        userAuth.setPermissions(permissions);
+
+
+        Authentication auth=new Authentication() {
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return null;
+            }
+
+            @Override
+            public Object getCredentials() {
+                return null;
+            }
+
+            @Override
+            public Object getDetails() {
+                return null;
+            }
+
+            @Override
+            public Object getPrincipal() {
+                return userAuth;
+            }
+
+            @Override
+            public boolean isAuthenticated() {
+                return true;
+            }
+
+            @Override
+            public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+        };
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
-    static class UserTest extends User {}
 
     @Test
     void testSaveUser(){
-        Optional<User> result=userService.saveUser(userTest);
-        assertEquals(Optional.of(userTest),result);
+        Optional<User> result=userService.saveUser(userTest,true);
+        assertTrue(result.isPresent());
     }
 
     @Test
     void testSuccessFindByUsername(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,true).isPresent()),
                 ()->assertTrue(userService.findByUsername("sus").isPresent())
         );
     }
@@ -84,7 +147,7 @@ public class UserServiceDatabaseIntegrationTests {
 
     @Test
     void testGetById(){
-        Optional<User> result=userService.saveUser(userTest);
+        Optional<User> result=userService.saveUser(userTest,true);
         assertTrue(userService.getById(userTest.getId()).isPresent());
 
     }
@@ -92,7 +155,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByFirstname(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,true).isPresent()),
                 ()->assertEquals(1,userService.getByFirstname("Susan").size())
         );
 
@@ -106,7 +169,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByLastname(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,true).isPresent()),
                 ()->assertEquals(1,userService.getByLastname("Barrow").size())
         );
 
@@ -120,20 +183,22 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByFullName(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTest).isPresent()),
+                ()->assertTrue(userService.saveUser(userTest,true).isPresent()),
                 ()->assertEquals(1,userService.getByFullName("Susan","Barrow").size())
         );
     }
 
     @Test
     void testFailGetByFullName(){
-        assertEquals(0,userService.getByFullName("Susan","Barrow").size());
+        assertEquals(0,userService
+                .getByFullName("Susan","Barrow").size());
     }
 
     @Test
     void testDeleteUser(){
+
         assertAll(
-                ()->userService.saveUser(userTest),
+                ()->userService.saveUser(userTest,true),
                 ()->userService.deleteUser(userTest.getId()),
                 ()->assertFalse(userService.getById(userTest.getId()).isPresent())
         );

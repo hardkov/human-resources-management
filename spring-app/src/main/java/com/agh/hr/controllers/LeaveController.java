@@ -12,8 +12,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,13 +42,15 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "404", description = "User not found", content = @Content()),
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved", content = @Content()),
                })
-    public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @RequestBody LeaveDTO leaveDTO) {
+    public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @RequestBody LeaveDTO leaveDTO
+            ) {
+        
         Optional<User> userOpt = userService.getById(userId);
         if(userOpt.isPresent()){
             User user = userOpt.get();
             Leave leave = converters.DTOToLeave(leaveDTO);
             leave.setUser(user);
-            Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave);
+            Optional<Leave> insertedLeaveOpt = leaveService.saveLeave(leave,true);
             return insertedLeaveOpt
                     .map(insertedLeave -> ResponseEntity.ok(converters.leaveToDTO(insertedLeave)))
                     .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -62,6 +67,7 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of all leaves")
                })
     public ResponseEntity<List<LeaveDTO>> getAllLeaves() {
+        
         return ResponseEntity.ok(
                 leaveService.getAllLeaves().stream().map(converters::leaveToDTO)
                         .collect(Collectors.toList())
@@ -74,7 +80,9 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of user's leaves' DTOs"),
                 @ApiResponse(responseCode = "404", description = "User not found", content = @Content())
                })
-    public ResponseEntity<List<LeaveDTO>> getLeavesByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<LeaveDTO>> getLeavesByUserId(@PathVariable Long userId
+            ) {
+        
         Optional<User> userOpt = userService.getById(userId);
         return userOpt
                 .map(user -> ResponseEntity.ok(
@@ -95,11 +103,12 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved")
                })
     public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO) {
+        
         Optional<Leave> leaveOpt = leaveService.getById(leaveDTO.getId());
         if(leaveOpt.isPresent()){
             Leave leave = leaveOpt.get();
             converters.updateLeaveWithDTO(leaveDTO, leave);
-            return leaveService.saveLeave(leave).isPresent() ?
+            return leaveService.saveLeave(leave,false).isPresent() ?
                     ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         }
         else
@@ -110,7 +119,7 @@ public class LeaveController implements SecuredRestController {
     @DeleteMapping(value = "/leave/{id}")
     @Operation(summary = "Deleting leave with leaveID")
     public ResponseEntity<Void> deleteLeave(@PathVariable Long id) {
-        leaveService.deleteLeave(id);
-        return ResponseEntity.ok().build();
+        
+        return leaveService.deleteLeave(id);
     }
 }

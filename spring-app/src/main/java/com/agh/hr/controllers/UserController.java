@@ -6,15 +6,12 @@ import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +37,7 @@ public class UserController implements SecuredRestController {
                })
     public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
         User user = converters.DTOToUser(userDTO);
-        Optional<User> insertedUserOpt = userService.saveUser(user);
+        Optional<User> insertedUserOpt = userService.saveUser(user,true);
         return insertedUserOpt
                 .map(insertedUser -> ResponseEntity.ok(converters.userToDTO(insertedUser)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -48,7 +45,7 @@ public class UserController implements SecuredRestController {
 
     //// READ
     @GetMapping(value = "/user")
-    @Operation(summary = "Reading list of all users",
+    @Operation(summary = "Reading list of all users within caller read permissions",
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of all users' DTOs")
                })
@@ -118,7 +115,7 @@ public class UserController implements SecuredRestController {
         if(userOpt.isPresent()) {
             User user = userOpt.get();
             converters.updateUserWithDTO(userDTO, user);
-            return userService.saveUser(user).isPresent() ?
+            return userService.saveUser(user,false).isPresent() ?
                     ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
         }
         else {
@@ -130,7 +127,6 @@ public class UserController implements SecuredRestController {
     @DeleteMapping(value = "/user/{id}")
     @Operation(summary = "Deleting user with userID")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+        return userService.deleteUser(id);
     }
 }

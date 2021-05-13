@@ -14,6 +14,10 @@ public class PersonalData {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @OneToOne
+    @JoinColumn
+    private User user;
+
     private String firstname;
 
     private String lastname;

@@ -4,10 +4,14 @@ import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,15 +21,28 @@ public class UserService {
 
 
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository,RoleService roleService){
         this.userRepository=userRepository;
+        this.roleService=roleService;
     }
 
-    public Optional<User> saveUser(User user) {
+    public Optional<User> saveUser(User user,boolean isNew) {
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(!userAuth.getAuthorities().contains(roleService.adminRole()))
+            if(isNew&&!(Auth.getAdd(userAuth)))
+                return Optional.empty();
+            else if(!isNew &&!(Auth.getWriteIds(userAuth).contains(user.getId())))
+                return Optional.empty();
         try {
-            return Optional.of(userRepository.save(user));
+                val result= Optional.of(userRepository.save(user));
+                if(isNew) {
+                    userAuth.getPermissions().addToWrite(result.get().getId());
+                    val newUserAuth = userRepository.save(userAuth);
+                }
+                return result;
         } catch(Exception e) {
             return Optional.empty();
         }
@@ -36,27 +53,47 @@ public class UserService {
     }
 
     public Optional<User> getById(Long id) {
-        return userRepository.findById(id);
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()))
+            return userRepository.findByIdAdmin(id);
+        return userRepository.findById(id,Auth.getReadIds(userAuth));
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()))
+            return userRepository.findAllAdmin();
+        return userRepository.findAll(Auth.getReadIds(userAuth));
     }
 
-    public void deleteUser(Long UserId) {
-            userRepository.deleteById(UserId);
+    public ResponseEntity<Void> deleteUser(Long userId) {
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(!userAuth.getAuthorities().contains(roleService.adminRole()))
+            if(!(Auth.getAdd(userAuth)&&Auth.getWriteIds(userAuth).contains(userId)))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        userRepository.deleteById(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public List<User> getByFirstname(String firstname) {
-        return userRepository.findByPersonalData_Firstname(firstname);
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()))
+            return userRepository.findByFirstnameAdmin(firstname);
+        return userRepository.findByPersonalData_Firstname(firstname,Auth.getReadIds(userAuth));
     }
 
     public List<User> getByLastname(String lastname) {
-        return userRepository.findByPersonalData_Lastname(lastname);
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()))
+            return userRepository.findByLastnameAdmin(lastname);
+        return userRepository.findByPersonalData_Lastname(lastname,Auth.getReadIds(userAuth));
     }
 
     public List<User> getByFullName(String firstname,String lastname) {
-        return userRepository.findByPersonalData_FirstnameAndPersonalData_Lastname(firstname,lastname);
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()))
+            return userRepository.findByFirstnameAndLastnameAdmin(firstname,lastname);
+        return userRepository.findByPersonalData_FirstnameAndPersonalData_Lastname(firstname,lastname,Auth.getReadIds(userAuth));
     }
 
 

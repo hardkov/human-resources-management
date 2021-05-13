@@ -1,11 +1,17 @@
 package com.agh.hr;
 
+import com.agh.hr.controllers.UserController;
+import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
+import com.agh.hr.persistence.service.RoleService;
 import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,10 +21,9 @@ import static org.mockito.Mockito.when;
 
 public class UserServiceTests {
 
-    private UserService userService;
-
     private UserRepository userRepository;
 
+    private UserService userService;
     private User user;
 
     private String username ;
@@ -26,7 +31,8 @@ public class UserServiceTests {
     @BeforeEach
     public void setup() {
         userRepository = mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        RoleService roleService = mock(RoleService.class);
+        userService = new UserService(userRepository, roleService);
 
         this.username = "foo@gmail.com";
         this.user = User.builder()

@@ -6,6 +6,7 @@ import com.agh.hr.controllers.UserController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.PersonalDataDTO;
 import com.agh.hr.persistence.dto.UserDTO;
+import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.service.UserService;
@@ -14,8 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.security.Principal;
 import java.util.*;
 
 public class UserControllerTests {
@@ -31,6 +33,7 @@ public class UserControllerTests {
 
     private User userTest;
     private UserDTO userTestDTO;
+    private Principal principal;
 
     @BeforeEach
     public void setup() {
@@ -59,7 +62,7 @@ public class UserControllerTests {
 
     @Test
     void testSuccessCreateUser() {
-        when(userService.saveUser(userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,true)).thenReturn(Optional.of(userTest));
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
@@ -75,7 +78,7 @@ public class UserControllerTests {
 
     @Test
     void testFailCreateUser() {
-        when(userService.saveUser(userTest)).thenReturn(Optional.empty());
+        when(userService.saveUser(userTest,true)).thenReturn(Optional.empty());
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
@@ -224,7 +227,7 @@ public class UserControllerTests {
     @Test
     void testSuccessUpdateUser() {
 
-        when(userService.saveUser(userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,false)).thenReturn(Optional.of(userTest));
         when(userService.getById(10L)).thenReturn(Optional.of(userTest));
 
         assertEquals(202,userController.updateUser(userTestDTO).getStatusCodeValue());
@@ -235,7 +238,7 @@ public class UserControllerTests {
     @Test
     void testFailUpdateUser() {
 
-        when(userService.saveUser(userTest)).thenReturn(Optional.of(userTest));
+        when(userService.saveUser(userTest,false)).thenReturn(Optional.of(userTest));
         when(userService.getById(20L)).thenReturn(Optional.of(userTest));
 
         assertEquals(404,userController.updateUser(userTestDTO).getStatusCodeValue());
