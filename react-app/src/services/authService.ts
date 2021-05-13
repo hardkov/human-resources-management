@@ -15,6 +15,10 @@ const getUserName = (): string | undefined => {
   return currentUser?.username;
 };
 
+const getUserId = (): number | undefined => {
+  return currentUser?.userId;
+};
+
 const parseToken = (token: string): UserLoginData => {
   const userDataRaw: string = atob(token.split('.')[1]);
   const userDataObject = JSON.parse(userDataRaw);
@@ -58,4 +62,4 @@ const isLoggedIn = (): boolean => {
   return currentUser != null;
 };
 
-export { getUserType, getUserName, login, logout, isLoggedIn };
+export { getUserType, getUserName, login, logout, isLoggedIn, getUserId };

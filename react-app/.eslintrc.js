@@ -32,13 +32,12 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'react/require-default-props': 'off',
     'prettier/prettier': [
       'warn',
       {
         endOfLine: 'auto',
       },
     ],
-    
-
   },
 };

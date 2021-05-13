@@ -22,7 +22,7 @@ const useHeader = (): [string | undefined, ButtonData[]] => {
       },
       {
         text: 'My Profile',
-        link: '/',
+        link: '/profile',
       },
     ];
   } else if (userType === 'SUPERVISOR') {
@@ -33,7 +33,7 @@ const useHeader = (): [string | undefined, ButtonData[]] => {
       },
       {
         text: 'My Profile',
-        link: '/',
+        link: '/profile',
       },
     ];
   }
