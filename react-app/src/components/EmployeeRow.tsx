@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
-import { Button, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +52,7 @@ const EmployeeRow = (props: any): JSX.Element => {
               className={styles.button}
               color="secondary"
               component={Link}
-              to={{ pathname: '/employee-profile', state: { userData: row } }}
+              to={{ pathname: '/employee-profile', state: { userData: row, referer: '/employees' } }}
             >
               <EditIcon />
             </IconButton>

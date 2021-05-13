@@ -1,11 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import { UseFormRegister } from 'react-hook-form';
-import { Switch } from '@material-ui/core';
+import { IconButton, Switch } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import UserForm from './UserForm/UserForm';
 
 const useStyles = makeStyles((theme) => ({
@@ -33,18 +33,26 @@ interface Props {
   register: UseFormRegister<any>;
   handleSubmit: () => void;
   serverError: string;
+  referer?: string;
 }
 
-const ProfileForm: React.FC<Props> = ({ setChangeMode, changeMode, register, handleSubmit, serverError }: Props) => {
+const ProfileForm: React.FC<Props> = ({
+  setChangeMode,
+  changeMode,
+  register,
+  handleSubmit,
+  serverError,
+  referer,
+}: Props) => {
   const classes = useStyles();
 
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
         <div className={classes.menu}>
-          <Button style={{ padding: 0, justifyContent: 'flex-start' }}>
+          <IconButton style={{ padding: 0, justifyContent: 'flex-start' }} component={Link} to={referer || '/'}>
             <ArrowBackIcon />
-          </Button>
+          </IconButton>
           <div className={classes.switch}>
             <Typography color="textSecondary">Enable change</Typography>
             <Switch checked={changeMode} onChange={() => setChangeMode(!changeMode)} />

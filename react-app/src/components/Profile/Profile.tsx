@@ -8,6 +8,7 @@ import ProfileForm from './ProfileForm';
 
 interface Props {
   userData: UserData;
+  referer?: string;
 }
 
 type FormValues = {
@@ -19,7 +20,7 @@ type FormValues = {
   birthdate: string;
 };
 
-const Profile: React.FC<Props> = ({ userData }: Props) => {
+const Profile: React.FC<Props> = ({ userData, referer }: Props) => {
   const [changeMode, setChangeMode] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string>('');
   const [data, setData] = useState<UserData>(userData);
@@ -70,6 +71,7 @@ const Profile: React.FC<Props> = ({ userData }: Props) => {
       register={register}
       handleSubmit={handleSubmit(handleSubmitCallback)}
       serverError={serverError}
+      referer={referer}
     />
   );
 };
