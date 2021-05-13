@@ -10,12 +10,6 @@ import UserFormField from './UserFormField';
 import krzysiomisio from '../../../assets/krzysiomisio.jpg';
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(16),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   avatar: {
     width: theme.spacing(15),
     height: theme.spacing(15),
@@ -25,17 +19,8 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: theme.spacing(3),
   },
-  menu: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
   submit: {
     margin: theme.spacing(3, 0, 2),
-  },
-  progress: {
-    color: theme.palette.primary.dark,
   },
 }));
 

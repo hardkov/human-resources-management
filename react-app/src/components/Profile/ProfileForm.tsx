@@ -15,15 +15,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  avatar: {
-    width: theme.spacing(15),
-    height: theme.spacing(15),
-    margin: theme.spacing(1),
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(3),
-  },
   menu: {
     width: '100%',
     display: 'flex',
@@ -33,12 +24,6 @@ const useStyles = makeStyles((theme) => ({
   switch: {
     display: 'flex',
     alignItems: 'center',
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  progress: {
-    color: theme.palette.primary.dark,
   },
 }));
 
@@ -57,7 +42,7 @@ const ProfileForm: React.FC<Props> = ({ setChangeMode, changeMode, register, han
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
         <div className={classes.menu}>
-          <Button>
+          <Button style={{ padding: 0, justifyContent: 'flex-start' }}>
             <ArrowBackIcon />
           </Button>
           <div className={classes.switch}>
