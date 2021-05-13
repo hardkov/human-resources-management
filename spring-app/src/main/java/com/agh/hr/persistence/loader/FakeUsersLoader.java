@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -24,17 +25,14 @@ import java.util.stream.Stream;
 public class FakeUsersLoader {
 
     private final UserRepository userRepository;
-    private final LeaveRepository leaveRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
 
     @Autowired
     public FakeUsersLoader(UserRepository userRepository,
-                           LeaveRepository leaveRepository,
                            PasswordEncoder passwordEncoder,
                            RoleService roleService) {
         this.userRepository = userRepository;
-        this.leaveRepository = leaveRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
     }
@@ -46,12 +44,6 @@ public class FakeUsersLoader {
         val faker = new Faker();
         val usersNumber = 20;
         val supervisorsNumber = 5;
-
-        val minLeaves = 0;
-        val maxLeaves = 4;
-
-        val minLeaveDuration = 1;
-        val maxLeaveDuration = 14;
 
         //// USERS
         val fakeUsers =
@@ -114,19 +106,7 @@ public class FakeUsersLoader {
                 .reduce(Stream::concat)
                 .get().collect(Collectors.toList());
 
-        val insertedUsers = userRepository.saveAll(allUsers);
-
-        //// LEAVES
-        val fakeLeaves = generateLeavesForUsers(
-                faker,
-                insertedUsers,
-                minLeaves,
-                maxLeaves,
-                minLeaveDuration,
-                maxLeaveDuration
-        ).collect(Collectors.toList());
-
-        leaveRepository.saveAll(fakeLeaves);
+        userRepository.saveAll(allUsers);
     }
 
     private PersonalData fakePersonalData(Faker faker) {
@@ -139,10 +119,7 @@ public class FakeUsersLoader {
                 .address(faker.address().fullAddress())
                 .email(faker.internet().emailAddress())
                 .phoneNumber(faker.phoneNumber().cellPhone())
-                .birthdate(faker.date()
-                        .between(minimumBirthdate, maximumBirthdate)
-                        .toInstant()
-                        .atZone(ZoneId.systemDefault()).toLocalDate())
+                .birthdate(fakeDate(faker, minimumBirthdate, maximumBirthdate))
                 .build();
     }
 
@@ -157,21 +134,26 @@ public class FakeUsersLoader {
                 .personalData(userPersonalData)
                 .permissions(Permission.builder().add(false).build())
                 .position(faker.programmingLanguage().name() + " Developer")
-                .leaves(Collections.emptyList())
+                .contracts(Stream.of(fakeContract(faker).build()).collect(Collectors.toList()))
+                .leaves(generateLeaveForSingleUser(faker).collect(Collectors.toList()))
                 .bonuses(Collections.emptyList())
                 .delegations(Collections.emptyList())
                 .applications(Collections.emptyList());
     }
 
-    private Leave.LeaveBuilder fakeLeave(Faker faker) {
-        val minimumStartDate = new Date(2019, Calendar.JANUARY, 1);
-        val maximumStartDate = new Date(2021, Calendar.MARCH, 1);
-        val duration = faker.number().numberBetween(1, 14);
-        val startDate = faker.date()
-                .between(minimumStartDate, maximumStartDate)
+    private LocalDate fakeDate(Faker faker, Date from, Date to){
+        return faker.date()
+                .between(from, to)
                 .toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
+    }
+
+    private Leave.LeaveBuilder fakeLeave(Faker faker) {
+        val minimumStartDate = new Date(2019-1900, Calendar.JANUARY, 1);
+        val maximumStartDate = new Date(2021-1900, Calendar.MARCH, 1);
+        val duration = faker.number().numberBetween(1, 14);
+        val startDate = fakeDate(faker, minimumStartDate, maximumStartDate);
         return Leave.builder()
                 .paid(faker.bool().bool())
                 .startDate(startDate)
@@ -179,7 +161,29 @@ public class FakeUsersLoader {
                 .endDate(startDate.plusDays(duration));
     }
 
-    private Stream<Leave> generateLeaveForSingleUser(Faker faker, User user, int minLeaves, int maxLeaves, int minLeaveDuration, int maxLeaveDuration) {
+    private Contract.ContractBuilder fakeContract(Faker faker) {
+        val minimumStartDate = new Date(2019-1900, Calendar.JANUARY, 1);
+        val maximumStartDate = new Date(2020-1900, Calendar.MARCH, 1);
+
+        val minimumEndDate = new Date(2021-1900, Calendar.JANUARY, 1);
+        val maximumEndDate = new Date(2023-1900, Calendar.MARCH, 1);
+
+        val minimumSalaryHundreds = 25;
+        val maximumSalaryHundreds = 200;
+
+        return Contract.builder()
+                .startDate(fakeDate(faker, minimumStartDate, maximumStartDate))
+                .endDate(fakeDate(faker, minimumEndDate, maximumEndDate))
+                .baseSalary(new BigDecimal(faker.number().numberBetween(minimumSalaryHundreds, maximumSalaryHundreds)*100))
+                .contractType(ContractType.values()[faker.number().numberBetween(0, ContractType.values().length)]);
+    }
+
+    private Stream<Leave> generateLeaveForSingleUser(Faker faker) {
+        val minLeaves = 0;
+        val maxLeaves = 4;
+        val minLeaveDuration = 1;
+        val maxLeaveDuration = 14;
+
         val startDates = IntStream
                 .rangeClosed(1, 6)
                 .map(m -> m * 2 - faker.number().numberBetween(0, 1))
@@ -191,24 +195,9 @@ public class FakeUsersLoader {
                 .stream()
                 .limit(faker.number().numberBetween(minLeaves,maxLeaves))
                 .map(d -> fakeLeave(faker)
-                        .user(user)
                         .startDate(d)
                         .endDate(d.plusDays(faker.number().numberBetween(minLeaveDuration, maxLeaveDuration)))
                         .build()
-                );
-    }
-
-    private Stream<Leave> generateLeavesForUsers(Faker faker, List<User> users, int minLeaves, int maxLeaves, int minLeaveDuration, int maxLeaveDuration) {
-        return users.stream()
-                .flatMap(u ->
-                        generateLeaveForSingleUser(
-                                faker,
-                                u,
-                                minLeaves,
-                                maxLeaves,
-                                minLeaveDuration,
-                                maxLeaveDuration
-                        )
                 );
     }
 }
