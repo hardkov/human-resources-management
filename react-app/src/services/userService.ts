@@ -4,7 +4,7 @@ import { USER_DATA_ENDPOINT } from './config';
 import UserData from '../types/UserData';
 import ActionResult from '../types/ActionResult';
 
-const getUser = async (userId: string): Promise<ActionResult<UserData>> => {
+const getUser = async (userId: number): Promise<ActionResult<UserData>> => {
   try {
     const response: AxiosResponse = await axios.get(`${USER_DATA_ENDPOINT}/${userId}`, {
       headers: getAuthHeaders(),
@@ -58,7 +58,7 @@ const updateUser = async (userData: UserData): Promise<ActionResult> => {
       headers: getAuthHeaders(),
     });
 
-    if (response.status === 200) {
+    if (response.status === 202) {
       return { success: true };
     }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
-import { Button, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,16 +48,14 @@ const EmployeeRow = (props: any): JSX.Element => {
         </TableCell>
         <TableCell>
           <div className={styles.buttonContainer}>
-            {
-              <Button
-                className={styles.button}
-                variant="contained"
-                color="secondary"
-                // to={button.link}
-              >
-                <EditIcon />
-              </Button>
-            }
+            <IconButton
+              className={styles.button}
+              color="secondary"
+              component={Link}
+              to={{ pathname: '/employee-profile', state: { userData: row, referer: '/employees' } }}
+            >
+              <EditIcon />
+            </IconButton>
           </div>
         </TableCell>
       </TableRow>

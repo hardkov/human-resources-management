@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { logout } from '../services/authService';
 
-const Logout = () => {
+const Logout: React.FC = () => {
   useEffect(() => {
     logout();
   });
