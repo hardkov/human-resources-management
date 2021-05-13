@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import IconButton from '@material-ui/core/IconButton';
@@ -47,9 +48,14 @@ const EmployeeRow = (props: any): JSX.Element => {
         </TableCell>
         <TableCell>
           <div className={styles.buttonContainer}>
-            <Button className={styles.button} variant="contained" color="secondary">
+            <IconButton
+              className={styles.button}
+              color="secondary"
+              component={Link}
+              to={{ pathname: '/employee-profile', state: { userData: row } }}
+            >
               <EditIcon />
-            </Button>
+            </IconButton>
           </div>
         </TableCell>
       </TableRow>
