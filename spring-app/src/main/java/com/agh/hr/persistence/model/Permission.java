@@ -17,8 +17,7 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(targetEntity = User.class, mappedBy = "permissions")
     private User user;
 
     @ElementCollection

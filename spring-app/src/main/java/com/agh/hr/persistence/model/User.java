@@ -33,8 +33,7 @@ public class User implements UserDetails {
     @OneToOne(targetEntity = PersonalData.class, cascade = CascadeType.ALL)
     private PersonalData personalData;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "permissions_id")
+    @OneToOne(targetEntity = Permission.class, cascade = CascadeType.ALL)
     private Permission permissions;
 
     private String position;
