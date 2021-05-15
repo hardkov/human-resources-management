@@ -30,7 +30,7 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> authorities;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = PersonalData.class, cascade = CascadeType.ALL)
     private PersonalData personalData;
 
     @OneToOne(cascade = CascadeType.ALL)

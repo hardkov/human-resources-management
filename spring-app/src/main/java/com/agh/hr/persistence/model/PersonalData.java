@@ -14,8 +14,7 @@ public class PersonalData {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne
-    @JoinColumn
+    @OneToOne(targetEntity = User.class, mappedBy = "personalData")
     private User user;
 
     private String firstname;
