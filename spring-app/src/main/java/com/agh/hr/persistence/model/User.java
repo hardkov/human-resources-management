@@ -33,7 +33,7 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     private PersonalData personalData;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "permissions_id")
     private Permission permissions;
 
