@@ -1,14 +1,16 @@
 package com.agh.hr.persistence.dto;
 
-import com.agh.hr.persistence.model.Leave;
-import com.agh.hr.persistence.model.PersonalData;
-import com.agh.hr.persistence.model.User;
+import com.agh.hr.persistence.model.*;
 import lombok.val;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
+
+import java.security.Principal;
 
 @Component
 public class Converters {
+
     private final ModelMapper modelMapper;
 
     public Converters(ModelMapper modelMapper) {
@@ -23,6 +25,11 @@ public class Converters {
         return user;
     }
 
+    public UserDTO toUserDTO(Principal principal) {
+        val user = toUser(principal);
+        return userToDTO(user);
+    }
+
     public void updateUserWithDTO(UserDTO userDTO, User user) {
         updatePersonalDataWithDTO(userDTO.personalData, user.getPersonalData());
         modelMapper.map(userDTO, user);
@@ -31,6 +38,25 @@ public class Converters {
     public UserDTO userToDTO(User user) {
         return modelMapper.map(user, UserDTO.class);
     }
+
+    public User toUser(Principal principal) {
+        return (User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
+    }
+
+    // Applications
+
+    public LeaveApplicationDTO leaveApplicationToDTO(LeaveApplication leaveApplication) {
+        return modelMapper.map(leaveApplication, LeaveApplicationDTO.class);
+    }
+
+    public BonusApplicationDTO bonusApplicationToDTO(BonusApplication bonusApplication) {
+        return modelMapper.map(bonusApplication, BonusApplicationDTO.class);
+    }
+
+    public DelegationApplicationDTO delegationApplicationToDTO(DelegationApplication delegationApplication) {
+        return modelMapper.map(delegationApplication, DelegationApplicationDTO.class);
+    }
+
 
     //// PERSONAL DATA
     public PersonalData DTOToPersonalData(PersonalDataDTO personalDataDTO) {

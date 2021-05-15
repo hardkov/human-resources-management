@@ -14,6 +14,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -54,16 +55,34 @@ public class FakeUsersLoader {
         val minLeaveDuration = 1;
         val maxLeaveDuration = 14;
 
+
+        // supervisor
+        val supervisor = fakeUser(faker, null, roleService.supervisorRole())
+                .position("Supervisor")
+                .username("supervisor@gmail.com")
+                .build();
+
+        val fakeSupervisors =
+                Stream
+                        .generate(() -> fakeUser(faker, supervisor, roleService.supervisorRole())
+                                .position(faker.job().seniority() + " Project Manager")
+                                .build()).limit(supervisorsNumber)
+                        .collect(Collectors.toList());
+
+        val insertedSupervisors = userRepository.saveAll(
+                Stream.concat(Stream.of(supervisor), fakeSupervisors.stream()).collect(Collectors.toList())
+        );
+
         //// USERS
         val fakeEmployees =
                 Stream
                         .generate(() ->
-                        fakeUser(faker, roleService.employeeRole())
+                        fakeUser(faker, supervisor, roleService.employeeRole())
                                 .build()
                         ).limit(employeesNumber)
                         .collect(Collectors.toList());
 
-        val employee = fakeUser(faker, roleService.employeeRole())
+        val employee = fakeUser(faker, supervisor, roleService.employeeRole())
                 .position("Ordinary User")
                 .username("employee@gmail.com")
                 .build();
@@ -72,47 +91,7 @@ public class FakeUsersLoader {
                 Stream.concat(Stream.of(employee), fakeEmployees.stream()).collect(Collectors.toList())
         );
 
-        val fakeSupervisors =
-                Stream
-                        .generate(() ->{
-                            List<Long> shuffledUsers = insertedEmployees
-                                    .stream()
-                                    .map(User::getId)
-                                    .collect(Collectors.toList());
-                            Collections.shuffle(shuffledUsers);
-                            List<Long> supervisedUsers = shuffledUsers.subList(0, employeesNumber/4);
-                            return fakeUser(faker, roleService.supervisorRole())
-                                .position(faker.job().seniority() + " Project Manager")
-                                .permissions(Permission.builder()
-                                        .add(true)
-                                        .read(supervisedUsers)
-                                        .write(supervisedUsers)
-                                        .build())
-                                .build();
-                        }).limit(supervisorsNumber)
-                        .collect(Collectors.toList());
-
-        List<Long> shuffledUsers = insertedEmployees
-                .stream()
-                .map(User::getId)
-                .collect(Collectors.toList());
-        Collections.shuffle(shuffledUsers);
-        List<Long> supervisedUsers = shuffledUsers.subList(0, employeesNumber/4);
-        val supervisor = fakeUser(faker, roleService.supervisorRole())
-                .position("Supervisor")
-                .username("supervisor@gmail.com")
-                .permissions(Permission.builder()
-                        .add(true)
-                        .read(supervisedUsers)
-                        .write(supervisedUsers)
-                        .build())
-                .build();
-
-        val insertedSupervisors = userRepository.saveAll(
-                Stream.concat(Stream.of(supervisor), fakeSupervisors.stream()).collect(Collectors.toList())
-        );
-
-        val admin = fakeUser(faker, roleService.adminRole())
+        val admin = fakeUser(faker, null, roleService.adminRole())
                 .position("Admin")
                 .username("admin@gmail.com")
                 .build();
@@ -153,12 +132,13 @@ public class FakeUsersLoader {
                 .build();
     }
 
-    private User.UserBuilder fakeUser(Faker faker, Role role) {
+    private User.UserBuilder fakeUser(Faker faker, User supervisor, Role role) {
         val userPersonalData = fakePersonalData(faker);
 
         return User.builder()
                 .username(faker.internet().emailAddress())
                 .passwordHash(passwordEncoder.encode("passw0rd"))
+                .supervisor(supervisor)
                 .enabled(true)
                 .authorities(Collections.singleton(role))
                 .personalData(userPersonalData)
@@ -166,8 +146,7 @@ public class FakeUsersLoader {
                 .position(faker.programmingLanguage().name() + " Developer")
                 .leaves(Collections.emptyList())
                 .bonuses(Collections.emptyList())
-                .delegations(Collections.emptyList())
-                .applications(Collections.emptyList());
+                .delegations(Collections.emptyList());
     }
 
     private Leave.LeaveBuilder fakeLeave(Faker faker) {
