@@ -2,8 +2,11 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.model.Contract;
 import com.agh.hr.persistence.model.ContractType;
+import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.ContractRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,29 +21,49 @@ public class ContractService {
 
 
     private final ContractRepository contractRepository;
+    private final RoleService roleService;
 
     @Autowired
-    public ContractService(ContractRepository contractRepository){
+    public ContractService(ContractRepository contractRepository, RoleService roleService){
         this.contractRepository=contractRepository;
+        this.roleService = roleService;
     }
 
-    public boolean saveContract(Contract application) {
+    public Optional<Contract> saveContract(Contract contract) {
+        if(contract.getUser() == null)
+            return Optional.empty();
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(!userAuth.getAuthorities().contains(roleService.adminRole()) && !Auth.getWriteIds(userAuth).contains(contract.getUser().getId()))
+                return Optional.empty();
         try {
-            contractRepository.save(application);
-        }catch(Exception e){return false;}
-        return true;
+            return Optional.of(contractRepository.save(contract));
+        } catch(Exception e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Contract> getById(Long id) {
-        return contractRepository.findById(id);
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()))
+            return contractRepository.findByIdAdmin(id);
+        return contractRepository.findById(id, Auth.getReadIds(userAuth));
     }
 
     public List<Contract> getAllContracts() {
-        return contractRepository.findAll();
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()))
+            return contractRepository.findAllAdmin();
+        return contractRepository.findAll(Auth.getReadIds(userAuth));
     }
 
-    public void deleteContract(Long applicationId) {
-            contractRepository.deleteById(applicationId);
+    public boolean deleteContract(Long contractId) {
+        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userAuth.getAuthorities().contains(roleService.adminRole()) || userAuth.getPermissions().getWrite().contains(contractId)) {
+            contractRepository.deleteById(contractId);
+            return true;
+        }
+        else
+            return false;
     }
 
     public List<Contract> getByStartDateEquals(LocalDateTime date) {

@@ -39,10 +39,12 @@ public class User implements UserDetails {
 
     private String position;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
     private List<Leave> leaves;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private List<Contract> contracts;
 
     @OneToMany(cascade = CascadeType.ALL)

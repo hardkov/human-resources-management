@@ -1,5 +1,6 @@
 package com.agh.hr.persistence.dto;
 
+import com.agh.hr.persistence.model.Contract;
 import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
@@ -58,5 +59,20 @@ public class Converters {
         LeaveDTO leaveDTO = modelMapper.map(leave, LeaveDTO.class);
         leaveDTO.setUser(userToDTO(leave.getUser()));
         return leaveDTO;
+    }
+
+    //// CONTRACT
+    public Contract DTOToContract(ContractDTO contractDTO) {
+        return modelMapper.map(contractDTO, Contract.class);
+    }
+
+    public void updateContractWithDTO(ContractDTO contractDTO, Contract contract) {
+        modelMapper.map(contractDTO, contract);
+    }
+
+    public ContractDTO contractToDTO(Contract contract) {
+        ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
+        contractDTO.setUser(userToDTO(contract.getUser()));
+        return contractDTO;
     }
 }
