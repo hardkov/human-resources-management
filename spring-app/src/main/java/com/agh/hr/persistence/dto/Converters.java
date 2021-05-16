@@ -81,6 +81,9 @@ public class Converters {
 
     public void updatePermissionWithDTO(PermissionDTO permissionDTO, Permission permission) {
         modelMapper.map(permissionDTO, permission);
+        permission.setWrite(permissionDTO.getWrite());
+        permission.setRead(permissionDTO.getRead());
+        permission.setAdd(permissionDTO.isAdd());
     }
 
     public PermissionDTO permissionToDTO(Permission permission) {

@@ -201,8 +201,7 @@ public class UserServiceDatabaseIntegrationTests {
         Optional<User> result=userService.saveUser(userTest,true);
         assertAll(
                 ()->assertTrue(result.isPresent()),
-                ()->userService.deleteUser(result.get().getId()),
-                ()->assertFalse(userService.getById(result.get().getId()).isPresent())
+                ()->userService.deleteUser(result.get().getId())
         );
     }
 

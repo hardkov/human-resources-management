@@ -37,10 +37,11 @@ public class PermissionService {
         if(!permission.isPresent())
             return Optional.empty();
 
+        Auth.cleanPermissions(permissionDTO);
         if(!roleService.isAdmin(userAuth)) {
             if (!(Auth.getWriteIds(userAuth).contains(permissionDTO.getUser().getId())))
                 return Optional.empty();
-            if (!Auth.arePermissionsOwnedBy(permission.get(), userAuth))
+            if (!Auth.arePermissionsOwnedBy(permissionDTO, userAuth))
                 return Optional.empty();
         }
 

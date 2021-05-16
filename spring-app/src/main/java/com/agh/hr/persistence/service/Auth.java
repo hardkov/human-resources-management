@@ -1,11 +1,11 @@
 package com.agh.hr.persistence.service;
+import com.agh.hr.persistence.dto.PermissionDTO;
 import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Auth {
 
@@ -42,7 +42,17 @@ public class Auth {
     public static User getCurrentUser(){
         return (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
-    public static boolean arePermissionsOwnedBy(Permission subset,User user){
+
+    public static void cleanPermissions(PermissionDTO subset){
+        Set<Long> read=new HashSet<>(subset.getRead());
+        Set<Long> write=new HashSet<>(subset.getWrite());
+        Set<Long> merged=new HashSet<>();
+        merged.addAll(read);
+        merged.addAll(write);
+        subset.setRead(new ArrayList<>(merged));
+        subset.setWrite(new ArrayList<>(write));
+    }
+    public static boolean arePermissionsOwnedBy(PermissionDTO subset, User user){
         Permission superset=user.getPermissions();
         List<Long> read=superset.getRead();
         List<Long> write=superset.getRead();
@@ -52,6 +62,6 @@ public class Auth {
         for(Long p:subset.getWrite())
             if(!write.contains(p))
                 return false;
-        return superset.getAdd() || !subset.getAdd();
+        return superset.getAdd() || !subset.isAdd();
     }
 }
