@@ -35,6 +35,7 @@ const CreateApplication: React.FC = () => {
 
   const onSubmit = (data: any) => {
     // api call here
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 
