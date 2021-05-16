@@ -11,6 +11,7 @@ import LeavesView from './LeavesView';
 import EmployeesList from './EmployeesList';
 import MyProfile from './MyProfile';
 import EmployeeProfile from './EmployeeProfile';
+import CreateApplication from './CreateApplication';
 
 const homeWithLayout = () => (
   <Layout>
@@ -42,6 +43,12 @@ const employeeProfileWithLayout = () => (
   </Layout>
 );
 
+const createApplicationWithLayout = () => (
+  <Layout>
+    <CreateApplication />
+  </Layout>
+);
+
 const Routes: React.FC = () => {
   return (
     <Router>
@@ -53,6 +60,7 @@ const Routes: React.FC = () => {
         <PrivateRoute exact path="/employee-profile" component={employeeProfileWithLayout} />
         <PrivateRoute exact path="/leaves" component={leavesWithLayout} />
         <PrivateRoute exact path="/employees" component={employeesListWithLayout} />
+        <PrivateRoute exact path="/create-application" component={createApplicationWithLayout} />
       </Switch>
     </Router>
   );
