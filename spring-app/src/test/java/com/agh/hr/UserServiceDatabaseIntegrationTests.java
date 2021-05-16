@@ -148,8 +148,10 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testGetById(){
         Optional<User> result=userService.saveUser(userTest,true);
-        assertTrue(userService.getById(userTest.getId()).isPresent());
-
+        assertAll(
+                ()->assertTrue(result.isPresent()),
+                ()->assertTrue(userService.getById(result.get().getId()).isPresent())
+        );
     }
 
     @Test
@@ -196,11 +198,10 @@ public class UserServiceDatabaseIntegrationTests {
 
     @Test
     void testDeleteUser(){
-
+        Optional<User> result=userService.saveUser(userTest,true);
         assertAll(
-                ()->userService.saveUser(userTest,true),
-                ()->userService.deleteUser(userTest.getId()),
-                ()->assertFalse(userService.getById(userTest.getId()).isPresent())
+                ()->assertTrue(result.isPresent()),
+                ()->userService.deleteUser(result.get().getId())
         );
     }
 

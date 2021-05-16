@@ -1,9 +1,6 @@
 package com.agh.hr.persistence.dto;
 
-import com.agh.hr.persistence.model.Contract;
-import com.agh.hr.persistence.model.Leave;
-import com.agh.hr.persistence.model.PersonalData;
-import com.agh.hr.persistence.model.User;
+import com.agh.hr.persistence.model.*;
 import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -30,6 +27,7 @@ public class Converters {
     }
 
     public UserDTO userToDTO(User user) {
+        user.getPersonalData().setUser(null);
         return modelMapper.map(user, UserDTO.class);
     }
 
@@ -74,5 +72,23 @@ public class Converters {
         ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
         contractDTO.setUser(userToDTO(contract.getUser()));
         return contractDTO;
+    }
+
+    ////PERMISSION
+    public Permission DTOToPermission(PermissionDTO permissionDTO) {
+        return modelMapper.map(permissionDTO, Permission.class);
+    }
+
+    public void updatePermissionWithDTO(PermissionDTO permissionDTO, Permission permission) {
+        modelMapper.map(permissionDTO, permission);
+        permission.setWrite(permissionDTO.getWrite());
+        permission.setRead(permissionDTO.getRead());
+        permission.setAdd(permissionDTO.isAdd());
+    }
+
+    public PermissionDTO permissionToDTO(Permission permission) {
+        PermissionDTO permissionDTO = modelMapper.map(permission, PermissionDTO.class);
+        permissionDTO.setUser(userToDTO(permission.getUser()));
+        return permissionDTO;
     }
 }

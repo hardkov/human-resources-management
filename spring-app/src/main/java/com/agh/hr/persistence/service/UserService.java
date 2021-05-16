@@ -31,6 +31,8 @@ public class UserService {
 
     public Optional<User> saveUser(User user,boolean isNew) {
         val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(isNew)
+            user.setId(0L);
         if(!userAuth.getAuthorities().contains(roleService.adminRole()))
             if(isNew&&!(Auth.getAdd(userAuth)))
                 return Optional.empty();
