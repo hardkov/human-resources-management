@@ -27,6 +27,7 @@ public class Converters {
     }
 
     public UserDTO userToDTO(User user) {
+        user.getPersonalData().setUser(null);
         return modelMapper.map(user, UserDTO.class);
     }
 

@@ -14,7 +14,8 @@ public class PersonalData {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(targetEntity = User.class, mappedBy = "personalData")
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "personalData")
     private User user;
 
     private String firstname;

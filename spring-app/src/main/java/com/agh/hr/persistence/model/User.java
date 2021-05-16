@@ -30,10 +30,12 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> authorities;
 
-    @OneToOne(targetEntity = PersonalData.class, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private PersonalData personalData;
 
-    @OneToOne(targetEntity = Permission.class, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "permissions_id")
     private Permission permissions;
 
     private String position;

@@ -152,7 +152,6 @@ public class UserServiceDatabaseIntegrationTests {
                 ()->assertTrue(result.isPresent()),
                 ()->assertTrue(userService.getById(result.get().getId()).isPresent())
         );
-
     }
 
     @Test
@@ -203,7 +202,7 @@ public class UserServiceDatabaseIntegrationTests {
         assertAll(
                 ()->assertTrue(result.isPresent()),
                 ()->userService.deleteUser(result.get().getId()),
-                ()->assertFalse(userService.getById(userTest.getId()).isPresent())
+                ()->assertFalse(userService.getById(result.get().getId()).isPresent())
         );
     }
 
