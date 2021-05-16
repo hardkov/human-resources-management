@@ -55,7 +55,7 @@ public class Auth {
     public static boolean arePermissionsOwnedBy(PermissionDTO subset, User user){
         Permission superset=user.getPermissions();
         List<Long> read=superset.getRead();
-        List<Long> write=superset.getRead();
+        List<Long> write=superset.getWrite();
         for(Long p:subset.getRead())
             if(!read.contains(p))
                 return false;
