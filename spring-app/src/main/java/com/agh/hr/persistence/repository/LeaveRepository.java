@@ -12,6 +12,9 @@ import java.util.Optional;
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
+    @Query("SELECT l FROM Leave l WHERE l.user.id IS ?1 AND l.user.id IN ?2")
+    List<Leave> findByUserId(Long id, List<Long> allowedIds);
+
     @Query("SELECT l FROM Leave l WHERE l.id IS ?1 AND l.user.id IN ?2")
     Optional<Leave> findById(Long id, List<Long> allowedIds);
 
@@ -38,6 +41,9 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
     @Query("SELECT l FROM Leave l WHERE l.paid IS ?1 AND l.user.id IN ?2")
     List<Leave> findByPaidEquals(Boolean paid, List<Long> allowedIds);
+
+    @Query("SELECT l FROM Leave l WHERE l.user.id IS ?1")
+    List<Leave> findByUserIdAdmin(Long id);
 
     @Query("SELECT l FROM Leave l WHERE l.id IS ?1")
     Optional<Leave> findByIdAdmin(Long id);

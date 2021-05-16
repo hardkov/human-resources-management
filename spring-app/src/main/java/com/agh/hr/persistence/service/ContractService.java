@@ -1,7 +1,11 @@
 package com.agh.hr.persistence.service;
 
+import com.agh.hr.persistence.dto.ContractDTO;
+import com.agh.hr.persistence.dto.Converters;
+import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.model.Contract;
 import com.agh.hr.persistence.model.ContractType;
+import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.ContractRepository;
 import lombok.val;
@@ -14,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,43 +27,85 @@ public class ContractService {
 
     private final ContractRepository contractRepository;
     private final RoleService roleService;
-
+    private final UserService userService;
+    private final Converters converters;
     @Autowired
-    public ContractService(ContractRepository contractRepository, RoleService roleService){
+    public ContractService(ContractRepository contractRepository, RoleService roleService, UserService userService,
+                           Converters converters){
         this.contractRepository=contractRepository;
         this.roleService = roleService;
+        this.userService=userService;
+        this.converters = converters;
     }
-
-    public Optional<Contract> saveContract(Contract contract) {
-        if(contract.getUser() == null)
+    
+    public Optional<ContractDTO> updateContract(ContractDTO contractDTO) {
+        val userAuth=Auth.getCurrentUser();
+        Optional<User> userOpt = userService.getRawById(contractDTO.getUser().getId());
+        if(!userOpt.isPresent())
             return Optional.empty();
-        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        if(!userAuth.getAuthorities().contains(roleService.adminRole()) && !Auth.getWriteIds(userAuth).contains(contract.getUser().getId()))
+        User user=userOpt.get();
+        Contract contract = converters.DTOToContract(contractDTO);
+        contract.setUser(user);
+        if(!roleService.isAdmin(userAuth))
+            if(!Auth.getWriteIds(userAuth).contains(user.getId()))
+                return Optional.empty();
+        converters.updateContractWithDTO(contractDTO,contract);
+        val result= Optional.of(contractRepository.save(contract));
+        return result.map(converters::contractToDTO);
+    }
+    
+    public Optional<ContractDTO> saveContract(ContractDTO contractDTO,Long userId) {
+        Optional<User> userOpt = userService.getRawById(userId);
+        if(!userOpt.isPresent())
+            return Optional.empty();
+        User user = userOpt.get();
+        Contract contract = converters.DTOToContract(contractDTO);
+        contract.setUser(user);
+        contract.setId(0L);
+
+        val userAuth=Auth.getCurrentUser();
+        if(!roleService.isAdmin(userAuth) && !Auth.getWriteIds(userAuth).contains(userId))
                 return Optional.empty();
         try {
-            return Optional.of(contractRepository.save(contract));
+            return Optional.of(contractRepository.save(contract)).map(converters::contractToDTO);
         } catch(Exception e) {
             return Optional.empty();
         }
     }
 
-    public Optional<Contract> getById(Long id) {
-        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        if(userAuth.getAuthorities().contains(roleService.adminRole()))
-            return contractRepository.findByIdAdmin(id);
-        return contractRepository.findById(id, Auth.getReadIds(userAuth));
+    public Optional<ContractDTO> getById(Long id) {
+        val userAuth=Auth.getCurrentUser();
+        if(roleService.isAdmin(userAuth))
+            return contractRepository.findByIdAdmin(id).map(converters::contractToDTO);
+        return contractRepository.findById(id, Auth.getReadIds(userAuth)).map(converters::contractToDTO);
     }
 
-    public List<Contract> getAllContracts() {
-        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        if(userAuth.getAuthorities().contains(roleService.adminRole()))
-            return contractRepository.findAllAdmin();
-        return contractRepository.findAll(Auth.getReadIds(userAuth));
+    public List<ContractDTO> getByUserId(Long id) {
+
+        val userAuth=Auth.getCurrentUser();
+        if(roleService.isAdmin(userAuth))
+            return contractRepository.findByUserIdAdmin(id).stream()
+                    .map(converters::contractToDTO)
+                    .collect(Collectors.toList());
+        return contractRepository.findByUserId(id,Auth.getReadIds(userAuth)).stream()
+                .map(converters::contractToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ContractDTO> getAllContracts() {
+        val userAuth=Auth.getCurrentUser();
+        if(roleService.isAdmin(userAuth))
+            return contractRepository.findAllAdmin().stream()
+                    .map(converters::contractToDTO)
+                    .collect(Collectors.toList());
+        return contractRepository.findAll(Auth.getReadIds(userAuth)).stream()
+                .map(converters::contractToDTO)
+                .collect(Collectors.toList());
     }
 
     public boolean deleteContract(Long contractId) {
-        val userAuth=(User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        if(userAuth.getAuthorities().contains(roleService.adminRole()) || userAuth.getPermissions().getWrite().contains(contractId)) {
+        val userAuth=Auth.getCurrentUser();
+        if(roleService.isAdmin(userAuth) || userAuth.getPermissions().getWrite().contains(contractId)) {
             contractRepository.deleteById(contractId);
             return true;
         }
