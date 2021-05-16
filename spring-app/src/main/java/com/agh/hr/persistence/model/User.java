@@ -31,11 +31,9 @@ public class User implements UserDetails {
     private Set<Role> authorities;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
     private PersonalData personalData;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "permissions_id")
     private Permission permissions;
 
     private String position;
