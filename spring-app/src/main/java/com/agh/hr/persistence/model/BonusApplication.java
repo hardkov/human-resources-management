@@ -1,6 +1,7 @@
 package com.agh.hr.persistence.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BonusApplication extends Application {

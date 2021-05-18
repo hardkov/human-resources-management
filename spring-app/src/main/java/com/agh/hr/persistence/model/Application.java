@@ -1,11 +1,13 @@
 package com.agh.hr.persistence.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@SuperBuilder
 @MappedSuperclass
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -20,11 +22,8 @@ public abstract class Application {
     @JoinColumn
     private User user;
 
+    @Column(columnDefinition = "varchar(1000)")
     private String content;
-
-    @ManyToOne
-    @JoinColumn
-    private PersonalData personalData;
 
     private String place;
 

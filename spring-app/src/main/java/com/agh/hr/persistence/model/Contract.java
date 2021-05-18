@@ -17,7 +17,7 @@ public class Contract {
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(columnDefinition = "DATE")
