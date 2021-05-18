@@ -1,21 +1,18 @@
-package com.agh.hr.controllers;
+package com.agh.hr.controllers.supervisor;
 
 import com.agh.hr.config.security.SecuredRestController;
-import com.agh.hr.model.error.InvalidRequestException;
-import com.agh.hr.model.error.payload.UpdateApplicationStatusPayload;
+import com.agh.hr.model.payload.UpdateApplicationStatusPayload;
 import com.agh.hr.persistence.dto.BonusApplicationDTO;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.DelegationApplicationDTO;
 import com.agh.hr.persistence.dto.LeaveApplicationDTO;
 import com.agh.hr.persistence.service.application.ISupervisorApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.links.Link;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -23,15 +20,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping( "/api/supervisor/application-management")
-public class SupervisorApplicationManagementController implements SecuredRestController {
+public class ApplicationManagementController implements SecuredRestController {
 
     private final ISupervisorApplicationService applicationService;
 
     private final Converters converters;
 
     @Autowired
-    public SupervisorApplicationManagementController(Converters converters,
-                                                     ISupervisorApplicationService applicationService) {
+    public ApplicationManagementController(Converters converters,
+                                           ISupervisorApplicationService applicationService) {
         this.converters = converters;
         this.applicationService = applicationService;
     }
@@ -78,7 +75,7 @@ public class SupervisorApplicationManagementController implements SecuredRestCon
         return ResponseEntity.ok(applications);
     }
 
-    @PostMapping(value = "leave-application/")
+    @PostMapping(value = "leave-application")
     @Operation(
             summary = "Update status of leave application",
             responses = {
@@ -95,7 +92,7 @@ public class SupervisorApplicationManagementController implements SecuredRestCon
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping(value = "bonus-application/")
+    @PostMapping(value = "bonus-application")
     @Operation(
             summary = "Update status of bonus application",
             responses = {
@@ -112,7 +109,7 @@ public class SupervisorApplicationManagementController implements SecuredRestCon
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping(value = "delegation-application/")
+    @PostMapping(value = "delegation-application")
     @Operation(
             summary = "Update status of delegation application",
             responses = {

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-public class ApplicationController implements SecuredRestController {
+public class HealthController implements SecuredRestController {
 
     @RequestMapping(value = "/health-check", method = RequestMethod.GET)
     public ResponseEntity<Void> getRoot() throws IOException {

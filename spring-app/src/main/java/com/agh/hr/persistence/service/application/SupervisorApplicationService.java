@@ -2,7 +2,7 @@ package com.agh.hr.persistence.service.application;
 
 import com.agh.hr.model.error.InvalidRequestException;
 import com.agh.hr.model.error.NotAuthorizedException;
-import com.agh.hr.model.error.payload.UpdateApplicationStatusPayload;
+import com.agh.hr.model.payload.UpdateApplicationStatusPayload;
 import com.agh.hr.persistence.dto.*;
 import com.agh.hr.persistence.model.BonusApplication;
 import com.agh.hr.persistence.model.DelegationApplication;

@@ -1,4 +1,4 @@
-package com.agh.hr.model.error.payload;
+package com.agh.hr.model.payload;
 
 import com.agh.hr.persistence.model.Status;
 import lombok.Value;

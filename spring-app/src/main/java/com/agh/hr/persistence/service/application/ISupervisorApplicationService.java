@@ -1,13 +1,11 @@
 package com.agh.hr.persistence.service.application;
 
 import com.agh.hr.model.error.NotAuthorizedException;
-import com.agh.hr.model.error.payload.UpdateApplicationStatusPayload;
+import com.agh.hr.model.payload.UpdateApplicationStatusPayload;
 import com.agh.hr.persistence.dto.BonusApplicationDTO;
 import com.agh.hr.persistence.dto.DelegationApplicationDTO;
 import com.agh.hr.persistence.dto.LeaveApplicationDTO;
 import com.agh.hr.persistence.dto.UserDTO;
-import com.agh.hr.persistence.model.BonusApplication;
-import com.agh.hr.persistence.model.Leave;
 
 import java.util.List;
 
