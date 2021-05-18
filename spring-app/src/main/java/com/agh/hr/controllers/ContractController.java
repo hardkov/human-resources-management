@@ -3,6 +3,7 @@ package com.agh.hr.controllers;
 import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.ContractDTO;
 import com.agh.hr.persistence.dto.Converters;
+import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.model.Contract;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.service.ContractService;
@@ -21,15 +22,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class ContractController implements SecuredRestController {
-    private final Converters converters;
     private final ContractService contractService;
-    private final UserService userService;
 
     @Autowired
-    public ContractController(Converters converters, ContractService contractService, UserService userService) {
-        this.converters = converters;
+    public ContractController(ContractService contractService) {
         this.contractService = contractService;
-        this.userService = userService;
     }
 
     //// CREATE
@@ -40,20 +37,10 @@ public class ContractController implements SecuredRestController {
                 @ApiResponse(responseCode = "400", description = "Contract could not be created", content = @Content())
                })
     public ResponseEntity<ContractDTO> insertContract(@RequestBody ContractDTO contractDTO, @PathVariable Long userId) {
-        Optional<User> userOpt = userService.getById(userId);
-        if(userOpt.isPresent()){
-            User user = userOpt.get();
-            Contract contract = converters.DTOToContract(contractDTO);
-            System.out.println(contract);
-            contract.setUser(user);
-            Optional<Contract> insertedContractOpt = contractService.saveContract(contract);
-            return insertedContractOpt
-                    .map(insertedContract -> ResponseEntity.ok(converters.contractToDTO(insertedContract)))
-                    .orElseGet(() -> ResponseEntity.badRequest().build());
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<ContractDTO> insertedContractOpt = contractService.saveContract(contractDTO,userId);
+        return insertedContractOpt
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     //// READ
@@ -63,28 +50,17 @@ public class ContractController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of all contracts' DTOs")
                })
     public ResponseEntity<List<ContractDTO>> getAllUsers() {
-        return ResponseEntity.ok(
-                contractService.getAllContracts().stream().map(converters::contractToDTO)
-                        .collect(Collectors.toList())
-        );
+        return ResponseEntity.ok(contractService.getAllContracts());
     }
 
     @GetMapping(value = "contract/user/{userId}")
     @Operation(summary = "Reading user's contracts by userID",
                responses = {
                 @ApiResponse(responseCode = "200", description = "User's contracts' DTOs"),
-                @ApiResponse(responseCode = "400", description = "User's contract could not be fetched", content = @Content())
                })
     public ResponseEntity<List<ContractDTO>> getContractsByUserId(@PathVariable Long userId) {
-        Optional<User> userOpt = userService.getById(userId);
-        return userOpt
-                .map(user -> ResponseEntity.ok(
-                        user
-                                .getContracts().stream()
-                                .map(converters::contractToDTO)
-                                .collect(Collectors.toList())
-                ))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+            return ResponseEntity.ok(contractService.getByUserId(userId));
+
     }
 
     //// UPDATE
@@ -95,16 +71,8 @@ public class ContractController implements SecuredRestController {
                 @ApiResponse(responseCode = "400", description = "Contract could not be updated")
                })
     public ResponseEntity<Void> updateContract(@RequestBody ContractDTO contractDTO) {
-        Optional<Contract> contractOpt = contractService.getById(contractDTO.getId());
-        if(contractOpt.isPresent()) {
-            Contract contract = contractOpt.get();
-            converters.updateContractWithDTO(contractDTO, contract);
-            return contractService.saveContract(contract).isPresent() ?
-                    ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+        return contractService.updateContract(contractDTO).isPresent() ?
+                ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
     }
 
     //// DELETE
