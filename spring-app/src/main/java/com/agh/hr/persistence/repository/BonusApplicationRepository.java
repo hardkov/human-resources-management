@@ -14,11 +14,7 @@ import java.util.List;
 @Repository
 public interface BonusApplicationRepository extends JpaRepository<BonusApplication, Long> {
 
-    @Query("SELECT d FROM LeaveApplication d WHERE d.user.id = :userId")
+    @Query("SELECT d FROM BonusApplication d WHERE d.user.id = :userId")
     List<BonusApplication> findByUserId(@Param("userId") Long userId);
-
-    List<BonusApplication> findByMoneyBetween(BigDecimal first, BigDecimal second);
-    List<BonusApplication> findByMoneyLessThan(BigDecimal value);
-    List<BonusApplication> findByMoneyGreaterThan(BigDecimal value);
 
 }

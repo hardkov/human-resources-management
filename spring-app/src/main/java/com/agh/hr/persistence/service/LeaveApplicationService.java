@@ -38,35 +38,7 @@ public class LeaveApplicationService {
     }
 
     public void deleteLeaveApplication(Long leaveApplicationId) {
-            leaveApplicationRepository.deleteById(leaveApplicationId);
+        leaveApplicationRepository.deleteById(leaveApplicationId);
     }
 
-    public List<LeaveApplication> getByStartDateEquals(LocalDateTime startDate) {
-        return leaveApplicationRepository.findByStartDateEquals(startDate);
-    }
-
-    public List<LeaveApplication> getByStartDateBefore(LocalDateTime before) {
-        return leaveApplicationRepository.findByStartDateBefore(before);
-    }
-
-    public List<LeaveApplication> getByStartDateAfter(LocalDateTime after) {
-        return leaveApplicationRepository.findByStartDateAfter(after);
-    }
-
-    public List<LeaveApplication> getByEndDateEquals(LocalDateTime endDate) {
-        return leaveApplicationRepository.findByEndDateEquals(endDate);
-    }
-
-    public List<LeaveApplication> getByEndDateBefore(LocalDateTime before) {
-        return leaveApplicationRepository.findByEndDateBefore(before);
-    }
-
-    public List<LeaveApplication> getByEndDateAfter(LocalDateTime after) {
-        return leaveApplicationRepository.findByEndDateAfter(after);
-    }
-
-    public List<LeaveApplication> getByPaidEquals(boolean paid) {
-        return leaveApplicationRepository.findByPaidEquals(paid);
-    }
-    
 }

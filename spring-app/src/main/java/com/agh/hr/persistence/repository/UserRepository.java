@@ -18,8 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findUserById(Long id);
 
-    // Legacy ......
-
     @Query("SELECT u FROM User u WHERE u.id IS ?1 AND u.id IN ?2")
     Optional<User> findById(Long id,List<Long> allowedIds);
 

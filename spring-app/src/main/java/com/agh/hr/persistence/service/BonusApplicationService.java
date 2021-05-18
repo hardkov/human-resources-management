@@ -42,16 +42,4 @@ public class BonusApplicationService {
             bonusApplicationRepository.deleteById(BonusApplicationId);
     }
 
-    public List<BonusApplication> getByMoneyBetween(BigDecimal first, BigDecimal second) {
-        return bonusApplicationRepository.findByMoneyBetween(first,second);
-    }
-
-    public List<BonusApplication> getByMoneyLessThan(BigDecimal value) {
-        return bonusApplicationRepository.findByMoneyLessThan(value);
-    }
-
-    public List<BonusApplication> getByMoneyGreaterThan(BigDecimal value) {
-        return bonusApplicationRepository.findByMoneyGreaterThan(value);
-    }
-    
 }

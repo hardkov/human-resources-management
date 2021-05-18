@@ -33,4 +33,5 @@ public abstract class Application {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
 }

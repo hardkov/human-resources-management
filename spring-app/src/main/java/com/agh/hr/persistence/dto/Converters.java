@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Type;
 import java.security.Principal;
 
 @Component
@@ -46,16 +47,37 @@ public class Converters {
 
     // Applications
 
+    // generic way
+    public <T extends Application, R extends ApplicationDTO> R applicationToDTO(T application, Class<R> dtoClass) {
+        return modelMapper.map(application, dtoClass);
+    }
+
+    public <T extends ApplicationDTO, R extends Application> R dtoTOApplication(T dto, Class<R> clz) {
+        return modelMapper.map(dto, clz);
+    }
+
     public LeaveApplicationDTO leaveApplicationToDTO(LeaveApplication leaveApplication) {
         return modelMapper.map(leaveApplication, LeaveApplicationDTO.class);
+    }
+
+    public LeaveApplication DTOtoLeaveApplication(LeaveApplicationDTO dto) {
+        return modelMapper.map(dto, LeaveApplication.class);
     }
 
     public BonusApplicationDTO bonusApplicationToDTO(BonusApplication bonusApplication) {
         return modelMapper.map(bonusApplication, BonusApplicationDTO.class);
     }
 
+    public BonusApplication DTOtoBonusApplication(BonusApplicationDTO dto) {
+        return modelMapper.map(dto, BonusApplication.class);
+    }
+
     public DelegationApplicationDTO delegationApplicationToDTO(DelegationApplication delegationApplication) {
         return modelMapper.map(delegationApplication, DelegationApplicationDTO.class);
+    }
+
+    public DelegationApplication DTOtoDelegationApplication(DelegationApplicationDTO dto) {
+        return modelMapper.map(dto, DelegationApplication.class);
     }
 
 
