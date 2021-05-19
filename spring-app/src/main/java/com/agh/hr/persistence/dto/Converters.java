@@ -1,57 +1,33 @@
 package com.agh.hr.persistence.dto;
 
-import com.agh.hr.persistence.model.Leave;
-import com.agh.hr.persistence.model.PersonalData;
-import com.agh.hr.persistence.model.User;
-import com.agh.hr.persistence.service.RoleService;
+import com.agh.hr.persistence.model.*;
+import lombok.val;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
 
 @Component
 public class Converters {
     private final ModelMapper modelMapper;
-    private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public Converters(ModelMapper modelMapper, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public Converters(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     //// USER
     public User DTOToUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        user.setPersonalData(DTOToPersonalData(userDTO.getPersonalData()));
-        return user;
-    }
-
-    public User InsertionDTOToUser(UserInsertionDTO userInsertionDTO) {
-        User user = modelMapper.map(userInsertionDTO, User.class);
-        user.setPersonalData(DTOToPersonalData(userInsertionDTO.getPersonalData()));
-        user.setPasswordHash(passwordEncoder.encode(userInsertionDTO.getPassword()));
-        if (RoleService.SUPERVISOR_AUTHORITY.equals(userInsertionDTO.getRole()))
-            user.setAuthorities(Collections.singleton(roleService.supervisorRole()));
-        else
-            user.setAuthorities(Collections.singleton(roleService.userRole()));
-
-        user.getPersonalData().setId(null);
-        user.setId(null);
-        user.setEnabled(true);
+        PersonalData personalData=DTOToPersonalData(userDTO.personalData);
+        user.setPersonalData(personalData);
         return user;
     }
 
     public void updateUserWithDTO(UserDTO userDTO, User user) {
-        updatePersonalDataWithDTO(userDTO.getPersonalData(), user.getPersonalData());
+        updatePersonalDataWithDTO(userDTO.personalData, user.getPersonalData());
         modelMapper.map(userDTO, user);
     }
 
     public UserDTO userToDTO(User user) {
+        user.getPersonalData().setUser(null);
         return modelMapper.map(user, UserDTO.class);
     }
 
@@ -81,5 +57,38 @@ public class Converters {
         LeaveDTO leaveDTO = modelMapper.map(leave, LeaveDTO.class);
         leaveDTO.setUser(userToDTO(leave.getUser()));
         return leaveDTO;
+    }
+
+    //// CONTRACT
+    public Contract DTOToContract(ContractDTO contractDTO) {
+        return modelMapper.map(contractDTO, Contract.class);
+    }
+
+    public void updateContractWithDTO(ContractDTO contractDTO, Contract contract) {
+        modelMapper.map(contractDTO, contract);
+    }
+
+    public ContractDTO contractToDTO(Contract contract) {
+        ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
+        contractDTO.setUser(userToDTO(contract.getUser()));
+        return contractDTO;
+    }
+
+    ////PERMISSION
+    public Permission DTOToPermission(PermissionDTO permissionDTO) {
+        return modelMapper.map(permissionDTO, Permission.class);
+    }
+
+    public void updatePermissionWithDTO(PermissionDTO permissionDTO, Permission permission) {
+        modelMapper.map(permissionDTO, permission);
+        permission.setWrite(permissionDTO.getWrite());
+        permission.setRead(permissionDTO.getRead());
+        permission.setAdd(permissionDTO.isAdd());
+    }
+
+    public PermissionDTO permissionToDTO(Permission permission) {
+        PermissionDTO permissionDTO = modelMapper.map(permission, PermissionDTO.class);
+        permissionDTO.setUser(userToDTO(permission.getUser()));
+        return permissionDTO;
     }
 }

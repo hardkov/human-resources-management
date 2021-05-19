@@ -4,7 +4,7 @@ import { isLoggedIn } from '../../services/authService';
 
 const ProtectedRoute = (routeProps: RouteProps) => {
   if (isLoggedIn()) {
-    return <Redirect to="/home" />;
+    return <Redirect to="/" />;
   }
 
   return <Route {...routeProps} />;

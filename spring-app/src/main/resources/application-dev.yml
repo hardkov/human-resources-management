@@ -5,7 +5,7 @@ spring:
       path: /h2-console
 
   datasource:
-    url: jdbc:h2:mem:devdb
+    url: jdbc:h2:mem:devdb;DB_CLOSE_ON_EXIT=FALSE
     username: admin
     password: passw0rd
     driverClassName: org.h2.Driver

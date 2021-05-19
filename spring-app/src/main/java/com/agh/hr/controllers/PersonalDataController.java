@@ -4,13 +4,19 @@ import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.PersonalDataDTO;
 import com.agh.hr.persistence.model.PersonalData;
+import com.agh.hr.persistence.model.User;
+import com.agh.hr.persistence.service.Auth;
 import com.agh.hr.persistence.service.PersonalDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +41,10 @@ public class PersonalDataController implements SecuredRestController {
                     @ApiResponse(responseCode = "200", description = "Personal data DTO")
             })
     public ResponseEntity<PersonalDataDTO> getPersonalDataById(@PathVariable Long id) {
+        
         Optional<PersonalData> personalDataOpt =dataService.getById(id);
         return personalDataOpt.map(data->ResponseEntity.ok(converters.personalDataToDTO(data)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.GET)
@@ -46,29 +53,17 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of Personal data records' DTOs")
                })
     public ResponseEntity<List<PersonalDataDTO>> getAllPersonalData() {
+        
         return ResponseEntity.ok(dataService.getAllPersonalData().stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
     }
 
-    @RequestMapping(value = "/data/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/data/{PersonalDataId}", method = RequestMethod.DELETE)
     @Operation(summary = "Deleting personal data with personalDataId")
-    public ResponseEntity<Void> deletePersonalData(@PathVariable Long id) {
-        dataService.deletePersonalData(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
-    @Operation(summary = "Inserting new personal data",
-               responses = {
-                @ApiResponse(responseCode = "200", description = "Personal data DTO"),
-                @ApiResponse(responseCode = "400", description = "Personal data record could not be saved")
-               })
-    public ResponseEntity<PersonalDataDTO> insertPersonalData(@RequestBody PersonalDataDTO dataDTO) {
-        PersonalData data = converters.DTOToPersonalData(dataDTO);
-        Optional<PersonalData> insertedPersonalDataOpt = dataService.savePersonalData(data);
-        return insertedPersonalDataOpt.map(insertedData -> ResponseEntity.ok(converters.personalDataToDTO(insertedData)))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+    public ResponseEntity<Void> deletePersonalData(@PathVariable Long PersonalDataId) {
+        
+        return dataService.deletePersonalData(PersonalDataId);
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.PUT)
@@ -78,15 +73,16 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "400", description = "Personal could not be updated")
                })
     public  ResponseEntity<Void> updatePersonalData(@RequestBody PersonalDataDTO dataDTO) {
+        
         Optional<PersonalData> personalDataOpt = dataService.getById(dataDTO.getId());
         if(personalDataOpt.isPresent()){
             PersonalData data = personalDataOpt.get();
             converters.updatePersonalDataWithDTO(dataDTO, data);
-            return dataService.savePersonalData(data).isPresent() ?
+            return dataService.savePersonalData(data,false).isPresent() ?
                     ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         }
         else
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @RequestMapping(value = "/dataByFirstname/{name}", method = RequestMethod.GET)
@@ -95,6 +91,7 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
     public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByFirstname(@PathVariable String name) {
+        
         return ResponseEntity.ok(dataService.getByFirstname(name).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
@@ -106,6 +103,7 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
     public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByLastname(@PathVariable String name) {
+        
         return ResponseEntity.ok(dataService.getByLastname(name).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
@@ -116,7 +114,9 @@ public class PersonalDataController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
-    public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByFullName(@PathVariable String firstname,@PathVariable String lastname) {
+    public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByFullName(@PathVariable String firstname,
+                                                                           @PathVariable String lastname) {
+        
         return ResponseEntity.ok(dataService.getByFullName(firstname,lastname).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
@@ -128,6 +128,7 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
     public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByAddress(@PathVariable String address) {
+        
         return ResponseEntity.ok(dataService.getByAddress(address).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
@@ -139,6 +140,7 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
     public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByEmail(@PathVariable String email) {
+        
         return ResponseEntity.ok(dataService.getByEmail(email).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
@@ -150,6 +152,7 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
     public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByPhone(@PathVariable String phone) {
+        
         return ResponseEntity.ok(dataService.getByPhone(phone).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
@@ -161,6 +164,7 @@ public class PersonalDataController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
     public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByBirthdateEquals(@PathVariable LocalDate date) {
+        
         return ResponseEntity.ok(dataService.getByBirthdateEquals(date).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));
@@ -171,7 +175,9 @@ public class PersonalDataController implements SecuredRestController {
                responses = {
                 @ApiResponse(responseCode = "200", description = "List of personal data DTOs")
                })
-    public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByBirthdateBetween(@PathVariable LocalDate before,@PathVariable LocalDate after) {
+    public ResponseEntity<List<PersonalDataDTO>> getPersonalDataByBirthdateBetween(@PathVariable LocalDate before,
+                                                                                   @PathVariable LocalDate after) {
+        
         return ResponseEntity.ok(dataService.getByBirthdateBetween(before,after).stream()
                 .map(converters::personalDataToDTO)
                 .collect(Collectors.toList()));

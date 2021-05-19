@@ -24,7 +24,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: employeesImg,
         title: 'Employees',
         description: 'List of employees. Manage their permission and get insight into user data details.',
-        link: '/',
+        link: '/employees',
       },
       {
         img: applicationImg,
@@ -59,7 +59,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: applicationImg,
         title: 'Create Application',
         description: 'Create and submit an applications.',
-        link: '/',
+        link: '/create-application',
       },
     ];
   }
@@ -76,7 +76,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: leavesImg,
         title: 'My Leaves',
         description: 'See all the leaves during your contract.',
-        link: '/',
+        link: '/leaves',
       },
       {
         img: earningsImg,
@@ -88,13 +88,13 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: applicationImg,
         title: 'Create Application',
         description: 'Create and submit an applications.',
-        link: '/',
+        link: '/create-application',
       },
       {
         img: employeesImg,
         title: 'Employees',
         description: 'List of employees. Manage their permission and get insight into user data details.',
-        link: '/',
+        link: '/employees',
       },
       {
         img: applicationImg,

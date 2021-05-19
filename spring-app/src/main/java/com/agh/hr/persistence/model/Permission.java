@@ -3,6 +3,7 @@ package com.agh.hr.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,15 +17,27 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ElementCollection
-    private List<Long> write;
+    @OneToOne(targetEntity = User.class, mappedBy = "permissions")
+    private User user;
 
     @ElementCollection
-    private List<Long> read;
+    @Builder.Default
+    private List<Long> write=new ArrayList<>();
+
+    @ElementCollection
+    @Builder.Default
+    private List<Long> read=new ArrayList<>();
 
     private boolean add;
 
     public Long getId() {
         return id;
     }
+    public boolean addToRead(Long toAdd){ return read.add(toAdd);}
+    public boolean addToWrite(Long toAdd){
+        if(!write.contains(toAdd))
+            read.add(toAdd);
+        return write.add(toAdd);
+    }
+    public boolean getAdd(){return add;}
 }

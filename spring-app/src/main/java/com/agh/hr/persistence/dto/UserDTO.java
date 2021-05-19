@@ -2,10 +2,11 @@ package com.agh.hr.persistence.dto;
 
 import lombok.*;
 
-@Data
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class UserDTO {
-    private Long id;
-    private PersonalDataDTO personalData;
-    private String position;
+
+    protected Long id;
+    protected PersonalDataDTO personalData;
+    protected String position;
+
 }

@@ -5,18 +5,62 @@ import Home from './Home';
 import PrivateRoute from './utils/PrivateRoute';
 import Logout from './Logout';
 import Login from './Login';
-import UserInsertForm from './UserInsertForm';
 import ProtectedRoute from './utils/ProtectedRoute';
-import UserInsert from "./UserInsert";
+import Layout from './utils/Layout';
+import LeavesView from './LeavesView';
+import EmployeesList from './EmployeesList';
+import MyProfile from './MyProfile';
+import EmployeeProfile from './EmployeeProfile';
+import CreateApplication from './CreateApplication';
+
+const homeWithLayout = () => (
+  <Layout>
+    <Home />
+  </Layout>
+);
+
+const leavesWithLayout = () => (
+  <Layout>
+    <LeavesView />
+  </Layout>
+);
+
+const employeesListWithLayout = () => (
+  <Layout>
+    <EmployeesList />
+  </Layout>
+);
+
+const myProfileWithLayout = () => (
+  <Layout>
+    <MyProfile />
+  </Layout>
+);
+
+const employeeProfileWithLayout = () => (
+  <Layout>
+    <EmployeeProfile />
+  </Layout>
+);
+
+const createApplicationWithLayout = () => (
+  <Layout>
+    <CreateApplication />
+  </Layout>
+);
 
 const Routes: React.FC = () => {
   return (
     <Router>
       <Switch>
-        <PrivateRoute path="/home" component={Home} />
-        <ProtectedRoute exact path="/" component={Login} />
         <Route exact path="/logout" component={Logout} />
-        <Route exact path="/add" component={UserInsert} />
+        <ProtectedRoute exact path="/login" component={Login} />
+        <PrivateRoute exact path="/" component={homeWithLayout} />
+        <PrivateRoute exact path="/profile" component={myProfileWithLayout} />
+        <PrivateRoute exact path="/employee-profile" component={employeeProfileWithLayout} />
+        <PrivateRoute exact path="/leaves" component={leavesWithLayout} />
+        <PrivateRoute exact path="/employees" component={employeesListWithLayout} />
+        <PrivateRoute exact path="/create-application" component={createApplicationWithLayout} />
       </Switch>
     </Router>
   );

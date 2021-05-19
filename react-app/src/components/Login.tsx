@@ -10,7 +10,7 @@ interface Credentials {
   password: string;
 }
 
-const Login = () => {
+const Login: React.FC = () => {
   const [credentials, setCredentials] = useState<Credentials>({ username: '', password: '' });
   const [redirect, setRedirect] = useState<boolean>(false);
   const [error, setErrors] = useState<string>('');
@@ -29,7 +29,7 @@ const Login = () => {
     else if (result.errors) setErrors(result.errors[0]);
   };
 
-  if (redirect) return <Redirect to="/home" />;
+  if (redirect) return <Redirect to="/" />;
   return <LoginForm handleSubmit={handleSubmit} handleCredentialsChange={handleCredentialsChange} error={error} />;
 };
 
