@@ -7,10 +7,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core';
 
+import IconButton from '@material-ui/core/IconButton';
+import { Link } from 'react-router-dom';
 import EmployeeRow from './EmployeeRow';
 import UserData from '../types/UserData';
 import ActionResult from '../types/ActionResult';
@@ -44,9 +45,14 @@ const EmployeesList = () => {
     <div className={classes.pageContent}>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <h1>Employee List </h1>
-        <Fab className={classes.add2} color="primary" aria-label="add">
+        <IconButton
+          className={classes.add2}
+          color="primary"
+          component={Link}
+          to={{ pathname: '/employees/insert', state: { referer: '/employees' } }}
+        >
           <AddIcon />
-        </Fab>
+        </IconButton>
       </div>
 
       <TableContainer component={Paper}>

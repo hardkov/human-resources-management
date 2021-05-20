@@ -2,6 +2,7 @@ package com.agh.hr.controllers;
 
 import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
+import com.agh.hr.persistence.dto.UserInsertionDTO;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.service.UserService;
@@ -33,7 +34,7 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "Created user's DTO"),
                 @ApiResponse(responseCode = "400", description = "User could not be created", content = @Content())
                })
-    public ResponseEntity<UserDTO> insertUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> insertUser(@RequestBody UserInsertionDTO userDTO) {
         Optional<UserDTO> insertedUserOpt = userService.saveUser(userDTO);
         return insertedUserOpt
                 .map(ResponseEntity::ok)

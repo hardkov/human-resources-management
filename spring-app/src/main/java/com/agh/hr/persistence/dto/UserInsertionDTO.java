@@ -1,15 +1,15 @@
 package com.agh.hr.persistence.dto;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class UserInsertionDTO {
+    private Long id;
     private String username;
     private String password;
-    private String role;
     private PersonalDataDTO personalData;
     private String position;
 }

@@ -1,14 +1,16 @@
 package com.agh.hr.persistence.dto;
 
 import com.agh.hr.persistence.model.*;
-import lombok.val;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Converters {
     private final ModelMapper modelMapper;
 
+    @Autowired
     public Converters(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
@@ -19,6 +21,19 @@ public class Converters {
         PersonalData personalData=DTOToPersonalData(userDTO.personalData);
         user.setPersonalData(personalData);
         return user;
+    }
+
+    public User DTOToUser(UserInsertionDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);
+        PersonalData personalData=DTOToPersonalData(userDTO.getPersonalData());
+        user.setPersonalData(personalData);
+        return user;
+    }
+
+    public UserDTO InsertionDTOToDTO(UserInsertionDTO userInsertionDTO) {
+        UserDTO userDTO = modelMapper.map(userInsertionDTO, UserDTO.class);
+        userDTO.setPersonalData(userInsertionDTO.getPersonalData());
+        return userDTO;
     }
 
     public void updateUserWithDTO(UserDTO userDTO, User user) {

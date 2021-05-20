@@ -2,16 +2,16 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
-import com.agh.hr.persistence.model.Leave;
+import com.agh.hr.persistence.dto.UserInsertionDTO;
+import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -27,12 +27,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final Converters converters;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository,RoleService roleService, Converters converters){
+    public UserService(UserRepository userRepository, RoleService roleService, Converters converters, PasswordEncoder passwordEncoder){
         this.userRepository=userRepository;
         this.roleService=roleService;
         this.converters = converters;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Optional<UserDTO> updateUser(UserDTO userDTO) {
@@ -49,8 +51,9 @@ public class UserService {
         return result.map(converters::userToDTO);
     }
 
-    public Optional<UserDTO> saveUser(UserDTO userDTO) {
+    public Optional<UserDTO> saveUser(UserInsertionDTO userDTO) {
         User user=converters.DTOToUser(userDTO);
+        System.out.println(user.toString());
         val userAuth=Auth.getCurrentUser();
 
         if(!roleService.isAdmin(userAuth))
@@ -58,6 +61,10 @@ public class UserService {
                 return Optional.empty();
 
         user.setId(0L);
+        user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
+        user.setEnabled(true);
+        user.setAuthorities(Collections.singleton(roleService.employeeRole()));
+        user.setPermissions(Permission.builder().add(false).read(null).write(null).build());
         try {
                 val result= Optional.of(userRepository.save(user));
                 userAuth.getPermissions().addToWrite(result.get().getId());
