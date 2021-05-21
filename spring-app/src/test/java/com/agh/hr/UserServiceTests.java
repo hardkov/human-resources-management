@@ -9,7 +9,6 @@ import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -32,8 +31,7 @@ public class UserServiceTests {
         userRepository = mock(UserRepository.class);
         RoleService roleService = mock(RoleService.class);
         Converters converters= mock(Converters.class);
-        PasswordEncoder passwordEncoder = new PasswordEncoderBean().passwordEncoder();
-        userService = new UserService(userRepository, roleService, converters, passwordEncoder);
+        userService = new UserService(userRepository, roleService, converters);
 
         this.username = "foo@gmail.com";
         this.user = User.builder()
