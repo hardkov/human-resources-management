@@ -16,7 +16,7 @@ interface Props {
   disabled: boolean;
 }
 
-const UserFormField: React.FC<Props> = ({ setValue, fieldName, textName, disabled }: Props) => {
+const UserFormDate: React.FC<Props> = ({ setValue, fieldName, textName, disabled }: Props) => {
   const [date, setDate] = useState<MaterialUiPickersDate>(null);
 
   useEffect(() => {
@@ -51,4 +51,4 @@ const UserFormField: React.FC<Props> = ({ setValue, fieldName, textName, disable
   );
 };
 
-export default UserFormField;
+export default UserFormDate;

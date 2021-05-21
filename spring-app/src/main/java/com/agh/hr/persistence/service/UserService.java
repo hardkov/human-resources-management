@@ -27,14 +27,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final Converters converters;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleService roleService, Converters converters, PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepository, RoleService roleService, Converters converters){
         this.userRepository=userRepository;
         this.roleService=roleService;
         this.converters = converters;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public Optional<UserDTO> updateUser(UserDTO userDTO) {
@@ -53,7 +51,6 @@ public class UserService {
 
     public Optional<UserDTO> saveUser(UserInsertionDTO userDTO) {
         User user=converters.DTOToUser(userDTO);
-        System.out.println(user.toString());
         val userAuth=Auth.getCurrentUser();
 
         if(!roleService.isAdmin(userAuth))
@@ -61,10 +58,6 @@ public class UserService {
                 return Optional.empty();
 
         user.setId(0L);
-        user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
-        user.setEnabled(true);
-        user.setAuthorities(Collections.singleton(roleService.employeeRole()));
-        user.setPermissions(Permission.builder().add(false).read(null).write(null).build());
         try {
                 val result= Optional.of(userRepository.save(user));
                 userAuth.getPermissions().addToWrite(result.get().getId());

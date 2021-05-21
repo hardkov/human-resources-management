@@ -1,18 +1,25 @@
 package com.agh.hr.persistence.dto;
 
 import com.agh.hr.persistence.model.*;
+import com.agh.hr.persistence.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 @Component
 public class Converters {
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     @Autowired
-    public Converters(ModelMapper modelMapper) {
+    public Converters(ModelMapper modelMapper, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
 
     //// USER
@@ -27,6 +34,14 @@ public class Converters {
         User user = modelMapper.map(userDTO, User.class);
         PersonalData personalData=DTOToPersonalData(userDTO.getPersonalData());
         user.setPersonalData(personalData);
+        user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
+        user.setEnabled(true);
+        user.setAuthorities(Collections.singleton(roleService.employeeRole()));
+        user.setPermissions(Permission.builder()
+                .add(false)
+                .read(Collections.emptyList())
+                .write(Collections.emptyList())
+                .build());
         return user;
     }
 
