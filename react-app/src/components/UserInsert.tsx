@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
@@ -41,21 +41,23 @@ const UserInsert = () => {
   const { referer } = location.state;
 
   const [serverError, setServerError] = useState<string>('');
-  const [user, setUser] = useState<UserInsertionData>({
-    personalData: {
-      id: 0,
-      firstname: '',
-      lastname: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
-      birthdate: '',
-      thumbnail: null,
-    },
-    position: '',
-    username: '',
-    password: '',
-  });
+  const user = useMemo<UserInsertionData>(() => {
+    return {
+      personalData: {
+        id: 0,
+        firstname: '',
+        lastname: '',
+        email: '',
+        phoneNumber: '',
+        address: '',
+        birthdate: '',
+        thumbnail: null,
+      },
+      position: '',
+      username: '',
+      password: '',
+    };
+  }, []);
 
   const { register, handleSubmit, reset, setValue } = useForm<UserInsertionData>({
     defaultValues: user,

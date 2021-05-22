@@ -22,7 +22,14 @@ const UserFormPasswordField: React.FC<Props> = ({ register, fieldName, textName,
         </Grid>
       </Grid>
       <Grid item xs={8}>
-        <TextField {...formHookRest} inputRef={formHookRef} disabled={disabled} variant="outlined" type="password" fullWidth />
+        <TextField
+          {...formHookRest}
+          inputRef={formHookRef}
+          disabled={disabled}
+          variant="outlined"
+          type="password"
+          fullWidth
+        />
       </Grid>
     </>
   );

@@ -26,7 +26,7 @@ const UserFormDate: React.FC<Props> = ({ setValue, fieldName, textName, disabled
     } else {
       setValue(fieldName, date, { shouldValidate: true, shouldDirty: true });
     }
-  }, [date]);
+  }, [date, setValue, fieldName]);
 
   return (
     <>

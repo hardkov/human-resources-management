@@ -7,7 +7,7 @@ import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 
 import UserFormField from './Profile/UserForm/UserFormField';
 import UserFormDate from './Profile/UserForm/UserFormDate';
-import UserFormPasswordField from "./Profile/UserForm/UserFormPasswordField";
+import UserFormPasswordField from './Profile/UserForm/UserFormPasswordField';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -42,9 +42,19 @@ const UserInsertForm: React.FC<Props> = ({ disabled, register, setValue, handleS
           <UserFormField register={register} fieldName="personalData.firstname" textName="Name" disabled={disabled} />
           <UserFormField register={register} fieldName="personalData.lastname" textName="Surname" disabled={disabled} />
           <UserFormField register={register} fieldName="personalData.email" textName="Email" disabled={disabled} />
-          <UserFormField register={register} fieldName="personalData.phoneNumber" textName="Phone" disabled={disabled} />
+          <UserFormField
+            register={register}
+            fieldName="personalData.phoneNumber"
+            textName="Phone"
+            disabled={disabled}
+          />
           <UserFormField register={register} fieldName="personalData.address" textName="Address" disabled={disabled} />
-          <UserFormDate setValue={setValue} fieldName="personalData.birthdate" textName="Birthdate" disabled={disabled} />
+          <UserFormDate
+            setValue={setValue}
+            fieldName="personalData.birthdate"
+            textName="Birthdate"
+            disabled={disabled}
+          />
           <UserFormField register={register} fieldName="username" textName="Username" disabled={disabled} />
           <UserFormPasswordField register={register} fieldName="password" textName="Password" disabled={disabled} />
           <UserFormField register={register} fieldName="position" textName="Position" disabled={disabled} />
