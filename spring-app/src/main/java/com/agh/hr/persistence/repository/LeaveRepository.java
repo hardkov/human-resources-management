@@ -12,64 +12,34 @@ import java.util.Optional;
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
-    @Query("SELECT l FROM Leave l WHERE l.user.id IS ?1 AND l.user.id IN ?2")
-    List<Leave> findByUserId(Long id, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.user.id IS ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByUserId(Long id, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.id IS ?1 AND l.user.id IN ?2")
-    Optional<Leave> findById(Long id, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.id IS ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    Optional<Leave> findById(Long id, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.user.id IN ?1")
-    List<Leave> findAll(List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE (?2 = TRUE OR l.user.id IN ?1)")
+    List<Leave> findAll(List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.startDate IS ?1 AND l.user.id IN ?2")
-    List<Leave> findByStartDateEquals(LocalDateTime startDate, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.startDate IS ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByStartDateEquals(LocalDateTime startDate, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.startDate< ?1 AND l.user.id IN ?2")
-    List<Leave> findByStartDateBefore(LocalDateTime startDate, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.startDate< ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByStartDateBefore(LocalDateTime startDate, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.startDate> ?1 AND l.user.id IN ?2")
-    List<Leave> findByStartDateAfter(LocalDateTime startDate, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.startDate> ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByStartDateAfter(LocalDateTime startDate, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.endDate IS ?1 AND l.user.id IN ?2")
-    List<Leave> findByEndDateEquals(LocalDateTime endDate, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.endDate IS ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByEndDateEquals(LocalDateTime endDate, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.endDate < ?1 AND l.user.id IN ?2")
-    List<Leave> findByEndDateBefore(LocalDateTime endDate, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.endDate < ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByEndDateBefore(LocalDateTime endDate, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.endDate > ?1 AND l.user.id IN ?2")
-    List<Leave> findByEndDateAfter(LocalDateTime endDate, List<Long> allowedIds);
+    @Query("SELECT l FROM Leave l WHERE l.endDate > ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByEndDateAfter(LocalDateTime endDate, List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT l FROM Leave l WHERE l.paid IS ?1 AND l.user.id IN ?2")
-    List<Leave> findByPaidEquals(Boolean paid, List<Long> allowedIds);
-
-    @Query("SELECT l FROM Leave l WHERE l.user.id IS ?1")
-    List<Leave> findByUserIdAdmin(Long id);
-
-    @Query("SELECT l FROM Leave l WHERE l.id IS ?1")
-    Optional<Leave> findByIdAdmin(Long id);
-
-    @Query("SELECT l FROM Leave l")
-    List<Leave> findAllAdmin();
-
-    @Query("SELECT l FROM Leave l WHERE l.startDate IS ?1")
-    List<Leave> findByStartDateEqualsAdmin(LocalDateTime startDate);
-
-    @Query("SELECT l FROM Leave l WHERE l.startDate< ?1")
-    List<Leave> findByStartDateBeforeAdmin(LocalDateTime startDate);
-
-    @Query("SELECT l FROM Leave l WHERE l.startDate> ?1")
-    List<Leave> findByStartDateAfterAdmin(LocalDateTime startDate);
-
-    @Query("SELECT l FROM Leave l WHERE l.endDate IS ?1")
-    List<Leave> findByEndDateEqualsAdmin(LocalDateTime endDate);
-
-    @Query("SELECT l FROM Leave l WHERE l.endDate < ?1")
-    List<Leave> findByEndDateBeforeAdmin(LocalDateTime endDate);
-
-    @Query("SELECT l FROM Leave l WHERE l.endDate > ?1")
-    List<Leave> findByEndDateAfterAdmin(LocalDateTime endDate);
-
-    @Query("SELECT l FROM Leave l WHERE l.paid IS ?1")
-    List<Leave> findByPaidEqualsAdmin(Boolean paid);
+    @Query("SELECT l FROM Leave l WHERE l.paid IS ?1 AND (?3 = TRUE OR l.user.id IN ?2)")
+    List<Leave> findByPaidEquals(Boolean paid, List<Long> allowedIds, boolean ignoreAuth);
 
 }

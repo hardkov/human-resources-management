@@ -75,30 +75,21 @@ public class ContractService {
 
     public Optional<ContractDTO> getById(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return contractRepository.findByIdAdmin(id).map(converters::contractToDTO);
-        return contractRepository.findById(id, Auth.getReadIds(userAuth)).map(converters::contractToDTO);
+        return contractRepository.findById(id, Auth.getReadIds(userAuth),roleService.isAdmin(userAuth))
+                .map(converters::contractToDTO);
     }
 
     public List<ContractDTO> getByUserId(Long id) {
 
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return contractRepository.findByUserIdAdmin(id).stream()
-                    .map(converters::contractToDTO)
-                    .collect(Collectors.toList());
-        return contractRepository.findByUserId(id,Auth.getReadIds(userAuth)).stream()
+        return contractRepository.findByUserId(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::contractToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ContractDTO> getAllContracts() {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return contractRepository.findAllAdmin().stream()
-                    .map(converters::contractToDTO)
-                    .collect(Collectors.toList());
-        return contractRepository.findAll(Auth.getReadIds(userAuth)).stream()
+        return contractRepository.findAll(Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::contractToDTO)
                 .collect(Collectors.toList());
     }
