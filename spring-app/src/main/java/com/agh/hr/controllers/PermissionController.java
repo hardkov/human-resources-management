@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api")
 public class PermissionController implements SecuredRestController {
 
     private final PermissionService permissionService;
