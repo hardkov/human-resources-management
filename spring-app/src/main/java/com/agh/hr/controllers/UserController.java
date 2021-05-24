@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api")
 public class UserController implements SecuredRestController {
     private final UserService userService;
 
