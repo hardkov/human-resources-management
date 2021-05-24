@@ -74,25 +74,17 @@ public class UserService {
 
     public Optional<UserDTO> getById(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByIdAdmin(id).map(converters::userToDTO);
-        return userRepository.findById(id,Auth.getReadIds(userAuth)).map(converters::userToDTO);
+        return userRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).map(converters::userToDTO);
     }
 
     public Optional<User> getRawById(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByIdAdmin(id);
-        return userRepository.findById(id,Auth.getReadIds(userAuth));
+        return userRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth));
     }
 
     public List<UserDTO> getAllUsers() {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findAllAdmin().stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
-        return userRepository.findAll(Auth.getReadIds(userAuth)).stream()
+        return userRepository.findAll(Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }
@@ -108,34 +100,22 @@ public class UserService {
 
     public List<UserDTO> getByFirstname(String firstname) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByFirstnameAdmin(firstname).stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
-        return userRepository.findByPersonalData_Firstname(firstname,Auth.getReadIds(userAuth)).stream()
+        return userRepository.findByPersonalData_Firstname(firstname,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<UserDTO> getByLastname(String lastname) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByLastnameAdmin(lastname).stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
-        return userRepository.findByPersonalData_Lastname(lastname,Auth.getReadIds(userAuth)).stream()
+        return userRepository.findByPersonalData_Lastname(lastname,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<UserDTO> getByFullName(String firstname,String lastname) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByFirstnameAndLastnameAdmin(firstname,lastname).stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
         return userRepository.findByPersonalData_FirstnameAndPersonalData_Lastname
-                (firstname,lastname,Auth.getReadIds(userAuth)).stream()
+                (firstname,lastname,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }

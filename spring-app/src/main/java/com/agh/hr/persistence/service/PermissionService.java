@@ -56,9 +56,7 @@ public class PermissionService {
 
     public Optional<Permission> getRawById(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return permissionRepository.findByIdAdmin(id);
-        return permissionRepository.findById(id,Auth.getReadIds(userAuth));
+        return permissionRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth));
     }
 
     public Optional<PermissionDTO> getById(Long id) {
@@ -75,18 +73,13 @@ public class PermissionService {
 
     public Optional<PermissionDTO> getByUserId(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return permissionRepository.findByUserIdAdmin(id).map(converters::permissionToDTO);
-        return permissionRepository.findByUserId(id,Auth.getReadIds(userAuth)).map(converters::permissionToDTO);
+        return permissionRepository.findByUserId(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth))
+                .map(converters::permissionToDTO);
     }
 
     public List<PermissionDTO> getAll() {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return permissionRepository.findAllAdmin().stream()
-                    .map(converters::permissionToDTO)
-                    .collect(Collectors.toList());
-        return permissionRepository.findAll(Auth.getReadIds(userAuth)).stream()
+        return permissionRepository.findAll(Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::permissionToDTO)
                 .collect(Collectors.toList());
     }
