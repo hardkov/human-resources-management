@@ -21,8 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findUsersWithIds(List<Long> userIds);
 
 
-
-
     Optional<User> findUserById(Long id);
 
     @Query("SELECT u FROM User u WHERE u.id = ?1 AND u.id IN ?2")

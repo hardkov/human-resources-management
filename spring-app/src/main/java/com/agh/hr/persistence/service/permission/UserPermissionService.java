@@ -22,6 +22,10 @@ public class UserPermissionService implements IUserPermissionService {
 
     @Override
     public List<UserDTO> getReadableUsers(Long byUserId) {
+        if (this.userService.isAdmin(byUserId)) {
+            this.userService.getAllUsers();
+        }
+
         val readableUsersIds =
                 permissionService.getUsersPermissions(byUserId).getRead();
 
@@ -30,6 +34,10 @@ public class UserPermissionService implements IUserPermissionService {
 
     @Override
     public List<UserDTO> getModifiableUsers(Long byUserId) {
+        if (this.userService.isAdmin(byUserId)) {
+            this.userService.getAllUsers();
+        }
+
         val modifiableUsersIds =
                 permissionService.getUsersPermissions(byUserId).getWrite();
 

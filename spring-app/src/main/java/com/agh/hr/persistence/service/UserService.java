@@ -1,5 +1,6 @@
 package com.agh.hr.persistence.service;
 
+import com.agh.hr.model.error.NotFoundException;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.dto.UserInsertionDTO;
@@ -33,10 +34,23 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersById(List<Long> userIds) {
-        return this.userRepository.findUsersWithIds(userIds)
-                .stream()
-                .map(converters::userToDTO)
-                .collect(Collectors.toList());
+        val users = this.userRepository.findUsersWithIds(userIds);
+
+        return toDTO(users);
+    }
+
+    public List<UserDTO> getAllUsersSimple() {
+        val users = this.userRepository.findAll();
+
+        return toDTO(users);
+    }
+
+    public boolean isAdmin(Long userId) {
+        val authorities = this.userRepository.findUserById(userId)
+                .orElseThrow(() -> new NotFoundException("User", userId))
+                .getAuthorities();
+
+        return this.roleService.isAdmin(authorities);
     }
 
 
@@ -128,6 +142,13 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+
+    private List<UserDTO> toDTO(List<User> users) {
+        return users.stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList());
+
+    }
 
 
 }

@@ -36,7 +36,7 @@ public class PermissionService {
     public PermissionDTO getUsersPermissions(Long userId) throws NotFoundException {
         return this.permissionRepository.findByUserId(userId)
                 .map(converters::permissionToDTO)
-                .orElseThrow(() -> new NotFoundException("Permission for userId: " + userId));
+                .orElseThrow(() -> new NotFoundException("Permission", userId));
     }
 
     public Optional<PermissionDTO> savePermission(PermissionDTO permissionDTO) {
