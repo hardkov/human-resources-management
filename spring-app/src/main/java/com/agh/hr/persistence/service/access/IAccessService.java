@@ -21,7 +21,7 @@ public interface IAccessService {
      * Returns a list of all users that supplied user can "read":
      * Union of:
      *  - subordinates
-     *  - additional users with granted read permission
+     *  - additional users accessible via read permissions
      */
     List<UserDTO> readableUsers(Long byUserId);
 
@@ -29,7 +29,7 @@ public interface IAccessService {
      * Returns a list of all users that supplied user can "write":
      * Union of:
      *  - subordinates
-     *  - additional users with granted read permission
+     *  - additional users accessible via write permissions
      */
     List<UserDTO> modifiableUsers(Long byUserId);
 
