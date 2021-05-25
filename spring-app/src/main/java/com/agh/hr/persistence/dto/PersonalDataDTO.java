@@ -11,7 +11,6 @@ import java.time.LocalDate;
 public class PersonalDataDTO {
 
     private Long id;
-    private UserDTO user;
     private String firstname;
     private String lastname;
     private String email;

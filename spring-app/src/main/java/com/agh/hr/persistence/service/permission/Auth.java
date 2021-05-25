@@ -1,4 +1,4 @@
-package com.agh.hr.persistence.service;
+package com.agh.hr.persistence.service.permission;
 import com.agh.hr.persistence.dto.PermissionDTO;
 import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;

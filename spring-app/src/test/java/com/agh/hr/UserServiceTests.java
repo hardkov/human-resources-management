@@ -1,6 +1,5 @@
 package com.agh.hr;
 
-import com.agh.hr.config.security.PasswordEncoderBean;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;

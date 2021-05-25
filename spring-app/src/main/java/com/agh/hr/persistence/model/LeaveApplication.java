@@ -1,15 +1,17 @@
 package com.agh.hr.persistence.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LeaveApplication extends Application {
@@ -18,11 +20,11 @@ public class LeaveApplication extends Application {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime startDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate startDate;
 
-    @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime endDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate endDate;
 
     private boolean paid;
 

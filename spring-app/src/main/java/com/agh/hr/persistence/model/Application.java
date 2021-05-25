@@ -1,16 +1,17 @@
 package com.agh.hr.persistence.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
+@SuperBuilder
+@MappedSuperclass
 @Data
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Application {
 
     @Id
@@ -21,11 +22,8 @@ public abstract class Application {
     @JoinColumn
     private User user;
 
+    @Column(columnDefinition = "varchar(1000)")
     private String content;
-
-    @ManyToOne
-    @JoinColumn
-    private PersonalData personalData;
 
     private String place;
 
@@ -35,4 +33,5 @@ public abstract class Application {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
 }

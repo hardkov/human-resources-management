@@ -19,6 +19,10 @@ public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+    @JoinColumn(name = "supervisor_id")
+    private User supervisor;
+
     // user's email -> data redundancy
     @Column(unique = true)
     private String username;
@@ -51,9 +55,6 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Delegation> delegations;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Application> applications;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
