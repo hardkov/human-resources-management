@@ -1,6 +1,7 @@
 package com.agh.hr.persistence.dto;
 
 import com.agh.hr.persistence.model.*;
+import com.agh.hr.persistence.service.RoleService;
 import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,14 +9,24 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 import java.security.Principal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 public class Converters {
 
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
-    public Converters(ModelMapper modelMapper) {
+    @Autowired
+    public Converters(ModelMapper modelMapper, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
 
     //// USER
@@ -29,6 +40,27 @@ public class Converters {
     public UserDTO toUserDTO(Principal principal) {
         val user = toUser(principal);
         return userToDTO(user);
+    }
+
+    public User DTOToUser(UserInsertionDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);
+        PersonalData personalData=DTOToPersonalData(userDTO.getPersonalData());
+        user.setPersonalData(personalData);
+        user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
+        user.setEnabled(true);
+        user.setAuthorities(Collections.singleton(roleService.employeeRole()));
+        user.setPermissions(Permission.builder()
+                .add(false)
+                .read(Collections.emptyList())
+                .write(Collections.emptyList())
+                .build());
+        return user;
+    }
+
+    public UserDTO InsertionDTOToDTO(UserInsertionDTO userInsertionDTO) {
+        UserDTO userDTO = modelMapper.map(userInsertionDTO, UserDTO.class);
+        userDTO.setPersonalData(userInsertionDTO.getPersonalData());
+        return userDTO;
     }
 
     public void updateUserWithDTO(UserDTO userDTO, User user) {

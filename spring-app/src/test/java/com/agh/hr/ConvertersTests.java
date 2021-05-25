@@ -1,7 +1,9 @@
 package com.agh.hr;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 import com.agh.hr.config.ModelMapperConfig;
+import com.agh.hr.config.security.PasswordEncoderBean;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.dto.PersonalDataDTO;
@@ -9,10 +11,15 @@ import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
+import com.agh.hr.persistence.repository.RoleRepository;
+import com.agh.hr.persistence.service.RoleService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -21,17 +28,28 @@ import lombok.val;
 import java.time.LocalDate;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { ModelMapperConfig.class, Converters.class } )
+@ContextConfiguration(classes = { ModelMapperConfig.class, PasswordEncoderBean.class } )
 public class ConvertersTests {
+    private Converters converters;
+
+    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private Converters converters;
+    public ConvertersTests(PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+        this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
+    }
 
     private User userTest;
     private UserDTO userTestDTO;
 
     @BeforeEach
     public void setup() {
+        RoleRepository roleRepository = mock(RoleRepository.class);
+        RoleService roleService = new RoleService(roleRepository);
+        converters = new Converters(modelMapper, passwordEncoder, roleService);
+
         val personalData= PersonalData.builder()
             .firstname("Susan")
             .lastname("Barrow")

@@ -1,6 +1,7 @@
 package com.agh.hr;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
+import com.agh.hr.persistence.dto.UserInsertionDTO;
 import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
@@ -41,6 +42,7 @@ public class UserServiceDatabaseIntegrationTests {
 
     private User userTest;
     private UserDTO userTestDTO;
+    private UserInsertionDTO userTestInsertionDTO;
     private User userAuth;
 
     @Autowired
@@ -74,7 +76,14 @@ public class UserServiceDatabaseIntegrationTests {
                 .delegations(Collections.emptyList())
                 .build();
         userTest.getPersonalData().setUser(userTest);
-        userTestDTO=converters.userToDTO(userTest);
+        userTestDTO = converters.userToDTO(userTest);
+        userTestInsertionDTO = UserInsertionDTO.builder()
+                .id(10L)
+                .username("sus")
+                .personalData(userTestDTO.getPersonalData())
+                .password("passw0rd")
+                .position("Tester")
+                .build();
         this.userAuth = User.builder()
                 .username("test")
                 .passwordHash(passwordEncoder.encode("passw0rd"))
@@ -133,7 +142,7 @@ public class UserServiceDatabaseIntegrationTests {
 
     @Test
     void testSaveUser(){
-        Optional<UserDTO> result=userService.saveUser(userTestDTO);
+        Optional<UserDTO> result=userService.saveUser(userTestInsertionDTO);
         assertTrue(result.isPresent());
     }
 
@@ -153,7 +162,7 @@ public class UserServiceDatabaseIntegrationTests {
 
     @Test
     void testGetById(){
-        Optional<UserDTO> result=userService.saveUser(userTestDTO);
+        Optional<UserDTO> result=userService.saveUser(userTestInsertionDTO);
         assertAll(
                 ()->assertTrue(result.isPresent()),
                 ()->assertTrue(userService.getById(result.get().getId()).isPresent())
@@ -163,7 +172,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByFirstname(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTestDTO).isPresent()),
+                ()->assertTrue(userService.saveUser(userTestInsertionDTO).isPresent()),
                 ()->assertEquals(1,userService.getByFirstname("Susan").size())
         );
 
@@ -177,7 +186,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByLastname(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTestDTO).isPresent()),
+                ()->assertTrue(userService.saveUser(userTestInsertionDTO).isPresent()),
                 ()->assertEquals(1,userService.getByLastname("Barrow").size())
         );
 
@@ -191,7 +200,7 @@ public class UserServiceDatabaseIntegrationTests {
     @Test
     void testSuccessGetByFullName(){
         assertAll(
-                ()->assertTrue(userService.saveUser(userTestDTO).isPresent()),
+                ()->assertTrue(userService.saveUser(userTestInsertionDTO).isPresent()),
                 ()->assertEquals(1,userService.getByFullName("Susan","Barrow").size())
         );
     }
@@ -204,7 +213,7 @@ public class UserServiceDatabaseIntegrationTests {
 
     @Test
     void testDeleteUser(){
-        Optional<UserDTO> result=userService.saveUser(userTestDTO);
+        Optional<UserDTO> result=userService.saveUser(userTestInsertionDTO);
         assertAll(
                 ()->assertTrue(result.isPresent()),
                 ()->userService.deleteUser(result.get().getId())

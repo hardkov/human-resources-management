@@ -30,7 +30,7 @@ public class UserServiceTests {
         userRepository = mock(UserRepository.class);
         RoleService roleService = mock(RoleService.class);
         Converters converters= mock(Converters.class);
-        userService = new UserService(userRepository, roleService,converters);
+        userService = new UserService(userRepository, roleService, converters);
 
         this.username = "foo@gmail.com";
         this.user = User.builder()

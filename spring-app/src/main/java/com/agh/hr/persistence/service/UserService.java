@@ -2,16 +2,16 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
-import com.agh.hr.persistence.model.Leave;
+import com.agh.hr.persistence.dto.UserInsertionDTO;
+import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -28,7 +28,7 @@ public class UserService {
     private final Converters converters;
 
     @Autowired
-    public UserService(UserRepository userRepository,RoleService roleService, Converters converters){
+    public UserService(UserRepository userRepository, RoleService roleService, Converters converters){
         this.userRepository=userRepository;
         this.roleService=roleService;
         this.converters = converters;
@@ -49,7 +49,7 @@ public class UserService {
         return result.map(converters::userToDTO);
     }
 
-    public Optional<UserDTO> saveUser(UserDTO userDTO) {
+    public Optional<UserDTO> saveUser(UserInsertionDTO userDTO) {
         User user=converters.DTOToUser(userDTO);
         val userAuth=Auth.getCurrentUser();
 
@@ -75,26 +75,18 @@ public class UserService {
 
     public Optional<UserDTO> getById(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByIdAdmin(id).map(converters::userToDTO);
-        return userRepository.findById(id,Auth.getReadIds(userAuth)).map(converters::userToDTO);
+        return userRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).map(converters::userToDTO);
     }
 
     public Optional<User> getRawById(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByIdAdmin(id);
-        return userRepository.findById(id,Auth.getReadIds(userAuth));
+        return userRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth));
     }
 
 
     public List<UserDTO> getAllUsers() {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findAllAdmin().stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
-        return userRepository.findAll(Auth.getReadIds(userAuth)).stream()
+        return userRepository.findAll(Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }
@@ -111,34 +103,22 @@ public class UserService {
 
     public List<UserDTO> getByFirstname(String firstname) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByFirstnameAdmin(firstname).stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
-        return userRepository.findByPersonalData_Firstname(firstname,Auth.getReadIds(userAuth)).stream()
+        return userRepository.findByPersonalData_Firstname(firstname,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<UserDTO> getByLastname(String lastname) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByLastnameAdmin(lastname).stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
-        return userRepository.findByPersonalData_Lastname(lastname,Auth.getReadIds(userAuth)).stream()
+        return userRepository.findByPersonalData_Lastname(lastname,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<UserDTO> getByFullName(String firstname,String lastname) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return userRepository.findByFirstnameAndLastnameAdmin(firstname,lastname).stream()
-                    .map(converters::userToDTO)
-                    .collect(Collectors.toList());
         return userRepository.findByPersonalData_FirstnameAndPersonalData_Lastname
-                (firstname,lastname,Auth.getReadIds(userAuth)).stream()
+                (firstname,lastname,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::userToDTO)
                 .collect(Collectors.toList());
     }

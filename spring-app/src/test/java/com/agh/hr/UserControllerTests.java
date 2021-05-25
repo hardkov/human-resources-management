@@ -6,6 +6,7 @@ import com.agh.hr.controllers.UserController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.PersonalDataDTO;
 import com.agh.hr.persistence.dto.UserDTO;
+import com.agh.hr.persistence.dto.UserInsertionDTO;
 import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
@@ -32,6 +33,7 @@ public class UserControllerTests {
     private UserController userController;
 
     private User userTest;
+    private UserInsertionDTO userTestInsertionDTO;
     private UserDTO userTestDTO;
     private Principal principal;
 
@@ -54,6 +56,12 @@ public class UserControllerTests {
                 .lastname("Barrow")
                 .build();
 
+        this.userTestInsertionDTO = UserInsertionDTO.builder()
+                .id(10L)
+                .personalData(personalDataDTO)
+                .username("test@test.example")
+                .build();
+
         this.userTestDTO = UserDTO.builder()
                 .id(10L)
                 .personalData(personalDataDTO)
@@ -62,14 +70,14 @@ public class UserControllerTests {
 
     @Test
     void testSuccessCreateUser() {
-        when(userService.saveUser(userTestDTO)).thenReturn(Optional.of(userTestDTO));
+        when(userService.saveUser(userTestInsertionDTO)).thenReturn(Optional.of(userTestDTO));
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
         assertAll(
-                ()->assertEquals(200,userController.insertUser(userTestDTO).getStatusCodeValue()),
-                ()->assertNotNull(userController.insertUser(userTestDTO).getBody()),
-                ()->assertEquals(userController.insertUser(userTestDTO).getBody(),userTestDTO)
+                ()->assertEquals(200,userController.insertUser(userTestInsertionDTO).getStatusCodeValue()),
+                ()->assertNotNull(userController.insertUser(userTestInsertionDTO).getBody()),
+                ()->assertEquals(userController.insertUser(userTestInsertionDTO).getBody(),userTestDTO)
         );
 
 
@@ -77,13 +85,13 @@ public class UserControllerTests {
 
     @Test
     void testFailCreateUser() {
-        when(userService.saveUser(userTestDTO)).thenReturn(Optional.empty());
+        when(userService.saveUser(userTestInsertionDTO)).thenReturn(Optional.empty());
         when(converters.DTOToUser(userTestDTO)).thenReturn(userTest);
         when(converters.userToDTO(userTest)).thenReturn(userTestDTO);
 
         assertAll(
-                ()->assertEquals(400,userController.insertUser(userTestDTO).getStatusCodeValue()),
-                ()->assertNull(userController.insertUser(userTestDTO).getBody())
+                ()->assertEquals(400,userController.insertUser(userTestInsertionDTO).getStatusCodeValue()),
+                ()->assertNull(userController.insertUser(userTestInsertionDTO).getBody())
         );
 
     }

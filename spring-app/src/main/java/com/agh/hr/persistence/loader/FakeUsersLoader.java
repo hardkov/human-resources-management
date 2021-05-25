@@ -1,10 +1,7 @@
 package com.agh.hr.persistence.loader;
 
 import com.agh.hr.persistence.model.*;
-import com.agh.hr.persistence.repository.BonusApplicationRepository;
-import com.agh.hr.persistence.repository.DelegationApplicationRepository;
-import com.agh.hr.persistence.repository.LeaveApplicationRepository;
-import com.agh.hr.persistence.repository.UserRepository;
+import com.agh.hr.persistence.repository.*;
 import com.agh.hr.persistence.service.RoleService;
 import com.github.javafaker.Faker;
 import lombok.val;
@@ -34,6 +31,7 @@ public class FakeUsersLoader {
     private final UserRepository userRepository;
     private final BonusApplicationRepository bonusApplicationRepository;
     private final DelegationApplicationRepository delegationApplicationRepository;
+    private final PermissionRepository permissionRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final LeaveApplicationRepository leaveApplicationRepository;
@@ -47,11 +45,13 @@ public class FakeUsersLoader {
                            LeaveApplicationRepository leaveApplicationRepository,
                            BonusApplicationRepository bonusApplicationRepository,
                            DelegationApplicationRepository delegationApplicationRepository,
+                           PermissionRepository permissionRepository,
                            PasswordEncoder passwordEncoder,
                            RoleService roleService) {
         this.userRepository = userRepository;
         this.bonusApplicationRepository = bonusApplicationRepository;
         this.delegationApplicationRepository = delegationApplicationRepository;
+        this.permissionRepository = permissionRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
         this.leaveApplicationRepository = leaveApplicationRepository;
@@ -98,6 +98,8 @@ public class FakeUsersLoader {
                         ).limit(employeesNumber)
                         .collect(Collectors.toList());
 
+
+
         val employee = fakeUser(faker, supervisor, roleService.employeeRole())
                 .position("Ordinary User")
                 .username("employee@gmail.com")
@@ -123,6 +125,20 @@ public class FakeUsersLoader {
         this.leaveApplicationRepository.saveAll(leaveApplications);
         this.bonusApplicationRepository.saveAll(bonusApplications);
         this.delegationApplicationRepository.saveAll(delegationApplications);
+
+        // add permision for each supervised user.
+        List<Long> supervisedUsers = insertedEmployees
+                .stream()
+                .map(User::getId)
+                .collect(Collectors.toList());
+
+        val supervisorPermissions = Permission.builder()
+                .add(true)
+                .read(supervisedUsers)
+                .write(supervisedUsers)
+                .build();
+
+        supervisor.setPermissions(supervisorPermissions);
 
 
         val admin = fakeUser(faker, null, roleService.adminRole())
