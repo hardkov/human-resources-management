@@ -217,8 +217,8 @@ public class FakeUsersLoader {
         val paid = Math.random() < 0.5;
 
         return LeaveApplication.builder()
-                .startDate(fakeStartDate)
-                .endDate(fakeEndDate)
+                .startDate(fakeStartDate.toLocalDate())
+                .endDate(fakeEndDate.toLocalDate())
                 .content(faker.lorem().paragraph(4))
                 .status(randomStatus())
                 .user(user)

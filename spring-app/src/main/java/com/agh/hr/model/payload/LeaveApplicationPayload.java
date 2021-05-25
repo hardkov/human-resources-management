@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -12,8 +13,10 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class LeaveApplicationPayload extends ApplicationPayload {
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
     private boolean paid;
 
 }

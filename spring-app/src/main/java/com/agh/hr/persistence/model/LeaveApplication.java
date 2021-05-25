@@ -5,6 +5,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -19,11 +20,11 @@ public class LeaveApplication extends Application {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime startDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate startDate;
 
-    @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime endDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate endDate;
 
     private boolean paid;
 

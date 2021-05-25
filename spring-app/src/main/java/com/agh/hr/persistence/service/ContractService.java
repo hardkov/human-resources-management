@@ -6,6 +6,7 @@ import com.agh.hr.persistence.model.Contract;
 import com.agh.hr.persistence.model.ContractType;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.ContractRepository;
+import com.agh.hr.persistence.service.access.IAccessService;
 import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,6 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,5 +21,11 @@ public class BonusApplication extends Application {
     private long id;
 
     private BigDecimal money;
+
+    @Column(columnDefinition = "DATE")
+    private LocalDate startDate;
+
+    @Column(columnDefinition = "DATE")
+    private LocalDate endDate;
 
 }

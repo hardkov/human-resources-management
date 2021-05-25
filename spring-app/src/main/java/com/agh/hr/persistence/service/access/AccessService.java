@@ -23,8 +23,6 @@ public class AccessService implements IAccessService {
         this.subordinateService = subordinateService;
     }
 
-    // todo add a check for admin, probably a better place do it would be in userPermissionService
-
     @Override
     public boolean canRead(Long byUserId, Long userId) {
         return readableUsers(byUserId).stream()

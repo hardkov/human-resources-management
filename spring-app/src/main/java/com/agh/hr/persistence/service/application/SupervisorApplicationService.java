@@ -7,10 +7,9 @@ import com.agh.hr.persistence.dto.*;
 import com.agh.hr.persistence.model.BonusApplication;
 import com.agh.hr.persistence.model.DelegationApplication;
 import com.agh.hr.persistence.model.LeaveApplication;
-import com.agh.hr.persistence.repository.BonusApplicationRepository;
-import com.agh.hr.persistence.repository.DelegationApplicationRepository;
-import com.agh.hr.persistence.repository.LeaveApplicationRepository;
-import com.agh.hr.persistence.service.subordinate.ISubordinateService;
+import com.agh.hr.persistence.model.Status;
+import com.agh.hr.persistence.repository.*;
+import com.agh.hr.persistence.service.access.IAccessService;
 import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,31 +23,42 @@ import java.util.stream.Stream;
 @Transactional
 public class SupervisorApplicationService implements ISupervisorApplicationService {
 
-    private final ISubordinateService subordinateService;
+    private final ApplicationConverters applicationConverters;
+    private final IAccessService accessService;
 
     private final LeaveApplicationRepository leaveApplicationRepository;
-
     private final DelegationApplicationRepository delegationApplicationRepository;
-
     private final BonusApplicationRepository bonusApplicationRepository;
+
+    private final BonusRepository bonusRepository;
+    private final LeaveRepository leaveRepository;
+    private final DelegationRepository delegationRepository;
 
     private final Converters converters;
 
     public SupervisorApplicationService(Converters converters,
-                                        ISubordinateService subordinateService,
+                                        ApplicationConverters applicationConverters,
+                                        IAccessService accessService,
                                         LeaveApplicationRepository leaveApplicationRepository,
                                         DelegationApplicationRepository delegationApplicationRepository,
-                                        BonusApplicationRepository bonusApplicationRepository) {
+                                        BonusApplicationRepository bonusApplicationRepository,
+                                        BonusRepository bonusRepository,
+                                        LeaveRepository leaveRepository,
+                                        DelegationRepository delegationRepository) {
         this.converters = converters;
-        this.subordinateService = subordinateService;
+        this.applicationConverters = applicationConverters;
+        this.accessService = accessService;
         this.leaveApplicationRepository = leaveApplicationRepository;
         this.delegationApplicationRepository = delegationApplicationRepository;
         this.bonusApplicationRepository = bonusApplicationRepository;
+        this.bonusRepository = bonusRepository;
+        this.leaveRepository = leaveRepository;
+        this.delegationRepository = delegationRepository;
     }
 
     @Override
     public List<LeaveApplicationDTO> getLeaveApplications(UserDTO supervisor) {
-        return subordinatesIds(supervisor)
+        return readableUserIds(supervisor)
                 .map(leaveApplicationRepository::findByUserId)
                 .flatMap(List::stream)
                 .map(converters::leaveApplicationToDTO)
@@ -57,7 +67,7 @@ public class SupervisorApplicationService implements ISupervisorApplicationServi
 
     @Override
     public List<BonusApplicationDTO> getBonusApplications(UserDTO supervisor) {
-        return subordinatesIds(supervisor)
+        return readableUserIds(supervisor)
                 .map(bonusApplicationRepository::findByUserId)
                 .flatMap(List::stream)
                 .map(converters::bonusApplicationToDTO)
@@ -66,7 +76,7 @@ public class SupervisorApplicationService implements ISupervisorApplicationServi
 
     @Override
     public List<DelegationApplicationDTO> getDelegationApplications(UserDTO supervisor) {
-        return subordinatesIds(supervisor)
+        return readableUserIds(supervisor)
                 .map(delegationApplicationRepository::findByUserId)
                 .flatMap(List::stream)
                 .map(converters::delegationApplicationToDTO)
@@ -85,6 +95,12 @@ public class SupervisorApplicationService implements ISupervisorApplicationServi
         val application = converters.dtoTOApplication(dto, DelegationApplication.class);
         val saved = delegationApplicationRepository.save(application);
 
+        this.delegationRepository.deleteByDelegationApplicationId(application.getId());
+        if (saved.getStatus() == Status.ACCEPTED) {
+            val delegation = this.applicationConverters.toDelegation(saved);
+            this.delegationRepository.save(delegation);
+        }
+
         return converters.delegationApplicationToDTO(saved);
     }
 
@@ -99,6 +115,12 @@ public class SupervisorApplicationService implements ISupervisorApplicationServi
 
         val application = converters.dtoTOApplication(dto, LeaveApplication.class);
         val saved = leaveApplicationRepository.save(application);
+
+        this.leaveRepository.deleteByLeaveApplicationId(application.getId());
+        if (saved.getStatus() == Status.ACCEPTED) {
+            val leave = this.applicationConverters.toLeave(saved);
+            this.leaveRepository.save(leave);
+        }
 
         return converters.leaveApplicationToDTO(saved);
     }
@@ -115,6 +137,12 @@ public class SupervisorApplicationService implements ISupervisorApplicationServi
         val application = converters.dtoTOApplication(dto, BonusApplication.class);
         val saved = bonusApplicationRepository.save(application);
 
+        this.bonusRepository.deleteByBonusApplicationId(application.getId());
+        if (saved.getStatus() == Status.ACCEPTED) {
+            val bonus = this.applicationConverters.toBonus(saved);
+            this.bonusRepository.save(bonus);
+        }
+
         return converters.bonusApplicationToDTO(saved);
     }
 
@@ -125,21 +153,24 @@ public class SupervisorApplicationService implements ISupervisorApplicationServi
 
         val application = optional.get();
         val employee = application.getUser();
-        if (!isSubordinate(supervisor, employee)) {
+        if (!hasWriteAccess(supervisor, employee)) {
             throw new NotAuthorizedException();
         }
 
         return optional.get();
     }
 
-    private boolean isSubordinate(UserDTO supervisor, UserDTO user) {
-        return this.subordinateService.isSubordinate(supervisor.getId(), user.getId());
+    private Stream<Long> readableUserIds(UserDTO supervisor) {
+        return this.accessService
+                .modifiableUsers(supervisor.getId())
+                .stream().map(UserDTO::getId);
     }
 
-    private Stream<Long> subordinatesIds(UserDTO supervisor) {
-        return this.subordinateService.getSubordinates(supervisor.getId())
-                .stream()
-                .map(UserDTO::getId);
+    private boolean hasWriteAccess(UserDTO supervisor, UserDTO user) {
+        val supervisorId = supervisor.getId();
+        val userId = user.getId();
+
+        return this.accessService.canModify(supervisorId, userId);
     }
 
 }
