@@ -24,10 +24,7 @@ public class SubordinateService implements ISubordinateService {
     }
 
     @Override
-    public boolean isSubordinate(UserDTO supervisor, UserDTO subordinate) {
-        val supervisorId = supervisor.getId();
-        val subordinateId = subordinate.getId();
-
+    public boolean isSubordinate(Long supervisorId, Long subordinateId) {
         val option = this.userRepository.findUserById(subordinateId);
         if (!option.isPresent()) {
             return false;
@@ -42,8 +39,7 @@ public class SubordinateService implements ISubordinateService {
     }
 
     @Override
-    public List<UserDTO> getSubordinates(UserDTO supervisor) {
-        val supervisorId = supervisor.getId();
+    public List<UserDTO> getSubordinates(Long supervisorId) {
         val subordinates = this.userRepository.findSubordinates(supervisorId);
 
         return subordinates.stream()

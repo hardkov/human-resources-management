@@ -3,18 +3,16 @@ package com.agh.hr.persistence.service;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.dto.UserInsertionDTO;
-import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
+import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,9 +32,16 @@ public class UserService {
         this.converters = converters;
     }
 
+    public List<UserDTO> getUsersById(List<Long> userIds) {
+        return this.userRepository.findUsersWithIds(userIds)
+                .stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList());
+    }
+
 
     public Optional<UserDTO> updateUser(UserDTO userDTO) {
-        val userAuth=Auth.getCurrentUser();
+        val userAuth= Auth.getCurrentUser();
         Optional<User> userOpt = getRawById(userDTO.getId());
         if(!userOpt.isPresent())
             return Optional.empty();

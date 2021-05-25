@@ -2,15 +2,13 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.dto.ContractDTO;
 import com.agh.hr.persistence.dto.Converters;
-import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.model.Contract;
 import com.agh.hr.persistence.model.ContractType;
-import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.ContractRepository;
+import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +37,7 @@ public class ContractService {
     }
     
     public Optional<ContractDTO> updateContract(ContractDTO contractDTO) {
-        val userAuth=Auth.getCurrentUser();
+        val userAuth= Auth.getCurrentUser();
         Optional<User> userOpt = userService.getRawById(contractDTO.getUser().getId());
         if(!userOpt.isPresent())
             return Optional.empty();

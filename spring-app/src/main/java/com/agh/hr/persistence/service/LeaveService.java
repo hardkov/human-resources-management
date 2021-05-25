@@ -2,15 +2,14 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.LeaveDTO;
-import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.LeaveRepository;
+import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +37,7 @@ public class LeaveService {
     }
 
     public Optional<LeaveDTO> updateLeave(LeaveDTO leaveDTO) {
-        val userAuth=Auth.getCurrentUser();
+        val userAuth= Auth.getCurrentUser();
         Optional<User> userOpt = userService.getRawById(leaveDTO.getUser().getId());
         if(!userOpt.isPresent())
             return Optional.empty();

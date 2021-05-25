@@ -133,11 +133,11 @@ public class SupervisorApplicationService implements ISupervisorApplicationServi
     }
 
     private boolean isSubordinate(UserDTO supervisor, UserDTO user) {
-        return this.subordinateService.isSubordinate(supervisor, user);
+        return this.subordinateService.isSubordinate(supervisor.getId(), user.getId());
     }
 
     private Stream<Long> subordinatesIds(UserDTO supervisor) {
-        return this.subordinateService.getSubordinates(supervisor)
+        return this.subordinateService.getSubordinates(supervisor.getId())
                 .stream()
                 .map(UserDTO::getId);
     }

@@ -4,6 +4,7 @@ import com.agh.hr.persistence.model.PersonalData;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.PersonalDataRepository;
 import com.agh.hr.persistence.repository.UserRepository;
+import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

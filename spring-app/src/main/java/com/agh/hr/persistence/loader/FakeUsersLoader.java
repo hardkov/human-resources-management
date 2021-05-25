@@ -138,6 +138,7 @@ public class FakeUsersLoader {
                 .write(supervisedUsers)
                 .build();
 
+        // note that this triggers hibernate to save permissions here!
         supervisor.setPermissions(supervisorPermissions);
 
 

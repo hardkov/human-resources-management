@@ -17,6 +17,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.supervisor.id = :supervisorId")
     List<User> findSubordinates(@Param("supervisorId") Long supervisorId);
 
+    @Query("SELECT u FROM User u WHERE u.id IN ?1")
+    List<User> findUsersWithIds(List<Long> userIds);
+
+
+
+
     Optional<User> findUserById(Long id);
 
     @Query("SELECT u FROM User u WHERE u.id = ?1 AND u.id IN ?2")

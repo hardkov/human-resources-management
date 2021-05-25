@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface ISubordinateService {
 
-    boolean isSubordinate(UserDTO supervisor, UserDTO subordinate);
+    boolean isSubordinate(Long supervisorId, Long subordinateId);
 
-    List<UserDTO> getSubordinates(UserDTO supervisor);
+    List<UserDTO> getSubordinates(Long supervisorId);
 
 }

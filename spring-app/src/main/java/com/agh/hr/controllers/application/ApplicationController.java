@@ -71,7 +71,7 @@ public class ApplicationController implements SecuredRestController {
 
     @GetMapping( "bonus-application")
     @Operation(
-            summary = "Update status of delegation application",
+            summary = "Update status of bonus application",
             responses = {
                     @ApiResponse(responseCode = "200", description = "BonusApplicationDTO"),
                     @ApiResponse(responseCode = "400", description = "Invalid Request", content = @Content())
