@@ -2,15 +2,14 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.dto.ContractDTO;
 import com.agh.hr.persistence.dto.Converters;
-import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.model.Contract;
 import com.agh.hr.persistence.model.ContractType;
-import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.ContractRepository;
+import com.agh.hr.persistence.service.access.IAccessService;
+import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +38,7 @@ public class ContractService {
     }
     
     public Optional<ContractDTO> updateContract(ContractDTO contractDTO) {
-        val userAuth=Auth.getCurrentUser();
+        val userAuth= Auth.getCurrentUser();
         Optional<User> userOpt = userService.getRawById(contractDTO.getUser().getId());
         if(!userOpt.isPresent())
             return Optional.empty();
@@ -75,30 +74,21 @@ public class ContractService {
 
     public Optional<ContractDTO> getById(Long id) {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return contractRepository.findByIdAdmin(id).map(converters::contractToDTO);
-        return contractRepository.findById(id, Auth.getReadIds(userAuth)).map(converters::contractToDTO);
+        return contractRepository.findById(id, Auth.getReadIds(userAuth),roleService.isAdmin(userAuth))
+                .map(converters::contractToDTO);
     }
 
     public List<ContractDTO> getByUserId(Long id) {
 
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return contractRepository.findByUserIdAdmin(id).stream()
-                    .map(converters::contractToDTO)
-                    .collect(Collectors.toList());
-        return contractRepository.findByUserId(id,Auth.getReadIds(userAuth)).stream()
+        return contractRepository.findByUserId(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::contractToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ContractDTO> getAllContracts() {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return contractRepository.findAllAdmin().stream()
-                    .map(converters::contractToDTO)
-                    .collect(Collectors.toList());
-        return contractRepository.findAll(Auth.getReadIds(userAuth)).stream()
+        return contractRepository.findAll(Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::contractToDTO)
                 .collect(Collectors.toList());
     }

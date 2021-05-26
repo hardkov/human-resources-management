@@ -2,15 +2,14 @@ package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.LeaveDTO;
-import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.LeaveRepository;
+import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +28,8 @@ public class LeaveService {
     private final Converters converters;
     private final UserService userService;
     @Autowired
-    public LeaveService(LeaveRepository leaveRepository,RoleService roleService, Converters converters,UserService userService){
+    public LeaveService(LeaveRepository leaveRepository,RoleService roleService, Converters converters,
+                        UserService userService){
         this.leaveRepository=leaveRepository;
         this.roleService=roleService;
         this.converters = converters;
@@ -37,7 +37,7 @@ public class LeaveService {
     }
 
     public Optional<LeaveDTO> updateLeave(LeaveDTO leaveDTO) {
-        val userAuth=Auth.getCurrentUser();
+        val userAuth= Auth.getCurrentUser();
         Optional<User> userOpt = userService.getRawById(leaveDTO.getUser().getId());
         if(!userOpt.isPresent())
             return Optional.empty();
@@ -74,30 +74,21 @@ public class LeaveService {
     public Optional<LeaveDTO> getById(Long id) {
 
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByIdAdmin(id).map(converters::leaveToDTO);
-        return leaveRepository.findById(id,Auth.getReadIds(userAuth)).map(converters::leaveToDTO);
+        return leaveRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth))
+                .map(converters::leaveToDTO);
     }
 
     public List<LeaveDTO> getByUserId(Long id) {
 
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByUserIdAdmin(id).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByUserId(id,Auth.getReadIds(userAuth)).stream()
+        return leaveRepository.findByUserId(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::leaveToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<LeaveDTO> getAllLeaves() {
         val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findAllAdmin().stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findAll(Auth.getReadIds(userAuth)).stream()
+        return leaveRepository.findAll(Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).stream()
                 .map(converters::leaveToDTO)
                 .collect(Collectors.toList());
     }
@@ -114,81 +105,4 @@ public class LeaveService {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    public List<LeaveDTO> getByStartDateEquals(LocalDateTime startDate) {
-        val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByStartDateEqualsAdmin(startDate).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByStartDateEquals(startDate,Auth.getReadIds(userAuth)).stream()
-                .map(converters::leaveToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<LeaveDTO> getByStartDateBefore(LocalDateTime before) {
-        val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByStartDateBeforeAdmin(before).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByStartDateBefore(before,Auth.getReadIds(userAuth)).stream()
-                .map(converters::leaveToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<LeaveDTO> getByStartDateAfter(LocalDateTime after) {
-        val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByStartDateAfterAdmin(after).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByStartDateAfter(after,Auth.getReadIds(userAuth)).stream()
-                .map(converters::leaveToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<LeaveDTO> getByEndDateEquals(LocalDateTime endDate) {
-        val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByEndDateEqualsAdmin(endDate).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByEndDateEquals(endDate,Auth.getReadIds(userAuth)).stream()
-                .map(converters::leaveToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<LeaveDTO> getByEndDateBefore(LocalDateTime before) {
-        val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByEndDateBeforeAdmin(before).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByEndDateBefore(before,Auth.getReadIds(userAuth)).stream()
-                .map(converters::leaveToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<LeaveDTO> getByEndDateAfter(LocalDateTime after) {
-        val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByEndDateAfterAdmin(after).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByEndDateAfter(after,Auth.getReadIds(userAuth)).stream()
-                .map(converters::leaveToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<LeaveDTO> getByPaidEquals(boolean paid) {
-        val userAuth=Auth.getCurrentUser();
-        if(roleService.isAdmin(userAuth))
-            return leaveRepository.findByPaidEqualsAdmin(paid).stream()
-                    .map(converters::leaveToDTO)
-                    .collect(Collectors.toList());
-        return leaveRepository.findByPaidEquals(paid,Auth.getReadIds(userAuth)).stream()
-                .map(converters::leaveToDTO)
-                .collect(Collectors.toList());
-    }
-    
 }

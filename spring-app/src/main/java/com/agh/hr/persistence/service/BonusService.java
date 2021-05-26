@@ -26,7 +26,10 @@ public class BonusService {
     public boolean saveLeave(Bonus bonus) {
         try {
             bonusRepository.save(bonus);
-        }catch(Exception e){return false;}
+        } catch(Exception e) {
+            return false;
+        }
+
         return true;
     }
 
@@ -42,39 +45,4 @@ public class BonusService {
         bonusRepository.deleteById(leaveId);
     }
 
-    public List<Bonus> getByStartDateEquals(LocalDateTime startDate) {
-        return bonusRepository.findByStartDateEquals(startDate);
-    }
-
-    public List<Bonus> getByStartDateBefore(LocalDateTime before) {
-        return bonusRepository.findByStartDateBefore(before);
-    }
-
-    public List<Bonus> getByStartDateAfter(LocalDateTime after) {
-        return bonusRepository.findByStartDateAfter(after);
-    }
-
-    public List<Bonus> getByEndDateEquals(LocalDateTime endDate) {
-        return bonusRepository.findByEndDateEquals(endDate);
-    }
-
-    public List<Bonus> getByEndDateBefore(LocalDateTime before) {
-        return bonusRepository.findByEndDateBefore(before);
-    }
-
-    public List<Bonus> getByEndDateAfter(LocalDateTime after) {
-        return bonusRepository.findByEndDateAfter(after);
-    }
-
-    public List<Bonus> getByAmountBetween(BigDecimal first, BigDecimal second) {
-        return bonusRepository.findByAmountBetween(first,second);
-    }
-
-    public List<Bonus> getByAmountLessThan(BigDecimal value) {
-        return bonusRepository.findByAmountLessThan(value);
-    }
-
-    public List<Bonus> getByAmountGreaterThan(BigDecimal value) {
-        return bonusRepository.findByAmountGreaterThan(value);
-    }
 }

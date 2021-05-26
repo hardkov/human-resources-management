@@ -13,21 +13,16 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     List<Permission> findByAddEquals(Boolean add);
 
-    @Query("SELECT p FROM Permission p WHERE p.id IS ?1 AND p.user.id IN ?2")
-    Optional<Permission> findById(Long id,List<Long> allowedIds);
+    @Query("SELECT p FROM Permission p WHERE p.user.id = ?1")
+    Optional<Permission> findByUserId(Long userId);
 
-    @Query("SELECT p FROM Permission p WHERE p.user.id IS ?1 AND p.user.id IN ?2")
-    Optional<Permission> findByUserId(Long userId,List<Long> allowedIds);
+    @Query("SELECT p FROM Permission p WHERE p.id = ?1 AND (?3 = TRUE OR p.user.id IN ?2)")
+    Optional<Permission> findById(Long id,List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT p FROM Permission p WHERE p.user.id IN ?1")
-    List<Permission> findAll(List<Long> allowedIds);
+    @Query("SELECT p FROM Permission p WHERE p.user.id = ?1 AND (?3 = TRUE OR p.user.id IN ?2)")
+    Optional<Permission> findByUserId(Long userId,List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT p FROM Permission p WHERE p.id IS ?1")
-    Optional<Permission> findByIdAdmin(Long id);
+    @Query("SELECT p FROM Permission p WHERE (?2 = TRUE OR p.user.id IN ?1)")
+    List<Permission> findAll(List<Long> allowedIds, boolean ignoreAuth);
 
-    @Query("SELECT p FROM Permission p WHERE p.user.id IS ?1")
-    Optional<Permission> findByUserIdAdmin(Long userId);
-
-    @Query("SELECT p FROM Permission p")
-    List<Permission> findAllAdmin();
 }

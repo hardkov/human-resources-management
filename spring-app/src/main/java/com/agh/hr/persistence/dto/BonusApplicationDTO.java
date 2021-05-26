@@ -10,6 +10,6 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class BonusApplicationDTO extends ApplicationDTO{
+public class BonusApplicationDTO extends ApplicationDTO {
     private BigDecimal money;
 }

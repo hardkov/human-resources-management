@@ -3,9 +3,7 @@ package com.agh.hr.controllers;
 import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.PermissionDTO;
-import com.agh.hr.persistence.dto.UserDTO;
-import com.agh.hr.persistence.model.User;
-import com.agh.hr.persistence.service.PermissionService;
+import com.agh.hr.persistence.service.permission.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api")
 public class PermissionController implements SecuredRestController {
 
     private final PermissionService permissionService;

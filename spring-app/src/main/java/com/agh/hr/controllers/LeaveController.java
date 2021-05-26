@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api")
 public class LeaveController implements SecuredRestController {
     private final LeaveService leaveService;
 

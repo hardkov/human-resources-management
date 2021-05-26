@@ -14,23 +14,14 @@ import java.util.Optional;
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
-    @Query("SELECT c FROM Contract c WHERE c.id IS ?1 AND c.user.id IN ?2")
-    Optional<Contract> findById(Long id, List<Long> allowedList);
+    @Query("SELECT c FROM Contract c WHERE c.id IS ?1 AND (?3 = TRUE OR c.user.id IN ?2)")
+    Optional<Contract> findById(Long id, List<Long> allowedList, boolean ignoreAuth);
 
-    @Query("SELECT c FROM Contract c WHERE c.id IS ?1 AND c.user.id IN ?2")
-    List<Contract> findByUserId(Long id,List<Long> allowedList);
+    @Query("SELECT c FROM Contract c WHERE c.id IS ?1 AND (?3 = TRUE OR c.user.id IN ?2)")
+    List<Contract> findByUserId(Long id,List<Long> allowedList, boolean ignoreAuth);
 
-    @Query("SELECT c FROM Contract c WHERE c.id IS ?1")
-    Optional<Contract> findByIdAdmin(Long id);
-
-    @Query("SELECT c FROM Contract c WHERE c.user.id IN ?1")
-    List<Contract> findAll(List<Long> allowedList);
-
-    @Query("SELECT c FROM Contract c WHERE c.user.id IS ?1")
-    List<Contract> findByUserIdAdmin(Long id);
-
-    @Query("SELECT c FROM Contract c")
-    List<Contract> findAllAdmin();
+    @Query("SELECT c FROM Contract c WHERE (?2 = TRUE OR c.user.id IN ?1)")
+    List<Contract> findAll(List<Long> allowedList, boolean ignoreAuth);
 
     List<Contract> findByStartDateEquals(LocalDateTime startDate);
     List<Contract> findByStartDateBefore(LocalDateTime startDate);
