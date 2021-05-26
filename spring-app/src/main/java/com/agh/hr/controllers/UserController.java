@@ -3,6 +3,7 @@ package com.agh.hr.controllers;
 import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserInsertionDTO;
+import com.agh.hr.persistence.dto.validation.groups.UpdateGroup;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.service.UserService;
@@ -12,8 +13,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +38,7 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "Created user's DTO"),
                 @ApiResponse(responseCode = "400", description = "User could not be created", content = @Content())
                })
-    public ResponseEntity<UserDTO> insertUser(@RequestBody UserInsertionDTO userDTO) {
+    public ResponseEntity<UserDTO> insertUser(@Valid @RequestBody UserInsertionDTO userDTO) {
         Optional<UserDTO> insertedUserOpt = userService.saveUser(userDTO);
         return insertedUserOpt
                 .map(ResponseEntity::ok)
@@ -101,7 +104,7 @@ public class UserController implements SecuredRestController {
                 @ApiResponse(responseCode = "202", description = "Request accepted for processing"),
                 @ApiResponse(responseCode = "400", description = "User could not be updated")
                })
-    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Void> updateUser(@Valid @Validated({UpdateGroup.class}) @RequestBody UserDTO userDTO) {
         return userService.updateUser(userDTO).isPresent() ?
                 ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
     }
