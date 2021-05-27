@@ -21,7 +21,7 @@ public class LeaveDTO {
     private boolean paid;
     private byte[] thumbnail;
 
-    @AssertTrue(message = "Start date must be before end date")
+    @AssertTrue(message = "Start date cannot be after end date")
     private boolean isValidDates(){
         return startDate.minusDays(1).isBefore(endDate);
     }
