@@ -54,6 +54,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    compile 'org.springframework.boot:spring-boot-starter-mail:2.5.0'
 }
 
 test {
