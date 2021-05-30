@@ -13,23 +13,23 @@ import java.time.LocalDate;
 public class PersonalDataDTO {
     private Long id;
 
-    @NotBlank(message = "Cannot be blank")
+    @NotBlank(message = "First name cannot be blank")
     private String firstname;
 
-    @NotBlank(message = "Cannot be blank")
+    @NotBlank(message = "Last name cannot be blank")
     private String lastname;
 
-    @NotBlank(message = "Cannot be blank")
-    @Email(message = "Must be valid email")
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be valid")
     private String email;
 
-    @NotBlank(message = "Cannot be blank")
+    @NotBlank(message = "Phone number cannot be blank")
     private String phoneNumber;
 
     private String address;
 
-    @NotNull(message = "Cannot be null")
-    @Past(message = "Must be date in the past")
+    @NotNull(message = "Date of birth cannot be null")
+    @Past(message = "Date of birth must be in the past")
     private LocalDate birthdate;
 
     private byte[] thumbnail;

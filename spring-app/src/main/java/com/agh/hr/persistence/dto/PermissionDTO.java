@@ -18,14 +18,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class PermissionDTO {
-    @NotNull(groups = {UpdateGroup.class}, message = "Cannot be null")
+    @NotNull(groups = {UpdateGroup.class}, message = "Id cannot be null")
     private Long id;
     private UserDTO user;
 
-    @NotNull(message = "Cannot be null")
+    @NotNull(message = "Write list cannot be null")
     private List<Long> write;
 
-    @NotNull(message = "Cannot be null")
+    @NotNull(message = "Read list cannot be null")
     private List<Long> read;
     private boolean add;
 }

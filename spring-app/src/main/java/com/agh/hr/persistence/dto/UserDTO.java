@@ -8,8 +8,7 @@ import javax.validation.constraints.*;
 
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class UserDTO {
-    @NotNull(groups = {UpdateGroup.class}, message = "Cannot be null")
-    @Min(0)
+    @NotNull(groups = {UpdateGroup.class}, message = "Id cannot be null")
     protected Long id;
 
     @Valid

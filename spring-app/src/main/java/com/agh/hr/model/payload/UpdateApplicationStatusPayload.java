@@ -6,9 +6,9 @@ import lombok.Value;
 
 @Value
 public class UpdateApplicationStatusPayload {
-    @NotNull(message = "Cannot be null")
+    @NotNull(message = "Id cannot be null")
     Long applicationId;
 
-    @NotNull(message = "Cannot be null")
+    @NotNull(message = "Status cannot be null")
     Status status;
 }

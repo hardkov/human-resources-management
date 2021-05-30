@@ -9,10 +9,9 @@ import javax.validation.constraints.NotNull;
 @Data
 public class AuthRequest {
 
-    @NotBlank(message = "Cannot be blank")
-    @Email(message = "Must be valid email")
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
-    @NotBlank(message = "Cannot be blank")
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 }

@@ -14,11 +14,11 @@ import javax.validation.constraints.Size;
 public class UserInsertionDTO {
     private Long id;
 
-    @NotBlank(message = "Cannot be blank")
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
-    @NotNull
-    @Size(min = 8, message = "Must be at least 8 characters long")
+    @NotNull(message = "Password cannot be null")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
     @Valid

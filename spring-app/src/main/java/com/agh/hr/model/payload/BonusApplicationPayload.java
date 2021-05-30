@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BonusApplicationPayload extends ApplicationPayload {
-    @NotNull(message = "Cannot be null")
-    @Positive(message = "Must be positive")
+    @NotNull(message = "Money cannot be null")
+    @Positive(message = "Money amount must be positive")
     private BigDecimal money;
 }

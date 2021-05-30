@@ -14,7 +14,7 @@ import javax.validation.constraints.*;
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ContractDTO {
-    @NotNull(groups = {UpdateGroup.class}, message = "Cannot be null")
+    @NotNull(groups = {UpdateGroup.class}, message = "Id cannot be null")
     private Long id;
     private UserDTO user;
 
@@ -22,11 +22,11 @@ public class ContractDTO {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @NotNull(message = "Cannot be null")
+    @NotNull(message = "Type cannot be null")
     private ContractType contractType;
 
-    @NotNull(message = "Cannot be null")
-    @PositiveOrZero(message = "Cannot be negative")
+    @NotNull(message = "Salary cannot be null")
+    @PositiveOrZero(message = "Salary cannot be negative")
     private BigDecimal baseSalary;
 
     @AssertTrue(message = "Start date cannot be after end date")
