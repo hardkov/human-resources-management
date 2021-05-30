@@ -47,10 +47,15 @@ const ProfileForm: React.FC<Props> = ({
   const classes = useStyles();
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="sm">
       <div className={classes.paper}>
         <div className={classes.menu}>
-          <IconButton style={{ padding: 0, justifyContent: 'flex-start' }} component={Link} to={referer || '/'}>
+          <IconButton
+            color="secondary"
+            style={{ padding: 0, justifyContent: 'flex-start' }}
+            component={Link}
+            to={referer || '/'}
+          >
             <ArrowBackIcon />
           </IconButton>
           <div className={classes.switch}>

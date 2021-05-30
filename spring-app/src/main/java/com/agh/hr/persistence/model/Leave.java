@@ -3,6 +3,7 @@ package com.agh.hr.persistence.model;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -26,8 +27,8 @@ public class Leave {
 
     private boolean paid;
 
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private byte[] thumbnail;
+    @OneToOne
+    @JoinColumn
+    private LeaveApplication leaveApplication;
 
 }

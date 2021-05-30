@@ -41,32 +41,4 @@ public class DelegationService {
         delegationRepository.deleteById(leaveId);
     }
 
-    public List<Delegation> getByStartDateEquals(LocalDateTime startDate) {
-        return delegationRepository.findByStartDateEquals(startDate);
-    }
-
-    public List<Delegation> getByStartDateBefore(LocalDateTime before) {
-        return delegationRepository.findByStartDateBefore(before);
-    }
-
-    public List<Delegation> getByStartDateAfter(LocalDateTime after) {
-        return delegationRepository.findByStartDateAfter(after);
-    }
-
-    public List<Delegation> getByEndDateEquals(LocalDateTime endDate) {
-        return delegationRepository.findByEndDateEquals(endDate);
-    }
-
-    public List<Delegation> getByEndDateBefore(LocalDateTime before) {
-        return delegationRepository.findByEndDateBefore(before);
-    }
-
-    public List<Delegation> getByEndDateAfter(LocalDateTime after) {
-        return delegationRepository.findByEndDateAfter(after);
-    }
-
-    public List<Delegation> getByDestinationContaining(String destination) {
-        return delegationRepository.findByDestinationContaining(destination);
-    }
-    
 }

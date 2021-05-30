@@ -1,13 +1,13 @@
-package com.agh.hr.persistence.service;
+package com.agh.hr.persistence.service.permission;
 
+import com.agh.hr.model.error.NotFoundException;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.PermissionDTO;
 import com.agh.hr.persistence.model.Permission;
-import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.PermissionRepository;
+import com.agh.hr.persistence.service.RoleService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +25,22 @@ public class PermissionService {
     private final Converters converters;
 
     @Autowired
-    public PermissionService(PermissionRepository permissionRepository, RoleService roleService, Converters converters){
+    public PermissionService(PermissionRepository permissionRepository,
+                             RoleService roleService,
+                             Converters converters){
         this.permissionRepository=permissionRepository;
         this.roleService=roleService;
         this.converters = converters;
     }
 
+    public PermissionDTO getUsersPermissions(Long userId) throws NotFoundException {
+        return this.permissionRepository.findByUserId(userId)
+                .map(converters::permissionToDTO)
+                .orElseThrow(() -> new NotFoundException("Permission", userId));
+    }
+
     public Optional<PermissionDTO> savePermission(PermissionDTO permissionDTO) {
-        val userAuth=Auth.getCurrentUser();
+        val userAuth= Auth.getCurrentUser();
         Optional<Permission> permission=getRawById(permissionDTO.getId());
         if(!permission.isPresent())
             return Optional.empty();

@@ -85,7 +85,7 @@ const UserInsert = () => {
       <div className={classes.paper}>
         <div className={classes.menu}>
           <IconButton style={{ padding: 0, justifyContent: 'flex-start' }} component={Link} to={referer || '/'}>
-            <ArrowBackIcon color="primary" />
+            <ArrowBackIcon color="secondary" />
           </IconButton>
         </div>
         <UserInsertForm

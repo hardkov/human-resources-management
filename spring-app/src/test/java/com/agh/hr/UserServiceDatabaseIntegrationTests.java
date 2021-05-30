@@ -74,7 +74,7 @@ public class UserServiceDatabaseIntegrationTests {
                 .leaves(Collections.emptyList())
                 .bonuses(Collections.emptyList())
                 .delegations(Collections.emptyList())
-                .applications(Collections.emptyList()).build();
+                .build();
         userTest.getPersonalData().setUser(userTest);
         userTestDTO = converters.userToDTO(userTest);
         userTestInsertionDTO = UserInsertionDTO.builder()
@@ -93,7 +93,7 @@ public class UserServiceDatabaseIntegrationTests {
                 .leaves(Collections.emptyList())
                 .bonuses(Collections.emptyList())
                 .delegations(Collections.emptyList())
-                .applications(Collections.emptyList()).build();
+                .build();
 
         val permissions= Permission.builder().build();
         permissions.addToWrite(10L);

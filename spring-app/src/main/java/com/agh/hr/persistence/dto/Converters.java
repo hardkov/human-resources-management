@@ -2,7 +2,13 @@ package com.agh.hr.persistence.dto;
 
 import com.agh.hr.persistence.model.*;
 import com.agh.hr.persistence.service.RoleService;
+import lombok.val;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Type;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -11,6 +17,7 @@ import java.util.Collections;
 
 @Component
 public class Converters {
+
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
@@ -28,6 +35,11 @@ public class Converters {
         PersonalData personalData=DTOToPersonalData(userDTO.personalData);
         user.setPersonalData(personalData);
         return user;
+    }
+
+    public UserDTO toUserDTO(Principal principal) {
+        val user = toUser(principal);
+        return userToDTO(user);
     }
 
     public User DTOToUser(UserInsertionDTO userDTO) {
@@ -60,6 +72,46 @@ public class Converters {
         user.getPersonalData().setUser(null);
         return modelMapper.map(user, UserDTO.class);
     }
+
+    public User toUser(Principal principal) {
+        return (User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
+    }
+
+    // Applications
+
+    // generic way
+    public <T extends Application, R extends ApplicationDTO> R applicationToDTO(T application, Class<R> dtoClass) {
+        return modelMapper.map(application, dtoClass);
+    }
+
+    public <T extends ApplicationDTO, R extends Application> R dtoTOApplication(T dto, Class<R> clz) {
+        return modelMapper.map(dto, clz);
+    }
+
+    public LeaveApplicationDTO leaveApplicationToDTO(LeaveApplication leaveApplication) {
+        return modelMapper.map(leaveApplication, LeaveApplicationDTO.class);
+    }
+
+    public LeaveApplication DTOtoLeaveApplication(LeaveApplicationDTO dto) {
+        return modelMapper.map(dto, LeaveApplication.class);
+    }
+
+    public BonusApplicationDTO bonusApplicationToDTO(BonusApplication bonusApplication) {
+        return modelMapper.map(bonusApplication, BonusApplicationDTO.class);
+    }
+
+    public BonusApplication DTOtoBonusApplication(BonusApplicationDTO dto) {
+        return modelMapper.map(dto, BonusApplication.class);
+    }
+
+    public DelegationApplicationDTO delegationApplicationToDTO(DelegationApplication delegationApplication) {
+        return modelMapper.map(delegationApplication, DelegationApplicationDTO.class);
+    }
+
+    public DelegationApplication DTOtoDelegationApplication(DelegationApplicationDTO dto) {
+        return modelMapper.map(dto, DelegationApplication.class);
+    }
+
 
     //// PERSONAL DATA
     public PersonalData DTOToPersonalData(PersonalDataDTO personalDataDTO) {
@@ -110,7 +162,7 @@ public class Converters {
     }
 
     public void updatePermissionWithDTO(PermissionDTO permissionDTO, Permission permission) {
-        modelMapper.map(permissionDTO, permission);
+        //modelMapper.map(permissionDTO, permission);
         permission.setWrite(permissionDTO.getWrite());
         permission.setRead(permissionDTO.getRead());
         permission.setAdd(permissionDTO.isAdd());

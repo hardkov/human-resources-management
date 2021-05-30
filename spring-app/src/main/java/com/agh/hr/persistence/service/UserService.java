@@ -1,20 +1,19 @@
 package com.agh.hr.persistence.service;
 
+import com.agh.hr.model.error.NotFoundException;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.dto.UserInsertionDTO;
-import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
+import com.agh.hr.persistence.service.permission.Auth;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserService {
-
 
     private final UserRepository userRepository;
     private final RoleService roleService;
@@ -35,8 +33,29 @@ public class UserService {
         this.converters = converters;
     }
 
+    public List<UserDTO> getUsersById(List<Long> userIds) {
+        val users = this.userRepository.findUsersWithIds(userIds);
+
+        return toDTO(users);
+    }
+
+    public List<UserDTO> getAllUsersSimple() {
+        val users = this.userRepository.findAll();
+
+        return toDTO(users);
+    }
+
+    public boolean isAdmin(Long userId) {
+        val authorities = this.userRepository.findUserById(userId)
+                .orElseThrow(() -> new NotFoundException("User", userId))
+                .getAuthorities();
+
+        return this.roleService.isAdmin(authorities);
+    }
+
+
     public Optional<UserDTO> updateUser(UserDTO userDTO) {
-        val userAuth=Auth.getCurrentUser();
+        val userAuth= Auth.getCurrentUser();
         Optional<User> userOpt = getRawById(userDTO.getId());
         if(!userOpt.isPresent())
             return Optional.empty();
@@ -72,6 +91,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+
     public Optional<UserDTO> getById(Long id) {
         val userAuth=Auth.getCurrentUser();
         return userRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth)).map(converters::userToDTO);
@@ -81,6 +101,7 @@ public class UserService {
         val userAuth=Auth.getCurrentUser();
         return userRepository.findById(id,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth));
     }
+
 
     public List<UserDTO> getAllUsers() {
         val userAuth=Auth.getCurrentUser();
@@ -97,6 +118,7 @@ public class UserService {
         userRepository.deleteById(userId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 
     public List<UserDTO> getByFirstname(String firstname) {
         val userAuth=Auth.getCurrentUser();
@@ -120,6 +142,13 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+
+    private List<UserDTO> toDTO(List<User> users) {
+        return users.stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList());
+
+    }
 
 
 }
