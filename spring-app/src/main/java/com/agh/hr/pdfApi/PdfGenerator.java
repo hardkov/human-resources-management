@@ -1,11 +1,16 @@
 package com.agh.hr.pdfApi;
 
+import com.agh.hr.persistence.model.User;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import lombok.val;
 import lombok.var;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 import javax.print.Doc;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +30,7 @@ public class PdfGenerator {
     private static Optional<Paragraph> dateLocationGenerate(LocalDate date, String documentLocation, Font font) {
         if(date != null || (documentLocation != null && !documentLocation.isEmpty())){
             Paragraph dateLocPar = new Paragraph(null, font);
-            dateLocPar.setAlignment(Element.ALIGN_LEFT);
+            dateLocPar.setAlignment(Element.ALIGN_RIGHT);
             if(date != null && (documentLocation != null && !documentLocation.isEmpty())){
                 dateLocPar.add(String.format("%s, %s", documentLocation, date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
             } else if (date != null) {
@@ -34,6 +39,23 @@ public class PdfGenerator {
                 dateLocPar.add(documentLocation);
             }
             return Optional.of(dateLocPar);
+        }
+        else
+            return Optional.empty();
+    }
+
+    private static Optional<Paragraph> employeeDataGenerate(User user, Font font) {
+        if(user != null) {
+            val content = String.format(
+                    "%s %s\n%s\n%s",
+                    user.getPersonalData().getFirstname(),
+                    user.getPersonalData().getLastname(),
+                    user.getPosition(),
+                    user.getPersonalData().getAddress()
+            );
+            Paragraph pretitlePar = new Paragraph(content, font);
+            pretitlePar.setAlignment(Element.ALIGN_LEFT);
+            return Optional.of(pretitlePar);
         }
         else
             return Optional.empty();
@@ -106,6 +128,7 @@ public class PdfGenerator {
     }
 
     public static Optional<byte[]> toPdf(
+            User employee,
             String pretitle,
             String title,
             String contentSkeleton,
@@ -138,6 +161,10 @@ public class PdfGenerator {
                     tryDocumentAdd(document, p)
             );
 
+            employeeDataGenerate(employee, font).ifPresent(p ->
+                    tryDocumentAdd(document, p)
+            );
+
             pretitleGenerate(pretitle, font).ifPresent(p ->
                     tryDocumentAdd(document, p)
             );
@@ -160,5 +187,13 @@ public class PdfGenerator {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public static ResponseEntity<Resource> bytesToHttpResponse(byte[] bytes, String filename) {
+        val resource = new ByteArrayResource(bytes);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "multipart/form-data")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(resource);
     }
 }
