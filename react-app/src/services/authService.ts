@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import UserType from '../types/UserType';
 import { LOGIN_ENDPOINT } from './config';
 import { getUserData, removeToken, removeUserData, saveToken, saveUserData } from '../helpers/storage';
