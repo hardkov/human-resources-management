@@ -100,7 +100,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: applicationImg,
         title: 'Applications',
         description: 'All applications from the users.',
-        link: '/',
+        link: '/applications',
       },
     ];
   }
