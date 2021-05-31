@@ -28,13 +28,12 @@ const parseToken = (token: string): UserLoginData => {
 };
 
 const login = async (username: string, password: string): Promise<ActionResult> => {
-  try {
-    const response: AxiosResponse = await axios.post(LOGIN_ENDPOINT, {
+  return axios
+    .post(LOGIN_ENDPOINT, {
       username,
       password,
-    });
-
-    if (response.status === 200) {
+    })
+    .then((response) => {
       const token: string = response.headers.authorization;
       const userData: UserLoginData = parseToken(token);
 
@@ -44,12 +43,10 @@ const login = async (username: string, password: string): Promise<ActionResult> 
       currentUser = userData;
 
       return { success: true, errors: [] };
-    }
-
-    return { success: false, errors: ['Login error'] };
-  } catch {
-    return { success: false, errors: ['Login error'] };
-  }
+    })
+    .catch((error) => {
+      return { success: false, errors: error.response.data.errors || ['Login error'] };
+    });
 };
 
 const logout = () => {
