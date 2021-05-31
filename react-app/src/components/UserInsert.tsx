@@ -74,6 +74,7 @@ const UserInsert = () => {
     const result = await addUser(formData);
 
     if (result.success) {
+      setServerError('');
       return;
     }
 
