@@ -46,6 +46,17 @@ public class UserController implements SecuredRestController {
     }
 
     //// READ
+    @GetMapping(value = "/usersById")
+    @Operation(summary = "Reading list of users within given list and caller read permissions",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of users' DTOs")
+            })
+    public ResponseEntity<List<UserDTO>> getUsersById(@RequestParam List<Long> userIds) {
+        return ResponseEntity.ok(
+                userService.getUsersById(userIds)
+        );
+    }
+
     @GetMapping(value = "/user")
     @Operation(summary = "Reading list of all users within caller read permissions",
                responses = {
