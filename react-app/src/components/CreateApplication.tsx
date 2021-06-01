@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 
 import ApplicationType from '../types/ApplicationType';
 import CreateApplicationForm from './CreateApplicationForm';
+import { submitLeaveApplication } from '../services/applicationService';
+import SubmitLeaveApplicationData from '../types/SubmitLeaveApplicationData';
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -15,7 +17,6 @@ const useStyles = makeStyles(() => ({
 
 type FormValues = {
   place: string;
-  date: string;
   content: string;
   startDate: string;
   endDate: string;
@@ -27,16 +28,23 @@ type FormValues = {
 const CreateApplication: React.FC = () => {
   const classes = useStyles();
   const [applicationType, setApplicationType] = useState<ApplicationType>('LEAVE');
-  const { register, handleSubmit, control } = useForm<FormValues>();
+  const { register, handleSubmit, control, reset } = useForm<FormValues>();
+  const [serverError, setServerError] = useState<string>('');
 
   const onChange = (event: React.ChangeEvent<any>) => {
+    setServerError('');
     setApplicationType(event.target.value);
   };
 
-  const onSubmit = (data: any) => {
-    // api call here
-    // eslint-disable-next-line no-console
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    if (applicationType === 'LEAVE') {
+      const result = await submitLeaveApplication(data as SubmitLeaveApplicationData);
+
+      if (result.success) {
+        setServerError('');
+        reset();
+      } else if (result.errors) setServerError(result.errors[0]);
+    }
   };
 
   return (
@@ -52,6 +60,7 @@ const CreateApplication: React.FC = () => {
           register={register}
           handleSubmit={handleSubmit(onSubmit)}
           control={control}
+          serverError={serverError}
         />
       </div>
     </Container>

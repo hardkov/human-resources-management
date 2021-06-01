@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, makeStyles, Checkbox, Grid, FormControlLabel } from '@material-ui/core';
+import { TextField, Button, makeStyles, Checkbox, Grid, FormControlLabel, Typography } from '@material-ui/core';
 import { Controller, UseFormRegister, Control } from 'react-hook-form';
 
 import ApplicationType from '../types/ApplicationType';
@@ -20,9 +20,16 @@ interface Props {
   register: UseFormRegister<any>;
   handleSubmit: () => void;
   control: Control<any>;
+  serverError: string;
 }
 
-const CreateApplicationForm: React.FC<Props> = ({ applicationType, register, handleSubmit, control }: Props) => {
+const CreateApplicationForm: React.FC<Props> = ({
+  applicationType,
+  register,
+  handleSubmit,
+  control,
+  serverError,
+}: Props) => {
   const classes = useStyles();
 
   return (
@@ -30,16 +37,6 @@ const CreateApplicationForm: React.FC<Props> = ({ applicationType, register, han
       <Grid container spacing={3}>
         <Grid item xs={6}>
           <TextField {...register('place')} label="Place" variant="outlined" fullWidth />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            {...register('date')}
-            type="date"
-            label="Date"
-            variant="outlined"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-          />
         </Grid>
         <Grid item xs={12}>
           <TextField {...register('content')} label="Content" variant="outlined" multiline rows={5} fullWidth />
@@ -104,6 +101,9 @@ const CreateApplicationForm: React.FC<Props> = ({ applicationType, register, han
       <Button className={classes.submit} type="submit" fullWidth variant="contained" color="primary">
         Submit
       </Button>
+      <Typography color="error" align="center">
+        {serverError}
+      </Typography>
     </form>
   );
 };
