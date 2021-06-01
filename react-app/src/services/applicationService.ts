@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { getAuthHeaders } from '../helpers/auth';
 import ActionResult from '../types/ActionResult';
 import SubmitLeaveApplicationData from '../types/SubmitLeaveApplicationData';
