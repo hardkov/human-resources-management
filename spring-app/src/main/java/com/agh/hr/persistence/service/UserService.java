@@ -4,6 +4,7 @@ import com.agh.hr.model.error.NotFoundException;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.dto.UserInsertionDTO;
+import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import com.agh.hr.persistence.service.permission.Auth;
@@ -14,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,11 +84,12 @@ public class UserService {
                 return Optional.empty();
 
         user.setId(0L);
-        user.getPermissions().addToRead(user.getId());
         try {
                 val result= Optional.of(userRepository.save(user));
                 userAuth.getPermissions().addToWrite(result.get().getId());
                 userRepository.save(userAuth);
+                result.get().getPermissions().addToRead(result.get().getId());
+                userRepository.save(result.get());
                 return result.map(converters::userToDTO);
         } catch(Exception e) {
             return Optional.empty();
