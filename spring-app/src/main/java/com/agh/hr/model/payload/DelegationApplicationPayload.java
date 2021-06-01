@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class DelegationApplicationPayload extends ApplicationPayload {
 
     private LocalDateTime startDate;
