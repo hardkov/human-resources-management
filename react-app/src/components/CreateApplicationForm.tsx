@@ -41,7 +41,7 @@ const CreateApplicationForm: React.FC<Props> = ({
         <Grid item xs={12}>
           <TextField {...register('content')} label="Content" variant="outlined" multiline rows={5} fullWidth />
         </Grid>
-        {(applicationType === 'LEAVE' || applicationType === 'DELEGATION') && (
+        {applicationType === 'LEAVE' && (
           <>
             <Grid item xs={6}>
               <TextField
@@ -63,28 +63,48 @@ const CreateApplicationForm: React.FC<Props> = ({
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
+            <Grid item xs={12}>
+              <Controller
+                name="paid"
+                control={control}
+                defaultValue={false}
+                shouldUnregister
+                render={({ field }) => <FormControlLabel label="Paid leave" control={<Checkbox {...field} />} />}
+              />
+            </Grid>
           </>
         )}
-        {applicationType === 'LEAVE' && (
-          <Grid item xs={12}>
-            <Controller
-              name="paid"
-              control={control}
-              defaultValue={false}
-              shouldUnregister
-              render={({ field }) => <FormControlLabel label="Paid leave" control={<Checkbox {...field} />} />}
-            />
-          </Grid>
-        )}
         {applicationType === 'DELEGATION' && (
-          <Grid item xs={6}>
-            <TextField
-              {...register('destination', { shouldUnregister: true })}
-              label="Destination"
-              variant="outlined"
-              fullWidth
-            />
-          </Grid>
+          <>
+            <Grid item xs={6}>
+              <TextField
+                {...register('startDate', { shouldUnregister: true })}
+                type="datetime-local"
+                label="Start date"
+                variant="outlined"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                {...register('endDate', { shouldUnregister: true })}
+                type="datetime-local"
+                label="End date"
+                variant="outlined"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                {...register('destination', { shouldUnregister: true })}
+                label="Destination"
+                variant="outlined"
+                fullWidth
+              />
+            </Grid>
+          </>
         )}
         {applicationType === 'BONUS' && (
           <Grid item xs={6}>

@@ -4,8 +4,14 @@ import { useForm } from 'react-hook-form';
 
 import ApplicationType from '../types/ApplicationType';
 import CreateApplicationForm from './CreateApplicationForm';
-import { submitLeaveApplication } from '../services/applicationService';
+import {
+  submitBonusApplication,
+  submitDelegationApplication,
+  submitLeaveApplication,
+} from '../services/applicationService';
 import SubmitLeaveApplicationData from '../types/SubmitLeaveApplicationData';
+import SubmitDelegationApplicationData from '../types/SubmitDelegationApplicationData';
+import SubmitBonusApplicationData from '../types/SubmitBonusApplicationData';
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -37,14 +43,20 @@ const CreateApplication: React.FC = () => {
   };
 
   const onSubmit = async (data: any) => {
-    if (applicationType === 'LEAVE') {
-      const result = await submitLeaveApplication(data as SubmitLeaveApplicationData);
+    let result;
 
-      if (result.success) {
-        setServerError('');
-        reset();
-      } else if (result.errors) setServerError(result.errors[0]);
+    if (applicationType === 'LEAVE') {
+      result = await submitLeaveApplication(data as SubmitLeaveApplicationData);
+    } else if (applicationType === 'DELEGATION') {
+      result = await submitDelegationApplication(data as SubmitDelegationApplicationData);
+    } else if (applicationType === 'BONUS') {
+      result = await submitBonusApplication(data as SubmitBonusApplicationData);
     }
+
+    if (result?.success) {
+      setServerError('');
+      reset();
+    } else if (result?.errors) setServerError(result.errors[0]);
   };
 
   return (
