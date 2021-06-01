@@ -1,6 +1,7 @@
 package com.agh.hr.persistence.repository;
 import com.agh.hr.persistence.model.Leave;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
+    @Modifying
     @Query("DELETE FROM Leave d WHERE d.leaveApplication.id = :id")
     void deleteByLeaveApplicationId(@Param("id") Long id);
 

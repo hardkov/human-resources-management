@@ -14,5 +14,4 @@ import lombok.experimental.SuperBuilder;
 public abstract class ApplicationPayload {
     private String content;
     private String place;
-    private Status status;
 }

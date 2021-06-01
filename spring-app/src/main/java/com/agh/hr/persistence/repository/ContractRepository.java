@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,13 +24,13 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c WHERE (?2 = TRUE OR c.user.id IN ?1)")
     List<Contract> findAll(List<Long> allowedList, boolean ignoreAuth);
 
-    List<Contract> findByStartDateEquals(LocalDateTime startDate);
-    List<Contract> findByStartDateBefore(LocalDateTime startDate);
-    List<Contract> findByStartDateAfter(LocalDateTime startDate);
+    List<Contract> findByStartDateEquals(LocalDate startDate);
+    List<Contract> findByStartDateBefore(LocalDate startDate);
+    List<Contract> findByStartDateAfter(LocalDate startDate);
 
-    List<Contract> findByEndDateEquals(LocalDateTime endDate);
-    List<Contract> findByEndDateBefore(LocalDateTime endDate);
-    List<Contract> findByEndDateAfter(LocalDateTime endDate);
+    List<Contract> findByEndDateEquals(LocalDate endDate);
+    List<Contract> findByEndDateBefore(LocalDate endDate);
+    List<Contract> findByEndDateAfter(LocalDate endDate);
 
     List<Contract> findByContractType(ContractType contractType);
 

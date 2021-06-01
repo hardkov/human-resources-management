@@ -38,51 +38,42 @@ const getAllUsers = async (): Promise<ActionResult<UserData[]>> => {
 };
 
 const addUser = async (userData: UserData): Promise<ActionResult> => {
-  try {
-    const response: AxiosResponse = await axios.post(USER_DATA_ENDPOINT, userData, {
+  return axios
+    .post(USER_DATA_ENDPOINT, userData, {
       headers: getAuthHeaders(),
-    });
-
-    if (response.status === 200) {
+    })
+    .then(() => {
       return { success: true };
-    }
-
-    return { success: false, errors: ['User could not be created'] };
-  } catch {
-    return { success: false, errors: ['User could not be created'] };
-  }
+    })
+    .catch((error) => {
+      return { success: false, errors: error.response.data.errors || ['User could not be created'] };
+    });
 };
 
 const updateUser = async (userData: UserData): Promise<ActionResult> => {
-  try {
-    const response: AxiosResponse = await axios.put(USER_DATA_ENDPOINT, userData, {
+  return axios
+    .put(USER_DATA_ENDPOINT, userData, {
       headers: getAuthHeaders(),
-    });
-
-    if (response.status === 202) {
+    })
+    .then(() => {
       return { success: true };
-    }
-
-    return { success: false, errors: ['User could not be updated'] };
-  } catch {
-    return { success: false, errors: ['User could not be updated'] };
-  }
+    })
+    .catch((error) => {
+      return { success: false, errors: error.response.data.errors || ['User could not be updated'] };
+    });
 };
 
 const updatePermission = async (permission: PermissionData): Promise<ActionResult> => {
-  try {
-    const response: AxiosResponse = await axios.put(UPDATE_PERMISSION_ENDPOINT, permission, {
+  return axios
+    .put(UPDATE_PERMISSION_ENDPOINT, permission, {
       headers: getAuthHeaders(),
-    });
-
-    if (response.status === 202) {
+    })
+    .then(() => {
       return { success: true };
-    }
-
-    return { success: false, errors: ['Permissions could not be updated'] };
-  } catch {
-    return { success: false, errors: ['Permissions could not be updated'] };
-  }
+    })
+    .catch((error) => {
+      return { success: false, errors: error.response.data.errors || ['Permissions could not be updated'] };
+    });
 };
 
 const getPermission = async (userId: number): Promise<ActionResult<PermissionData>> => {
