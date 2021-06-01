@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,10 +34,17 @@ public class UserService {
         this.converters = converters;
     }
 
-    public List<UserDTO> getUsersById(List<Long> userIds) {
-        val users = this.userRepository.findUsersWithIds(userIds);
+    public List<UserDTO> getUsersByIdRaw(List<Long> userIds) {
+        val users = this.userRepository.findUsersWithIds(userIds, Collections.emptyList(),true);
 
         return toDTO(users);
+    }
+    public List<UserDTO> getUsersById(List<Long> userIds) {
+        val userAuth=Auth.getCurrentUser();
+        return userRepository.findUsersWithIds(userIds,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth))
+                .stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList());
     }
 
     public List<UserDTO> getAllUsersSimple() {
@@ -77,6 +85,7 @@ public class UserService {
                 return Optional.empty();
 
         user.setId(0L);
+        user.getPermissions().addToRead(user.getId());
         try {
                 val result= Optional.of(userRepository.save(user));
                 userAuth.getPermissions().addToWrite(result.get().getId());

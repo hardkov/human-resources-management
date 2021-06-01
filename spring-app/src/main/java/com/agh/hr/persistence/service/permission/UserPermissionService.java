@@ -45,7 +45,7 @@ public class UserPermissionService implements IUserPermissionService {
     }
 
     private List<UserDTO> getUserDTOs(List<Long> userIds) {
-        return this.userService.getUsersById(userIds);
+        return this.userService.getUsersByIdRaw(userIds);
     }
 }
 
