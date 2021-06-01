@@ -28,7 +28,7 @@ type FormValues = {
   endDate: string;
   paid: boolean;
   destination: string;
-  bonusAmount: number;
+  money: number;
 };
 
 const CreateApplication: React.FC = () => {

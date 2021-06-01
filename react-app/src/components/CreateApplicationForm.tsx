@@ -109,7 +109,7 @@ const CreateApplicationForm: React.FC<Props> = ({
         {applicationType === 'BONUS' && (
           <Grid item xs={6}>
             <TextField
-              {...register('bonusAmount', { shouldUnregister: true })}
+              {...register('money', { shouldUnregister: true })}
               type="number"
               label="Bonus amount"
               variant="outlined"
