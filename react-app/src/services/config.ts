@@ -1,4 +1,4 @@
-const API_ENDPOINT = 'api';
+const API_ENDPOINT = '/api';
 const EMPLOYEE_APPLICATION_ENDPOINT = `${API_ENDPOINT}/employee/application`;
 const SUPERVISOR_APPLICATION_ENDPOINT = `${API_ENDPOINT}/supervisor/application-management`;
 
