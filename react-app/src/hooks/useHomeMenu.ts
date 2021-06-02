@@ -82,7 +82,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: earningsImg,
         title: 'My Earnings',
         description: 'Aggregated data about your earnings.',
-        link: '/',
+        link: '/earnings',
       },
       {
         img: applicationImg,
