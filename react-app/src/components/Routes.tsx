@@ -43,6 +43,12 @@ const employeeProfileWithLayout = () => (
   </Layout>
 );
 
+const earningsViewWithLayout = () => (
+    <Layout>
+        <EarningsView />
+    </Layout>
+);
+
 const Routes: React.FC = () => {
   return (
     <Router>
@@ -54,7 +60,7 @@ const Routes: React.FC = () => {
         <PrivateRoute exact path="/employee-profile" component={employeeProfileWithLayout} />
         <PrivateRoute exact path="/leaves" component={leavesWithLayout} />
         <PrivateRoute exact path="/employees" component={employeesListWithLayout} />
-        <PrivateRoute exact path="/earnings" component={EarningsView} />
+        <PrivateRoute exact path="/earnings" component={earningsViewWithLayout} />
       </Switch>
     </Router>
   );
