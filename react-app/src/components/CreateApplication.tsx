@@ -35,10 +35,12 @@ const CreateApplication: React.FC = () => {
   const classes = useStyles();
   const [applicationType, setApplicationType] = useState<ApplicationType>('LEAVE');
   const { register, handleSubmit, control, reset } = useForm<FormValues>();
-  const [serverError, setServerError] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false);
+  const [serverMessage, setServerMessage] = useState<string>('');
 
   const onChange = (event: React.ChangeEvent<any>) => {
-    setServerError('');
+    setServerMessage('');
+    setSuccess(false);
     setApplicationType(event.target.value);
   };
 
@@ -54,9 +56,13 @@ const CreateApplication: React.FC = () => {
     }
 
     if (result?.success) {
-      setServerError('');
+      setSuccess(true);
+      setServerMessage('Success');
       reset();
-    } else if (result?.errors) setServerError(result.errors[0]);
+    } else if (result?.errors) {
+      setSuccess(false);
+      setServerMessage(result.errors[0]);
+    }
   };
 
   return (
@@ -72,7 +78,8 @@ const CreateApplication: React.FC = () => {
           register={register}
           handleSubmit={handleSubmit(onSubmit)}
           control={control}
-          serverError={serverError}
+          success={success}
+          serverMessage={serverMessage}
         />
       </div>
     </Container>
