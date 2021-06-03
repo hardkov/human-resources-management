@@ -32,7 +32,8 @@ interface Props {
   changeMode: boolean;
   register: UseFormRegister<any>;
   handleSubmit: () => void;
-  serverError: string;
+  success: boolean;
+  serverMessage: string;
   referer?: string;
 }
 
@@ -41,7 +42,8 @@ const ProfileForm: React.FC<Props> = ({
   changeMode,
   register,
   handleSubmit,
-  serverError,
+  success,
+  serverMessage,
   referer,
 }: Props) => {
   const classes = useStyles();
@@ -63,7 +65,13 @@ const ProfileForm: React.FC<Props> = ({
             <Switch checked={changeMode} onChange={() => setChangeMode(!changeMode)} />
           </div>
         </div>
-        <UserForm disabled={!changeMode} register={register} handleSubmit={handleSubmit} serverError={serverError} />
+        <UserForm
+          disabled={!changeMode}
+          register={register}
+          handleSubmit={handleSubmit}
+          success={success}
+          serverMessage={serverMessage}
+        />
       </div>
     </Container>
   );

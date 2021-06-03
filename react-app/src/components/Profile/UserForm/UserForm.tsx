@@ -28,10 +28,11 @@ interface Props {
   disabled: boolean;
   register: UseFormRegister<any>;
   handleSubmit: () => void;
-  serverError: string;
+  success: boolean;
+  serverMessage: string;
 }
 
-const ProfileForm: React.FC<Props> = ({ disabled, register, handleSubmit, serverError }: Props) => {
+const UserForm: React.FC<Props> = ({ disabled, register, handleSubmit, success, serverMessage }: Props) => {
   const classes = useStyles();
 
   return (
@@ -57,9 +58,9 @@ const ProfileForm: React.FC<Props> = ({ disabled, register, handleSubmit, server
           Submit
         </Button>
       </form>
-      <Typography color="error">{serverError}</Typography>
+      <Typography color={success ? 'primary' : 'error'}>{serverMessage}</Typography>
     </>
   );
 };
 
-export default ProfileForm;
+export default UserForm;
