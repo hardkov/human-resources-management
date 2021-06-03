@@ -20,7 +20,8 @@ interface Props {
   register: UseFormRegister<any>;
   handleSubmit: () => void;
   control: Control<any>;
-  serverError: string;
+  success: boolean;
+  serverMessage: string;
 }
 
 const CreateApplicationForm: React.FC<Props> = ({
@@ -28,7 +29,8 @@ const CreateApplicationForm: React.FC<Props> = ({
   register,
   handleSubmit,
   control,
-  serverError,
+  success,
+  serverMessage,
 }: Props) => {
   const classes = useStyles();
 
@@ -121,8 +123,8 @@ const CreateApplicationForm: React.FC<Props> = ({
       <Button className={classes.submit} type="submit" fullWidth variant="contained" color="primary">
         Submit
       </Button>
-      <Typography color="error" align="center">
-        {serverError}
+      <Typography align="center" color={success ? 'primary' : 'error'}>
+        {serverMessage}
       </Typography>
     </form>
   );
