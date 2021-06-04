@@ -1,13 +1,11 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { UseFormRegister } from 'react-hook-form';
 
 import UserFormField from './UserFormField';
-import krzysiomisio from '../../../assets/krzysiomisio.jpg';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -37,7 +35,6 @@ const UserForm: React.FC<Props> = ({ disabled, register, handleSubmit, success, 
 
   return (
     <>
-      <Avatar className={classes.avatar} src={krzysiomisio} />
       <form className={classes.form} noValidate onSubmit={handleSubmit}>
         <Grid container justify="space-between" spacing={2}>
           <UserFormField register={register} fieldName="firstname" textName="Name" disabled={disabled} />
