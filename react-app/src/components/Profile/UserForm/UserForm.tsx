@@ -44,16 +44,11 @@ const UserForm: React.FC<Props> = ({ disabled, register, handleSubmit, success, 
           <UserFormField register={register} fieldName="address" textName="Address" disabled={disabled} />
           <UserFormField register={register} fieldName="birthdate" textName="Birthdate" disabled={disabled} />
         </Grid>
-        <Button
-          type="submit"
-          disabled={disabled}
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-        >
-          Submit
-        </Button>
+        {!disabled && (
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+            Submit
+          </Button>
+        )}
       </form>
       <Typography color={success ? 'primary' : 'error'}>{serverMessage}</Typography>
     </>
