@@ -26,6 +26,8 @@ type FormValues = {
   content: string;
   startDate: string;
   endDate: string;
+  startDatetime: string;
+  endDatetime: string;
   paid: boolean;
   destination: string;
   money: number;
@@ -50,7 +52,13 @@ const CreateApplication: React.FC = () => {
     if (applicationType === 'LEAVE') {
       result = await submitLeaveApplication(data as SubmitLeaveApplicationData);
     } else if (applicationType === 'DELEGATION') {
-      result = await submitDelegationApplication(data as SubmitDelegationApplicationData);
+      result = await submitDelegationApplication({
+        ...data,
+        startDate: data.startDatetime,
+        endDate: data.endDatetime,
+        endDatetime: undefined,
+        startDatetime: undefined,
+      } as SubmitDelegationApplicationData);
     } else if (applicationType === 'BONUS') {
       result = await submitBonusApplication(data as SubmitBonusApplicationData);
     }
