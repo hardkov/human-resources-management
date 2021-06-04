@@ -1,9 +1,9 @@
 package com.agh.hr.controllers;
 
 import com.agh.hr.config.security.SecuredRestController;
-import com.agh.hr.persistence.dto.Converters;
-import com.agh.hr.persistence.service.ApplicationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.agh.hr.pdfApi.PdfGenerator;
+import lombok.val;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

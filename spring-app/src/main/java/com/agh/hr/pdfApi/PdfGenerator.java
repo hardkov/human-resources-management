@@ -1,5 +1,6 @@
 package com.agh.hr.pdfApi;
 
+import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.model.User;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
@@ -44,7 +45,7 @@ public class PdfGenerator {
             return Optional.empty();
     }
 
-    private static Optional<Paragraph> employeeDataGenerate(User user, Font font) {
+    private static Optional<Paragraph> employeeDataGenerate(UserDTO user, Font font) {
         if(user != null) {
             val content = String.format(
                     "%s %s\n%s\n%s",
@@ -128,7 +129,7 @@ public class PdfGenerator {
     }
 
     public static Optional<byte[]> toPdf(
-            User employee,
+            UserDTO employee,
             String pretitle,
             String title,
             String contentSkeleton,
