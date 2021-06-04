@@ -80,7 +80,7 @@ const CreateApplicationForm: React.FC<Props> = ({
           <>
             <Grid item xs={6}>
               <TextField
-                {...register('startDate', { shouldUnregister: true })}
+                {...register('startDatetime', { shouldUnregister: true })}
                 type="datetime-local"
                 label="Start date"
                 variant="outlined"
@@ -90,7 +90,7 @@ const CreateApplicationForm: React.FC<Props> = ({
             </Grid>
             <Grid item xs={6}>
               <TextField
-                {...register('endDate', { shouldUnregister: true })}
+                {...register('endDatetime', { shouldUnregister: true })}
                 type="datetime-local"
                 label="End date"
                 variant="outlined"
