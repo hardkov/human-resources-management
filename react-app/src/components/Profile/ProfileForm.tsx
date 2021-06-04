@@ -35,6 +35,7 @@ interface Props {
   success: boolean;
   serverMessage: string;
   referer?: string;
+  disabled?: boolean;
 }
 
 const ProfileForm: React.FC<Props> = ({
@@ -45,6 +46,7 @@ const ProfileForm: React.FC<Props> = ({
   success,
   serverMessage,
   referer,
+  disabled,
 }: Props) => {
   const classes = useStyles();
 
@@ -60,13 +62,15 @@ const ProfileForm: React.FC<Props> = ({
           >
             <ArrowBackIcon />
           </IconButton>
-          <div className={classes.switch}>
-            <Typography color="textSecondary">Enable change</Typography>
-            <Switch checked={changeMode} onChange={() => setChangeMode(!changeMode)} />
-          </div>
+          {!disabled && (
+            <div className={classes.switch}>
+              <Typography color="textSecondary">Enable change</Typography>
+              <Switch checked={changeMode} onChange={() => setChangeMode(!changeMode)} />
+            </div>
+          )}
         </div>
         <UserForm
-          disabled={!changeMode}
+          disabled={disabled || !changeMode}
           register={register}
           handleSubmit={handleSubmit}
           success={success}
