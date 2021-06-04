@@ -22,7 +22,11 @@ const UserFormDate: React.FC<Props> = ({ setValue, fieldName, textName, disabled
   useEffect(() => {
     const fnsAdapter = new DateFnsAdapter();
     if (date) {
-      setValue(fieldName, fnsAdapter.format(date, 'yyyy-MM-dd'), { shouldValidate: true, shouldDirty: true });
+      try {
+        setValue(fieldName, fnsAdapter.format(date, 'yyyy-MM-dd'), { shouldValidate: true, shouldDirty: true });
+      } catch {
+        setValue(fieldName, null);
+      }
     } else {
       setValue(fieldName, date, { shouldValidate: true, shouldDirty: true });
     }
@@ -43,6 +47,7 @@ const UserFormDate: React.FC<Props> = ({ setValue, fieldName, textName, disabled
             value={date}
             onChange={setDate}
             disabled={disabled}
+            inputVariant="outlined"
             fullWidth
           />
         </MuiPickersUtilsProvider>

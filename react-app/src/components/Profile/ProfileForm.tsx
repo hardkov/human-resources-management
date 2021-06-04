@@ -32,8 +32,10 @@ interface Props {
   changeMode: boolean;
   register: UseFormRegister<any>;
   handleSubmit: () => void;
-  serverError: string;
+  success: boolean;
+  serverMessage: string;
   referer?: string;
+  disabled?: boolean;
 }
 
 const ProfileForm: React.FC<Props> = ({
@@ -41,8 +43,10 @@ const ProfileForm: React.FC<Props> = ({
   changeMode,
   register,
   handleSubmit,
-  serverError,
+  success,
+  serverMessage,
   referer,
+  disabled,
 }: Props) => {
   const classes = useStyles();
 
@@ -58,12 +62,20 @@ const ProfileForm: React.FC<Props> = ({
           >
             <ArrowBackIcon />
           </IconButton>
-          <div className={classes.switch}>
-            <Typography color="textSecondary">Enable change</Typography>
-            <Switch checked={changeMode} onChange={() => setChangeMode(!changeMode)} />
-          </div>
+          {!disabled && (
+            <div className={classes.switch}>
+              <Typography color="textSecondary">Enable change</Typography>
+              <Switch checked={changeMode} onChange={() => setChangeMode(!changeMode)} />
+            </div>
+          )}
         </div>
-        <UserForm disabled={!changeMode} register={register} handleSubmit={handleSubmit} serverError={serverError} />
+        <UserForm
+          disabled={disabled || !changeMode}
+          register={register}
+          handleSubmit={handleSubmit}
+          success={success}
+          serverMessage={serverMessage}
+        />
       </div>
     </Container>
   );

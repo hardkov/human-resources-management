@@ -1,16 +1,19 @@
 package com.agh.hr.model.payload;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class BonusApplicationPayload extends ApplicationPayload {
-
+    @NotNull(message = "Money cannot be null")
+    @Positive(message = "Money amount must be positive")
     private BigDecimal money;
 }

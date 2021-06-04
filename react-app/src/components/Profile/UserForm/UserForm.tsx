@@ -1,13 +1,11 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { UseFormRegister } from 'react-hook-form';
 
 import UserFormField from './UserFormField';
-import krzysiomisio from '../../../assets/krzysiomisio.jpg';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -28,15 +26,15 @@ interface Props {
   disabled: boolean;
   register: UseFormRegister<any>;
   handleSubmit: () => void;
-  serverError: string;
+  success: boolean;
+  serverMessage: string;
 }
 
-const ProfileForm: React.FC<Props> = ({ disabled, register, handleSubmit, serverError }: Props) => {
+const UserForm: React.FC<Props> = ({ disabled, register, handleSubmit, success, serverMessage }: Props) => {
   const classes = useStyles();
 
   return (
     <>
-      <Avatar className={classes.avatar} src={krzysiomisio} />
       <form className={classes.form} noValidate onSubmit={handleSubmit}>
         <Grid container justify="space-between" spacing={2}>
           <UserFormField register={register} fieldName="firstname" textName="Name" disabled={disabled} />
@@ -46,20 +44,15 @@ const ProfileForm: React.FC<Props> = ({ disabled, register, handleSubmit, server
           <UserFormField register={register} fieldName="address" textName="Address" disabled={disabled} />
           <UserFormField register={register} fieldName="birthdate" textName="Birthdate" disabled={disabled} />
         </Grid>
-        <Button
-          type="submit"
-          disabled={disabled}
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-        >
-          Submit
-        </Button>
+        {!disabled && (
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+            Submit
+          </Button>
+        )}
       </form>
-      <Typography color="error">{serverError}</Typography>
+      <Typography color={success ? 'primary' : 'error'}>{serverMessage}</Typography>
     </>
   );
 };
 
-export default ProfileForm;
+export default UserForm;

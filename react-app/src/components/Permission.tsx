@@ -26,7 +26,8 @@ const Permission: React.FC<Props> = ({ permission, currentUserPermission }: Prop
   const [read, setRead] = useState<number[]>(permission.read);
   const [write, setWrite] = useState<number[]>(permission.write);
   const [add, setAdd] = useState<boolean>(permission.add);
-  const [serverError, setServerError] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false);
+  const [serverMessage, setServerMessage] = useState<string>('');
 
   const onClick = async (isPermissionRead: boolean, userId: number, isActionAdd: boolean) => {
     // deleting from write list or from write and read list at once
@@ -62,11 +63,13 @@ const Permission: React.FC<Props> = ({ permission, currentUserPermission }: Prop
     const result = await updatePermission(permissionCopy);
 
     if (result.success) {
-      setServerError('');
+      setSuccess(true);
+      setServerMessage('Success');
       setWrite(newWrite);
       setRead(newRead);
     } else if (result.errors) {
-      setServerError(result.errors[0]);
+      setSuccess(false);
+      setServerMessage(result.errors[0]);
     }
   };
 
@@ -76,10 +79,12 @@ const Permission: React.FC<Props> = ({ permission, currentUserPermission }: Prop
     const result = await updatePermission(permissionCopy);
 
     if (result.success) {
-      setServerError('');
+      setServerMessage('Success');
+      setSuccess(true);
       setAdd(!add);
     } else if (result.errors) {
-      setServerError(result.errors[0]);
+      setSuccess(false);
+      setServerMessage(result.errors[0]);
     }
   };
 
@@ -109,8 +114,8 @@ const Permission: React.FC<Props> = ({ permission, currentUserPermission }: Prop
         <Typography color="textSecondary">User adding permission</Typography>
         <Switch checked={add} onChange={onChange} />
       </div>
-      <Typography align="center" color="error">
-        {serverError}
+      <Typography align="center" color={success ? 'primary' : 'error'}>
+        {serverMessage}
       </Typography>
     </Container>
   );

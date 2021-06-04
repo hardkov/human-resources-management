@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class ApplicationManagementController implements SecuredRestController {
             })
     public ResponseEntity<LeaveApplicationDTO> updateLeaveApplicationStatus(
             Principal principal,
-            @RequestBody UpdateApplicationStatusPayload payload) {
+            @Valid @RequestBody UpdateApplicationStatusPayload payload) {
 
         val supervisor = converters.toUserDTO(principal);
         val dto = applicationService.updateLeaveApplicationStatus(supervisor, payload);
@@ -101,7 +102,7 @@ public class ApplicationManagementController implements SecuredRestController {
             })
     public ResponseEntity<BonusApplicationDTO> updateBonusApplicationStatus(
             Principal principal,
-            @RequestBody  UpdateApplicationStatusPayload payload) {
+            @Valid @RequestBody  UpdateApplicationStatusPayload payload) {
 
         val supervisor = converters.toUserDTO(principal);
         val dto = applicationService.updateBonusApplicationStatus(supervisor, payload);
@@ -118,7 +119,7 @@ public class ApplicationManagementController implements SecuredRestController {
             })
     public ResponseEntity<DelegationApplicationDTO> updateDelegationApplicationStatus(
             Principal principal,
-            @RequestBody UpdateApplicationStatusPayload payload) {
+            @Valid @RequestBody UpdateApplicationStatusPayload payload) {
 
         val supervisor = converters.toUserDTO(principal);
         val dto = applicationService.updateDelegationApplicationStatus(supervisor, payload);
