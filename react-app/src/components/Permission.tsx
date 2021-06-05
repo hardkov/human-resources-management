@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { makeStyles, Switch } from '@material-ui/core';
 
 import PermissionData from '../types/PermissionData';
-import { updatePermission } from '../services/userService';
+import { updatePermission, getAllUsers } from '../services/userService';
 import PermissionList from './PermissionList';
 
 const useStyles = makeStyles(() => ({
@@ -25,9 +25,28 @@ const Permission: React.FC<Props> = ({ permission, currentUserPermission }: Prop
   const classes = useStyles();
   const [read, setRead] = useState<number[]>(permission.read);
   const [write, setWrite] = useState<number[]>(permission.write);
+  const [usersData, setUsersData] = useState<any>();
   const [add, setAdd] = useState<boolean>(permission.add);
   const [success, setSuccess] = useState<boolean>(false);
   const [serverMessage, setServerMessage] = useState<string>('');
+
+  useEffect(() => {
+    const fetchUsersData = async () => {
+      const result = await getAllUsers();
+
+      if (result.success) {
+        const userDataMap: any = {};
+
+        result.data?.forEach((value) => {
+          userDataMap[value.id] = value;
+        });
+
+        setUsersData(userDataMap);
+      }
+    };
+
+    fetchUsersData();
+  }, []);
 
   const onClick = async (isPermissionRead: boolean, userId: number, isActionAdd: boolean) => {
     // deleting from write list or from write and read list at once
@@ -97,6 +116,7 @@ const Permission: React.FC<Props> = ({ permission, currentUserPermission }: Prop
             label="Read permissions"
             list={read}
             listSelect={currentUserPermission.read.filter((el) => !read.includes(el))}
+            usersData={usersData}
             onClick={onClick}
           />
         </Grid>
@@ -106,6 +126,7 @@ const Permission: React.FC<Props> = ({ permission, currentUserPermission }: Prop
             label="Write permissions"
             list={write}
             listSelect={currentUserPermission.write.filter((el) => !write.includes(el))}
+            usersData={usersData}
             onClick={onClick}
           />
         </Grid>
