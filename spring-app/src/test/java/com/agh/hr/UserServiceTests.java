@@ -1,6 +1,5 @@
 package com.agh.hr;
 
-import com.agh.hr.controllers.UserController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
@@ -9,8 +8,6 @@ import com.agh.hr.persistence.service.UserService;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.util.Optional;
 
@@ -32,7 +29,8 @@ public class UserServiceTests {
     public void setup() {
         userRepository = mock(UserRepository.class);
         RoleService roleService = mock(RoleService.class);
-        userService = new UserService(userRepository, roleService);
+        Converters converters= mock(Converters.class);
+        userService = new UserService(userRepository, roleService, converters);
 
         this.username = "foo@gmail.com";
         this.user = User.builder()

@@ -33,6 +33,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/require-default-props': 'off',
+    'react-hooks/exhaustive-deps': 'warn',
     'prettier/prettier': [
       'warn',
       {

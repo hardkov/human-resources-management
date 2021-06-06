@@ -1,12 +1,16 @@
 package com.agh.hr.persistence.service;
 
 import com.agh.hr.persistence.model.Role;
+import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.RoleRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -46,5 +50,13 @@ public class RoleService {
 
     public static List<String> authorities() {
         return Arrays.asList(EMPLOYEE_AUTHORITY, SUPERVISOR_AUTHORITY, ADMIN_AUTHORITY);
+    }
+
+    public boolean isAdmin(Collection<? extends GrantedAuthority> authorities){
+        return authorities.contains(adminRole());
+    }
+
+    public boolean isAdmin(User userAuth){
+        return(userAuth.getAuthorities().contains(adminRole()));
     }
 }

@@ -17,7 +17,7 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(mappedBy = "permissions")
+    @OneToOne(targetEntity = User.class, mappedBy = "permissions")
     private User user;
 
     @ElementCollection
@@ -33,11 +33,14 @@ public class Permission {
     public Long getId() {
         return id;
     }
+
     public boolean addToRead(Long toAdd){ return read.add(toAdd);}
+
     public boolean addToWrite(Long toAdd){
         if(!write.contains(toAdd))
             read.add(toAdd);
         return write.add(toAdd);
     }
+
     public boolean getAdd(){return add;}
 }

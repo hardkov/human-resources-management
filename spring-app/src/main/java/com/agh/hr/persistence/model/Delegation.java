@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -19,15 +20,15 @@ public class Delegation {
     @JoinColumn
     private User user;
 
-    @Column(columnDefinition = "DATE")
-    private LocalDate startDate;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime startDate;
 
-    @Column(columnDefinition = "DATE")
-    private LocalDate endDate;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime endDate;
 
     private String destination;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     @JoinColumn
     private DelegationApplication delegationApplication;
 

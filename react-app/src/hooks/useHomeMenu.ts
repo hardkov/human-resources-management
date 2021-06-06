@@ -59,7 +59,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: applicationImg,
         title: 'Create Application',
         description: 'Create and submit an applications.',
-        link: '/',
+        link: '/create-application',
       },
     ];
   }
@@ -88,7 +88,7 @@ const useHomeMenu = (): HomeMenuItemData[] => {
         img: applicationImg,
         title: 'Create Application',
         description: 'Create and submit an applications.',
-        link: '/',
+        link: '/create-application',
       },
       {
         img: employeesImg,

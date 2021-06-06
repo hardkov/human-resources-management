@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 
 @Data
@@ -15,4 +16,9 @@ public class DelegationDTO {
     private LocalDate endDate;
     private String destination;
     private DelegationApplicationDTO delegationApplication;
+
+    @AssertTrue(message = "Start date cannot be after end date")
+    private boolean isValidDates(){
+        return startDate.minusDays(1).isBefore(endDate);
+    }
 }

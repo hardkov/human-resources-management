@@ -19,6 +19,10 @@ public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+    @JoinColumn(name = "supervisor_id")
+    private User supervisor;
+
     // user's email -> data redundancy
     @Column(unique = true)
     private String username;
@@ -34,15 +38,16 @@ public class User implements UserDetails {
     private PersonalData personalData;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "permissions_id")
     private Permission permissions;
 
     private String position;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
     private List<Leave> leaves;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private List<Contract> contracts;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -50,9 +55,6 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Delegation> delegations;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Application> applications;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
