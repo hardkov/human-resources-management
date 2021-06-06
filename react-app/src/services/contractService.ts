@@ -1,11 +1,10 @@
-import ActionResult from "../types/ActionResult";
-import LeaveData from "../types/LeaveData";
 import axios, {AxiosResponse} from "axios";
+import ActionResult from "../types/ActionResult";
 import {CONTRACT_ENDPOINT, USER_DATA_ENDPOINT} from "./config";
 import {getAuthHeaders} from "../helpers/auth";
 import ContractData from "../types/ContractData";
 
-const getAllContracts = async (): Promise<ActionResult<LeaveData[]>> => {
+const getAllContracts = async (): Promise<ActionResult<ContractData[]>> => {
     try {
         const response: AxiosResponse = await axios.get(`${CONTRACT_ENDPOINT}`, {
             headers: getAuthHeaders(),
@@ -69,3 +68,5 @@ const updateContract = async (contractData: ContractData): Promise<ActionResult>
         return { success: false, errors: ['Contract could not be updated'] };
     }
 };
+
+export{getAllContracts, addContractToUser, updateContract, deleteContract}

@@ -1,17 +1,14 @@
 import UserData from './UserData';
+import ContractType from "./ContractType";
 
-declare const enum ContractType {
-    UoP,
-    B2B,
-    mandateContract
-}
+
 
 interface ContractData {
     id: number;
     user: UserData;
     startDate: string;
     endDate: string;
-    contract: ContractType;
+    contractType: ContractType;
     baseSalary: number;
 
 }
