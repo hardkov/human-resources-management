@@ -72,7 +72,7 @@ const earningsInfo = {
   img: myEarningsImg,
   title: 'Earnings',
   description: 'See all the earnings of your subordinates.',
-  link: '/',
+  link: '/earnings',
 };
 
 const useHomeMenu = (): HomeMenuItemData[] => {
