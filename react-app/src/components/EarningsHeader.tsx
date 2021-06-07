@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Card, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  iconRoot: {
     backgroundColor: '#fdfdff',
   },
   pageHeader: {
@@ -32,18 +32,18 @@ interface HeaderDetails {
 export default function EarningsHeader({ title, subTitle, icon }: HeaderDetails) {
   const classes = useStyles();
   return (
-    <Paper elevation={0} square className={classes.root}>
-      <div className={classes.pageHeader}>
+    <Grid container style={{ marginBottom: 25 }}>
+      <Paper elevation={0} square className={classes.iconRoot}>
         <Card className={classes.pageIcon}>{icon}</Card>
-        <div className={classes.pageTitle}>
-          <Typography variant="h6" component="div">
-            {title}
-          </Typography>
-          <Typography variant="subtitle2" component="div">
-            {subTitle}
-          </Typography>
-        </div>
+      </Paper>
+      <div className={classes.pageTitle}>
+        <Typography variant="h6" component="div">
+          {title}
+        </Typography>
+        <Typography variant="subtitle2" component="div">
+          {subTitle}
+        </Typography>
       </div>
-    </Paper>
+    </Grid>
   );
 }
