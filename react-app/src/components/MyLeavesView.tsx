@@ -62,7 +62,7 @@ const MyLeavesView: React.FC = () => {
       id: a.id,
       startDate: a.startDate,
       endDate: a.endDate,
-      paid: a.paid ? 'yes' : 'no',
+      paid: a.paid ? 'Yes' : 'No',
     };
   });
 

@@ -130,7 +130,13 @@ const EarningsView: React.FC = () => {
             <Grid item xs={12}>
               <Paper>
                 <div className={classes.pageContent}>
-                  <DataGrid rowsPerPageOptions={[10, 20, 50]} pagination rows={rows} columns={columns} />
+                  <DataGrid
+                    disableSelectionOnClick
+                    rowsPerPageOptions={[10, 20, 50]}
+                    pagination
+                    rows={rows}
+                    columns={columns}
+                  />
                 </div>
               </Paper>
             </Grid>

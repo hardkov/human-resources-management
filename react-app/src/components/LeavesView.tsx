@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@material-ui/data-grid';
-import { Card, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { DataGrid, GridCellParams } from '@material-ui/data-grid';
+import { IconButton, Card, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import { AirplanemodeActive } from '@material-ui/icons';
+import { Link, Redirect } from 'react-router-dom';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { getAllLeaves } from '../services/leaveService';
 import LeaveData from '../types/LeaveData';
 import ActionResult from '../types/ActionResult';
@@ -47,7 +49,22 @@ const LeavesView: React.FC = () => {
     { field: 'lastName', headerName: 'Last name', width: 300 },
     { field: 'startDate', headerName: 'Start', width: 300 },
     { field: 'endDate', headerName: 'End', width: 300 },
-    { field: 'paid', headerName: 'Paid', width: 300 },
+    { field: 'paid', headerName: 'Paid', width: 200 },
+    {
+      field: 'user',
+      headerName: 'Profile',
+      width: 300,
+      renderCell: ({ value }: GridCellParams) => (
+        <strong>
+          <IconButton
+            component={Link}
+            to={{ pathname: `/employee-profile`, state: { referer: '/leaves', userData: value } }}
+          >
+            <AccountCircleIcon />
+          </IconButton>
+        </strong>
+      ),
+    },
   ];
 
   const userId = getUserId();
@@ -60,7 +77,8 @@ const LeavesView: React.FC = () => {
         lastName: a.user.personalData.lastname,
         startDate: a.startDate,
         endDate: a.endDate,
-        paid: a.paid ? 'yes' : 'no',
+        paid: a.paid ? 'Yes' : 'No',
+        user: a.user,
       };
     });
 
@@ -83,7 +101,12 @@ const LeavesView: React.FC = () => {
       </Grid>
       <Paper>
         <div style={{ width: '100%', overflowX: 'hidden', height: 700 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={20} />
+          <DataGrid
+            disableSelectionOnClick
+            rows={rows}
+            columns={columns}
+            pageSize={20}
+          />
         </div>
       </Paper>
     </div>

@@ -1,7 +1,9 @@
-import { makeStyles, Paper } from '@material-ui/core';
+import { IconButton, makeStyles, Paper } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridCellParams } from '@material-ui/data-grid';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { Link } from 'react-router-dom';
 import EarningsHeader from './EarningsHeader';
 import ActionResult from '../types/ActionResult';
 import { getAllContracts } from '../services/contractService';
@@ -42,6 +44,21 @@ const EarningsView: React.FC = () => {
     { field: 'endDate', headerName: 'End date', width: 200 },
     { field: 'contract', headerName: 'Contract Type', width: 200 },
     { field: 'baseSalary', headerName: 'Base salary', width: 200 },
+    {
+      field: 'user',
+      headerName: 'Profile',
+      width: 300,
+      renderCell: ({ value }: GridCellParams) => (
+        <strong>
+          <IconButton
+            component={Link}
+            to={{ pathname: `/employee-profile`, state: { referer: '/earnings', userData: value } }}
+          >
+            <AccountCircleIcon />
+          </IconButton>
+        </strong>
+      ),
+    },
   ];
 
   const userId = getUserId();
@@ -56,6 +73,7 @@ const EarningsView: React.FC = () => {
         endDate: c.endDate,
         contract: c.contractType,
         baseSalary: c.baseSalary,
+        user: c.user,
       };
     });
 
@@ -68,7 +86,7 @@ const EarningsView: React.FC = () => {
       />
       <Paper>
         <div className={classes.pageContent}>
-          <DataGrid rowsPerPageOptions={[10, 20, 50]} pagination rows={rows} columns={columns} />
+          <DataGrid disableSelectionOnClick pagination rows={rows} columns={columns} />
         </div>
       </Paper>
     </div>
