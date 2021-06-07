@@ -18,7 +18,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c WHERE c.id IS ?1 AND (?3 = TRUE OR c.user.id IN ?2)")
     Optional<Contract> findById(Long id, List<Long> allowedList, boolean ignoreAuth);
 
-    @Query("SELECT c FROM Contract c WHERE c.id IS ?1 AND (?3 = TRUE OR c.user.id IN ?2)")
+    @Query("SELECT c FROM Contract c WHERE c.user.id IS ?1 AND (?3 = TRUE OR c.user.id IN ?2)")
     List<Contract> findByUserId(Long id,List<Long> allowedList, boolean ignoreAuth);
 
     @Query("SELECT c FROM Contract c WHERE (?2 = TRUE OR c.user.id IN ?1)")

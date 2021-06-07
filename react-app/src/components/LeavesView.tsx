@@ -8,19 +8,14 @@ import ActionResult from '../types/ActionResult';
 import { getUserId } from '../services/authService';
 
 const useStyles = makeStyles((theme) => ({
+  iconRoot: {
+    backgroundColor: '#fdfdff',
+  },
   root: {
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: theme.spacing(3),
     width: '90%',
-  },
-  iconRoot: {
-    backgroundColor: '#fdfdff',
-  },
-  pageHeader: {
-    padding: theme.spacing(4),
-    display: 'flex',
-    marginBottom: theme.spacing(3),
   },
   pageIcon: {
     display: 'inline-block',

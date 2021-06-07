@@ -41,10 +41,10 @@ const myApplicationInfo = {
 };
 
 const myEarningsInfo = {
-  img: earningsImg,
+  img: myEarningsImg,
   title: 'My Earnings',
   description: 'Aggregated data about your earnings.',
-  link: '/',
+  link: '/my-earnings',
 };
 
 const myLeavesInfo = {
@@ -69,7 +69,7 @@ const leavesInfo = {
 };
 
 const earningsInfo = {
-  img: myEarningsImg,
+  img: earningsImg,
   title: 'Earnings',
   description: 'See all the earnings of your subordinates.',
   link: '/earnings',

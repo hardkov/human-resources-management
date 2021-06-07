@@ -20,6 +20,22 @@ const getAllContracts = async (): Promise<ActionResult<ContractData[]>> => {
   }
 };
 
+const getContractsByUser = async (userId: string): Promise<ActionResult<ContractData[]>> => {
+  try {
+    const response: AxiosResponse = await axios.get(`${CONTRACT_ENDPOINT}/user/${userId}`, {
+      headers: getAuthHeaders(),
+    });
+
+    if (response.status === 200) {
+      return { success: true, data: response.data, errors: [] };
+    }
+
+    return { success: false, errors: ['Contracts not found'] };
+  } catch {
+    return { success: false, errors: ['Contracts not found'] };
+  }
+};
+
 const addContractToUser = async (contractData: ContractData, userId: string): Promise<ActionResult> => {
   try {
     const response: AxiosResponse = await axios.post(
@@ -72,4 +88,4 @@ const updateContract = async (contractData: ContractData): Promise<ActionResult>
   }
 };
 
-export { getAllContracts, addContractToUser, updateContract, deleteContract };
+export { getAllContracts, addContractToUser, updateContract, deleteContract, getContractsByUser };
