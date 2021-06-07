@@ -1,3 +1,3 @@
-type ContractType = 'B2B' | 'UoP' | "mandate contract";
+type ContractType = 'B2B' | 'UoP' | 'mandate contract';
 
-export default ContractType
+export default ContractType;

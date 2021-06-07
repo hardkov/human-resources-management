@@ -11,10 +11,9 @@ import LeavesView from './LeavesView';
 import EmployeesList from './EmployeesList';
 import MyProfile from './MyProfile';
 import EmployeeProfile from './EmployeeProfile';
-import EarningsView from "./EarningsView";
+import EarningsView from './EarningsView';
 import CreateApplication from './CreateApplication';
 import UserInsert from './UserInsert';
-
 
 const homeWithLayout = () => (
   <Layout>
@@ -46,11 +45,10 @@ const employeeProfileWithLayout = () => (
   </Layout>
 );
 
-
 const earningsViewWithLayout = () => (
-    <Layout>
-        <EarningsView />
-    </Layout>
+  <Layout>
+    <EarningsView />
+  </Layout>
 );
 const createApplicationWithLayout = () => (
   <Layout>
@@ -78,7 +76,6 @@ const Routes: React.FC = () => {
         <PrivateRoute exact path="/earnings" component={earningsViewWithLayout} />
         <PrivateRoute exact path="/employees/insert" component={userInsertWithLayout} />
         <PrivateRoute exact path="/create-application" component={createApplicationWithLayout} />
-
       </Switch>
     </Router>
   );
