@@ -34,7 +34,7 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersByIdRaw(List<Long> userIds) {
-        val users = this.userRepository.findUsersWithIds(userIds, Collections.emptyList(),true);
+        val users = this.userRepository.findUsersWithIds(userIds, Collections.singletonList((long) -1),true);
 
         return toDTO(users);
     }
