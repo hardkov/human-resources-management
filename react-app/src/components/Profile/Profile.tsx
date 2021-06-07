@@ -8,6 +8,7 @@ import ProfileForm from './ProfileForm';
 
 interface Props {
   userData: UserData;
+  disabled?: boolean;
   referer?: string;
 }
 
@@ -20,9 +21,10 @@ type FormValues = {
   birthdate: string;
 };
 
-const Profile: React.FC<Props> = ({ userData, referer }: Props) => {
+const Profile: React.FC<Props> = ({ userData, referer, disabled }: Props) => {
   const [changeMode, setChangeMode] = useState<boolean>(false);
-  const [serverError, setServerError] = useState<string>('');
+  const [serverMessage, setServerMessage] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false);
   const [data, setData] = useState<UserData>(userData);
 
   const { register, handleSubmit, reset } = useForm<FormValues>({
@@ -45,7 +47,6 @@ const Profile: React.FC<Props> = ({ userData, referer }: Props) => {
       address: data.personalData.address,
       birthdate: data.personalData.birthdate,
     });
-    setServerError('');
   }, [data, changeMode, reset]);
 
   const handleSubmitCallback = async (formData: any) => {
@@ -56,12 +57,17 @@ const Profile: React.FC<Props> = ({ userData, referer }: Props) => {
     const result = await updateUser(userDataCopy);
 
     if (result.success) {
+      setSuccess(true);
       setData(userDataCopy);
       setChangeMode(false);
+      setServerMessage('Success');
       return;
     }
 
-    if (result.errors != null) setServerError(result.errors[0]);
+    if (result.errors != null) {
+      setServerMessage(result.errors[0]);
+      setSuccess(false);
+    }
   };
 
   return (
@@ -70,8 +76,10 @@ const Profile: React.FC<Props> = ({ userData, referer }: Props) => {
       changeMode={changeMode}
       register={register}
       handleSubmit={handleSubmit(handleSubmitCallback)}
-      serverError={serverError}
+      success={success}
+      serverMessage={serverMessage}
       referer={referer}
+      disabled={disabled}
     />
   );
 };

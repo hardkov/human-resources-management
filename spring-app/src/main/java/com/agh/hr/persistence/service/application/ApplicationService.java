@@ -16,6 +16,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +60,24 @@ public class ApplicationService implements IApplicationService {
         return delegationApplicationRepository.findByUserId(user.getId())
                 .stream().map(converters::delegationApplicationToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<LeaveApplicationDTO> getLeaveApplicationById(Long id) {
+        return leaveApplicationRepository.findById(id)
+                .map(converters::leaveApplicationToDTO);
+    }
+
+    @Override
+    public Optional<BonusApplicationDTO> getBonusApplicationById(Long id) {
+        return bonusApplicationRepository.findById(id)
+                .map(converters::bonusApplicationToDTO);
+    }
+
+    @Override
+    public Optional<DelegationApplicationDTO> getDelegationApplicationById(Long id) {
+        return delegationApplicationRepository.findById(id)
+                .map(converters::delegationApplicationToDTO);
     }
 
     @Override

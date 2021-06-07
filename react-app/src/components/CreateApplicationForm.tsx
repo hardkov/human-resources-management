@@ -20,7 +20,8 @@ interface Props {
   register: UseFormRegister<any>;
   handleSubmit: () => void;
   control: Control<any>;
-  serverError: string;
+  success: boolean;
+  serverMessage: string;
 }
 
 const CreateApplicationForm: React.FC<Props> = ({
@@ -28,7 +29,8 @@ const CreateApplicationForm: React.FC<Props> = ({
   register,
   handleSubmit,
   control,
-  serverError,
+  success,
+  serverMessage,
 }: Props) => {
   const classes = useStyles();
 
@@ -78,7 +80,7 @@ const CreateApplicationForm: React.FC<Props> = ({
           <>
             <Grid item xs={6}>
               <TextField
-                {...register('startDate', { shouldUnregister: true })}
+                {...register('startDatetime', { shouldUnregister: true })}
                 type="datetime-local"
                 label="Start date"
                 variant="outlined"
@@ -88,7 +90,7 @@ const CreateApplicationForm: React.FC<Props> = ({
             </Grid>
             <Grid item xs={6}>
               <TextField
-                {...register('endDate', { shouldUnregister: true })}
+                {...register('endDatetime', { shouldUnregister: true })}
                 type="datetime-local"
                 label="End date"
                 variant="outlined"
@@ -121,8 +123,8 @@ const CreateApplicationForm: React.FC<Props> = ({
       <Button className={classes.submit} type="submit" fullWidth variant="contained" color="primary">
         Submit
       </Button>
-      <Typography color="error" align="center">
-        {serverError}
+      <Typography align="center" color={success ? 'primary' : 'error'}>
+        {serverMessage}
       </Typography>
     </form>
   );
