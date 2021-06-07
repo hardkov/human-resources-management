@@ -8,6 +8,7 @@ import Login from './Login';
 import ProtectedRoute from './utils/ProtectedRoute';
 import Layout from './utils/Layout';
 import LeavesView from './LeavesView';
+import MyLeavesView from './MyLeavesView';
 import EmployeesList from './EmployeesList';
 import MyProfile from './MyProfile';
 import EmployeeProfile from './EmployeeProfile';
@@ -24,6 +25,12 @@ const homeWithLayout = () => (
 const leavesWithLayout = () => (
   <Layout>
     <LeavesView />
+  </Layout>
+);
+
+const myLeavesWithLayout = () => (
+  <Layout>
+    <MyLeavesView />
   </Layout>
 );
 
@@ -72,6 +79,7 @@ const Routes: React.FC = () => {
         <PrivateRoute exact path="/profile" component={myProfileWithLayout} />
         <PrivateRoute exact path="/employee-profile" component={employeeProfileWithLayout} />
         <PrivateRoute exact path="/leaves" component={leavesWithLayout} />
+        <PrivateRoute exact path="/my-leaves" component={myLeavesWithLayout} />
         <PrivateRoute exact path="/employees" component={employeesListWithLayout} />
         <PrivateRoute exact path="/earnings" component={earningsViewWithLayout} />
         <PrivateRoute exact path="/employees/insert" component={userInsertWithLayout} />

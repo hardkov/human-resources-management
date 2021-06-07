@@ -51,7 +51,7 @@ const myLeavesInfo = {
   img: myLeavesImg,
   title: 'My Leaves',
   description: 'See all the leaves during your contract.',
-  link: '/',
+  link: '/my-leaves',
 };
 
 const createApplicationInfo = {

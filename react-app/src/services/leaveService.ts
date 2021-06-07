@@ -20,9 +20,9 @@ const getAllLeaves = async (): Promise<ActionResult<LeaveData[]>> => {
   }
 };
 
-const getLeaveByUser = async (userId: string): Promise<ActionResult<LeaveData>> => {
+const getLeavesByUser = async (userId: string): Promise<ActionResult<LeaveData[]>> => {
   try {
-    const response: AxiosResponse = await axios.get(`${LEAVE_ENDPOINT}/${userId}`, {
+    const response: AxiosResponse = await axios.get(`${LEAVE_ENDPOINT}/user/${userId}`, {
       headers: getAuthHeaders(),
     });
 
@@ -83,4 +83,4 @@ const updateLeave = async (leaveData: LeaveData): Promise<ActionResult> => {
     return { success: false, errors: ['Leave could not be updated'] };
   }
 };
-export { getAllLeaves, getLeaveByUser, addLeaveToUser, deleteLeave, updateLeave };
+export { getAllLeaves, getLeavesByUser, addLeaveToUser, deleteLeave, updateLeave };
