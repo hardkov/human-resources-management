@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { DataGrid, GridCellParams } from '@material-ui/data-grid';
 import { IconButton, Card, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import { AirplanemodeActive } from '@material-ui/icons';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { getAllLeaves } from '../services/leaveService';
 import LeaveData from '../types/LeaveData';
@@ -101,12 +101,7 @@ const LeavesView: React.FC = () => {
       </Grid>
       <Paper>
         <div style={{ width: '100%', overflowX: 'hidden', height: 700 }}>
-          <DataGrid
-            disableSelectionOnClick
-            rows={rows}
-            columns={columns}
-            pageSize={20}
-          />
+          <DataGrid disableSelectionOnClick rows={rows} columns={columns} pageSize={20} />
         </div>
       </Paper>
     </div>
