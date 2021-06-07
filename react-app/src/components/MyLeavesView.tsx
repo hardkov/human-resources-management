@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
-import { Card, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import {Paper, makeStyles, Card, Typography, Grid} from '@material-ui/core';
+
 import { AirplanemodeActive } from '@material-ui/icons';
-import { getAllLeaves } from '../services/leaveService';
+import { getLeavesByUser } from '../services/leaveService';
 import LeaveData from '../types/LeaveData';
 import ActionResult from '../types/ActionResult';
 import { getUserId } from '../services/authService';
@@ -35,39 +36,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LeavesView: React.FC = () => {
+const MyLeavesView: React.FC = () => {
   const [leaves, setLeaves] = useState<LeaveData[] | undefined>([]);
   const classes = useStyles();
 
   useEffect(() => {
     const apiCall = async () => {
-      const fetchedLeaves: ActionResult<LeaveData[]> = await getAllLeaves();
-      if (fetchedLeaves.success) setLeaves(fetchedLeaves.data);
+      const userId: number | undefined = getUserId();
+      if (userId) {
+        const fetchedLeaves: ActionResult<LeaveData[]> = await getLeavesByUser(userId.toString());
+        if (fetchedLeaves.success) setLeaves(fetchedLeaves.data);
+      }
     };
     apiCall();
   }, []);
 
   const columns = [
-    { field: 'firstName', headerName: 'First name', width: 300 },
-    { field: 'lastName', headerName: 'Last name', width: 300 },
     { field: 'startDate', headerName: 'Start', width: 300 },
     { field: 'endDate', headerName: 'End', width: 300 },
     { field: 'paid', headerName: 'Paid', width: 300 },
   ];
 
-  const userId = getUserId();
-  const rows: any = leaves
-    ?.filter((a) => userId && a.user.id.toString() !== userId.toString())
-    .map((a) => {
-      return {
-        id: a.id,
-        firstName: a.user.personalData.firstname,
-        lastName: a.user.personalData.lastname,
-        startDate: a.startDate,
-        endDate: a.endDate,
-        paid: a.paid ? 'yes' : 'no',
-      };
-    });
+  const rows: any = leaves?.map((a) => {
+    return {
+      id: a.id,
+      startDate: a.startDate,
+      endDate: a.endDate,
+      paid: a.paid ? 'yes' : 'no',
+    };
+  });
 
   return (
     <div className={classes.root}>
@@ -82,7 +79,7 @@ const LeavesView: React.FC = () => {
             Leaves
           </Typography>
           <Typography variant="subtitle2" component="div">
-            Other people leaves
+            My leaves
           </Typography>
         </div>
       </Grid>
@@ -95,4 +92,4 @@ const LeavesView: React.FC = () => {
   );
 };
 
-export default LeavesView;
+export default MyLeavesView;
