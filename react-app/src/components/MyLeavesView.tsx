@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
-import {Paper, makeStyles, Card, Typography, Grid} from '@material-ui/core';
+import { Paper, makeStyles, Card, Typography, Grid } from '@material-ui/core';
 
 import { AirplanemodeActive } from '@material-ui/icons';
 import { getLeavesByUser } from '../services/leaveService';
