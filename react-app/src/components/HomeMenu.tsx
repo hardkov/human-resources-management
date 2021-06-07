@@ -29,7 +29,7 @@ const HomeMenu: React.FC = () => {
   return (
     <Grid className={classes.grid} spacing={6} container justify={menuItems.length < 4 ? 'center' : 'flex-start'}>
       {menuItems.map((item) => (
-        <Grid item xs={4}>
+        <Grid key={item.img} item xs={4}>
           <HomeMenuItem img={item.img} title={item.title} description={item.description} link={item.link} />
         </Grid>
       ))}

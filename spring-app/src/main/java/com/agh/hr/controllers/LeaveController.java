@@ -4,6 +4,7 @@ import com.agh.hr.config.security.SecuredRestController;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.LeaveDTO;
 import com.agh.hr.persistence.dto.UserDTO;
+import com.agh.hr.persistence.dto.validation.groups.UpdateGroup;
 import com.agh.hr.persistence.model.Leave;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.service.LeaveService;
@@ -15,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +42,7 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "Created leave's DTO"),
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved", content = @Content()),
                })
-    public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @RequestBody LeaveDTO leaveDTO) {
+    public ResponseEntity<LeaveDTO> insertLeave(@PathVariable Long userId, @Valid @RequestBody LeaveDTO leaveDTO) {
             Optional<LeaveDTO> insertedLeaveOpt = leaveService.saveLeave(leaveDTO,userId);
             return insertedLeaveOpt
                     .map(ResponseEntity::ok)
@@ -77,7 +80,7 @@ public class LeaveController implements SecuredRestController {
                 @ApiResponse(responseCode = "200", description = "Leave updated successfully"),
                 @ApiResponse(responseCode = "400", description = "Leave could not be saved")
                })
-    public ResponseEntity<Void> updateLeave(@RequestBody LeaveDTO leaveDTO) {
+    public ResponseEntity<Void> updateLeave(@Valid @Validated({UpdateGroup.class}) @RequestBody LeaveDTO leaveDTO) {
         return leaveService.updateLeave(leaveDTO).isPresent() ?
                 ResponseEntity.accepted().build() : ResponseEntity.badRequest().build();
     }

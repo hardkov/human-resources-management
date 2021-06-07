@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class ApplicationController implements SecuredRestController {
             })
     public ResponseEntity<LeaveApplicationDTO> putLeaveApplication(
             Principal principal,
-            @RequestBody LeaveApplicationPayload payload) {
+            @Valid @RequestBody LeaveApplicationPayload payload) {
         val user = converters.toUserDTO(principal);
         val dto = applicationService.createLeaveApplication(user, payload);
 
@@ -114,7 +115,7 @@ public class ApplicationController implements SecuredRestController {
             })
     public ResponseEntity<BonusApplicationDTO> putBonusApplication(
             Principal principal,
-            @RequestBody BonusApplicationPayload payload) {
+            @Valid @RequestBody BonusApplicationPayload payload) {
         val user = converters.toUserDTO(principal);
         val dto = applicationService.createBonusApplication(user, payload);
 
@@ -130,7 +131,7 @@ public class ApplicationController implements SecuredRestController {
             })
     public ResponseEntity<DelegationApplicationDTO> putDelegationApplication(
             Principal principal,
-            @RequestBody DelegationApplicationPayload payload) {
+            @Valid @RequestBody DelegationApplicationPayload payload) {
         val user = converters.toUserDTO(principal);
         val dto = applicationService.createDelegationApplication(user, payload);
 

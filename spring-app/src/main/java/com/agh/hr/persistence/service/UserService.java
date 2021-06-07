@@ -4,6 +4,7 @@ import com.agh.hr.model.error.NotFoundException;
 import com.agh.hr.persistence.dto.Converters;
 import com.agh.hr.persistence.dto.UserDTO;
 import com.agh.hr.persistence.dto.UserInsertionDTO;
+import com.agh.hr.persistence.model.Permission;
 import com.agh.hr.persistence.model.User;
 import com.agh.hr.persistence.repository.UserRepository;
 import com.agh.hr.persistence.service.permission.Auth;
@@ -14,8 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,10 +33,17 @@ public class UserService {
         this.converters = converters;
     }
 
-    public List<UserDTO> getUsersById(List<Long> userIds) {
-        val users = this.userRepository.findUsersWithIds(userIds);
+    public List<UserDTO> getUsersByIdRaw(List<Long> userIds) {
+        val users = this.userRepository.findUsersWithIds(userIds, Collections.singletonList((long) -1),true);
 
         return toDTO(users);
+    }
+    public List<UserDTO> getUsersById(List<Long> userIds) {
+        val userAuth=Auth.getCurrentUser();
+        return userRepository.findUsersWithIds(userIds,Auth.getReadIds(userAuth),roleService.isAdmin(userAuth))
+                .stream()
+                .map(converters::userToDTO)
+                .collect(Collectors.toList());
     }
 
     public List<UserDTO> getAllUsersSimple() {
@@ -81,6 +88,8 @@ public class UserService {
                 val result= Optional.of(userRepository.save(user));
                 userAuth.getPermissions().addToWrite(result.get().getId());
                 userRepository.save(userAuth);
+                result.get().getPermissions().addToRead(result.get().getId());
+                userRepository.save(result.get());
                 return result.map(converters::userToDTO);
         } catch(Exception e) {
             return Optional.empty();

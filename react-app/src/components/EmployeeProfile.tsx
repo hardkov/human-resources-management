@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { getPermission } from '../services/userService';
+import { getAllUsers, getPermission } from '../services/userService';
 import UserData from '../types/UserData';
 import Permission from './Permission';
 import Profile from './Profile/Profile';
 import PermissionData from '../types/PermissionData';
-import { getUserId } from '../services/authService';
+import { getUserId, getUserType } from '../services/authService';
 
 interface LocationState {
   userData: UserData;
@@ -26,12 +26,26 @@ const EmployeeProfile: React.FC = () => {
     };
 
     const fetchCurrentUserPermissions = async () => {
+      const currentUser = getUserType();
       const userId = getUserId();
 
       if (userId == null) return;
 
-      const { success, data } = await getPermission(userId);
-      if (success) setCurrentUserPermission(data);
+      const { success: successPermission, data: dataPermission } = await getPermission(userId);
+      if (!successPermission || !dataPermission) return;
+
+      if (currentUser === 'ADMIN') {
+        const { success: successUsers, data: dataUsers } = await getAllUsers();
+
+        if (successUsers && dataUsers) {
+          const allUsersIds = dataUsers.map((value) => value.id);
+
+          dataPermission.read = allUsersIds;
+          dataPermission.write = [...allUsersIds];
+        }
+      }
+
+      setCurrentUserPermission(dataPermission);
     };
 
     fetchPermissions();

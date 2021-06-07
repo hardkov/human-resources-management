@@ -10,7 +10,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { IconButton, makeStyles, MenuItem, Modal, Select } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { getUser } from '../services/userService';
 import UserData from '../types/UserData';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,10 +39,11 @@ interface Props {
   label: string;
   list: number[];
   listSelect: number[];
+  usersData: any;
   onClick: (isPermissionRead: boolean, userId: number, isActionAdd: boolean) => void;
 }
 
-const PermissionList: React.FC<Props> = ({ isPermissionRead, label, list, listSelect, onClick }: Props) => {
+const PermissionList: React.FC<Props> = ({ isPermissionRead, label, list, listSelect, usersData, onClick }: Props) => {
   const classes = useStyles();
   const [selected, setSelected] = useState<number | ''>('');
   const [open, setOpen] = useState<boolean>(false);
@@ -57,12 +57,8 @@ const PermissionList: React.FC<Props> = ({ isPermissionRead, label, list, listSe
   };
 
   const onClickProfile = async (userId: number) => {
-    const result = await getUser(userId);
-
-    if (result.success) {
-      setUserData(result.data);
-      setOpen(true);
-    }
+    setOpen(true);
+    setUserData(usersData[userId]);
   };
 
   return (
@@ -80,8 +76,10 @@ const PermissionList: React.FC<Props> = ({ isPermissionRead, label, list, listSe
       <List>
         <Typography variant="h6">{label}</Typography>
         {list.map((userId) => (
-          <ListItem disableGutters divider>
-            <ListItemText>{userId}</ListItemText>
+          <ListItem key={userId} disableGutters divider>
+            <ListItemText>
+              {usersData?.[userId].personalData.firstname} {usersData?.[userId].personalData.lastname}
+            </ListItemText>
             <ListItemAvatar>
               <IconButton color="secondary" size="small" onClick={() => onClick(isPermissionRead, userId, false)}>
                 <CloseIcon />
@@ -98,7 +96,9 @@ const PermissionList: React.FC<Props> = ({ isPermissionRead, label, list, listSe
           <FormControl fullWidth>
             <Select onChange={(e: React.ChangeEvent<any>) => setSelected(e.target.value)} value={selected}>
               {listSelect.map((userId) => (
-                <MenuItem value={userId}>{userId}</MenuItem>
+                <MenuItem key={userId} value={userId}>
+                  {usersData?.[userId].personalData.firstname} {usersData?.[userId].personalData.lastname}
+                </MenuItem>
               ))}
               <MenuItem value="" />
             </Select>

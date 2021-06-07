@@ -1,7 +1,9 @@
 package com.agh.hr.persistence.dto;
 
+import com.agh.hr.persistence.dto.validation.groups.UpdateGroup;
 import com.agh.hr.persistence.model.ContractType;
 import com.agh.hr.persistence.model.User;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -16,9 +18,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class PermissionDTO {
+    @NotNull(groups = {UpdateGroup.class}, message = "Id cannot be null")
     private Long id;
     private UserDTO user;
+
+    @NotNull(message = "Write list cannot be null")
     private List<Long> write;
+
+    @NotNull(message = "Read list cannot be null")
     private List<Long> read;
     private boolean add;
 }

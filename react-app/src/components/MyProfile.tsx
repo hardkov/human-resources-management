@@ -25,7 +25,7 @@ const MyProfile: React.FC = () => {
 
   if (data == null) return null;
 
-  return <Profile userData={data} />;
+  return <Profile userData={data} disabled />;
 };
 
 export default MyProfile;

@@ -4,7 +4,7 @@ import Header from '../Header';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
-    marginTop: theme.spacing(10),
+    marginTop: theme.spacing(5),
   },
 }));
 
