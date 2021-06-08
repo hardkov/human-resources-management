@@ -37,7 +37,7 @@ const myApplicationInfo = {
   img: myApplicationsImg,
   title: 'My Applications',
   description: 'Applications that you have submitted.',
-  link: '/',
+  link: '/my-applications',
 };
 
 const myEarningsInfo = {
