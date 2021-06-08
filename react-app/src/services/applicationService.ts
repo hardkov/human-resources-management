@@ -184,7 +184,7 @@ const updateApplication = async (
   }
 };
 
-const downloadApplication = async (id: number, type: ApplicationType): Promise<ActionResult> => {
+const downloadApplication = (id: number, type: ApplicationType) => {
   let endpoint;
 
   switch (type) {
@@ -201,16 +201,19 @@ const downloadApplication = async (id: number, type: ApplicationType): Promise<A
       endpoint = '';
   }
 
-  try {
-    await axios.get(`${endpoint}/${id}`, {
-      // params: { id },
+  axios
+    .get(`${endpoint}/${id}`, {
       headers: getAuthHeaders(),
+      responseType: 'blob',
+    })
+    .then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'application.pdf');
+      document.body.appendChild(link);
+      link.click();
     });
-
-    return { success: true };
-  } catch (error) {
-    return { success: false, errors: error.response.data.errors || ['Could not download application'] };
-  }
 };
 
 export {
