@@ -30,14 +30,14 @@ const applicationInfo = {
   img: applicationImg,
   title: 'Applications',
   description: 'All applications from your subordinates.',
-  link: '/',
+  link: '/applications',
 };
 
 const myApplicationInfo = {
   img: myApplicationsImg,
   title: 'My Applications',
   description: 'Applications that you have submitted.',
-  link: '/',
+  link: '/my-applications',
 };
 
 const myEarningsInfo = {
