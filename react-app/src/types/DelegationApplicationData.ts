@@ -1,7 +1,7 @@
 import ApplicationStatus from './ApplicationStatus';
 import UserData from './UserData';
 
-interface LeaveApplicationData {
+interface DelegationApplicationData {
   id: number;
   content: string;
   user: UserData;
@@ -10,7 +10,7 @@ interface LeaveApplicationData {
   status: ApplicationStatus;
   startDate: string;
   endDate: string;
-  paid: boolean;
+  destination: string;
 }
 
-export default LeaveApplicationData;
+export default DelegationApplicationData;

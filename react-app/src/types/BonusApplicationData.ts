@@ -1,16 +1,14 @@
 import ApplicationStatus from './ApplicationStatus';
 import UserData from './UserData';
 
-interface LeaveApplicationData {
+interface BonusApplicationData {
   id: number;
   content: string;
   user: UserData;
   place: string;
   date: string;
   status: ApplicationStatus;
-  startDate: string;
-  endDate: string;
-  paid: boolean;
+  money: string;
 }
 
-export default LeaveApplicationData;
+export default BonusApplicationData;
