@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
+import { Paper, makeStyles, Card, Typography, Grid } from '@material-ui/core';
+
+import DescriptionIcon from '@material-ui/icons/Description';
+
 import {
   getMyLeaveApplications,
   getMyBonusApplications,
@@ -11,7 +15,36 @@ import BonusApplicationData from '../types/BonusApplicationData';
 import DelegationApplicationData from '../types/DelegationApplicationData';
 import Applications from './Applications';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: theme.spacing(3),
+    width: '90%',
+  },
+  iconRoot: {
+    backgroundColor: '#fdfdff',
+  },
+  pageHeader: {
+    padding: theme.spacing(4),
+    display: 'flex',
+    marginBottom: theme.spacing(3),
+  },
+  pageIcon: {
+    display: 'inline-block',
+    padding: theme.spacing(2),
+    color: '#3c44b1',
+  },
+  pageTitle: {
+    paddingLeft: theme.spacing(4),
+    '& .MuiTypography-subtitle2': {
+      opacity: '0.6',
+    },
+  },
+}));
+
 const MyApplications: React.FC = () => {
+  const classes = useStyles();
   const [leaveApplications, setLeaveApplications] = useState<LeaveApplicationData[]>([]);
   const [bonusApplications, setBonusApplications] = useState<BonusApplicationData[]>([]);
   const [delegationApplications, setDelegationApplications] = useState<DelegationApplicationData[]>([]);
@@ -38,10 +71,31 @@ const MyApplications: React.FC = () => {
   }, []);
 
   return (
-    <Applications
-      initialApplications={[...leaveApplications, ...bonusApplications, ...delegationApplications]}
-      disableActions
-    />
+    <div className={classes.root}>
+      <Grid container style={{ marginBottom: 25 }}>
+        <Paper elevation={0} square className={classes.iconRoot}>
+          <Card className={classes.pageIcon}>
+            <DescriptionIcon fontSize="large" />
+          </Card>
+        </Paper>
+        <div className={classes.pageTitle}>
+          <Typography variant="h6" component="div">
+            Applications
+          </Typography>
+          <Typography variant="subtitle2" component="div">
+            My applications
+          </Typography>
+        </div>
+      </Grid>
+      <Paper>
+        <div style={{ width: '100%', overflowX: 'hidden', height: 700 }}>
+          <Applications
+            initialApplications={[...leaveApplications, ...bonusApplications, ...delegationApplications]}
+            disableActions
+          />
+        </div>
+      </Paper>
+    </div>
   );
 };
 
